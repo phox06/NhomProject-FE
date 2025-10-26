@@ -1,0 +1,57 @@
+﻿@model NhomProject.Models.Products
+
+@{
+    // Set the browser tab title to the product's name
+    ViewData["Title"] = Model.Name;
+}
+<link href="~/Content/Site.css" rel="stylesheet" />
+<div class="container">
+    <div class="product-details-container">
+
+        <div class="product-image-gallery">
+            <img src="@Url.Content(Model.ImageUrl)" alt="@Model.Name" />
+        </div>
+
+        <div class="product-info">
+
+            <h1 class="product-info-title">@Model.Name</h1>
+
+            <div class="product-info-rating">
+                @Model.Rating Stars (@Model.ReviewCount reviews)
+            </div>
+
+            <div class="product-info-price">
+                @Model.Price.ToString("C")
+
+                @* Check if OldPrice has a value AND is greater than the current price *@
+                @if (Model.OldPrice.HasValue && Model.OldPrice.Value > Model.Price)
+                {
+                    <span class="product-info-price-old">
+                        @Model.OldPrice.Value.ToString("C")
+                    </span>
+                }
+            </div>
+
+            <div class="product-info-description">
+                <p>
+                    @Model.Description
+                </p>
+            </div>
+
+            @using (Html.BeginForm("AddToCart", "Home", new { id = Model.ProductId }))
+            {
+                <div class="product-info-actions">
+                    <label for="quantity">Quantity:</label>
+
+                    @* The 'name="quantity"' attribute is important *@
+                    <input type="number" id="quantity" name="quantity" value="1" min="1" class="quantity-input" />
+
+                    <button type="submit" class="btn add-to-cart-btn">
+                        Add to Cart
+                    </button>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

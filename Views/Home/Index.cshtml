@@ -1,0 +1,66 @@
+﻿@model IEnumerable<NhomProject.Models.Products>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<link href="~/Content/Site.css" rel="stylesheet" />
+
+<div class="container">
+    <div class="swiper promo-carousel">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide" style="background-image: url('../../images/1.png'); background-size: cover; background-position: center; ">
+                <a href="#" class="carousel-link"></a>
+            </div>
+            <div class="swiper-slide" style="background-image: url('../../images/2.png'); background-size: cover; background-position: center; ">
+                <a href="#" class="carousel-link"></a>
+            </div>
+            <div class="swiper-slide" style="background-image: url('../../Images/3.png'); background-size: cover; background-position: center; ">
+                <a href="#" class="carousel-link"></a>
+            </div>
+        </div>
+
+        <div class="swiper-pagination"></div>
+
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+    </div>
+
+
+
+    <h2 class="section-title">Flash Sale</h2>
+    <div class="product-grid">
+        @foreach (var products in Model)
+        {
+            <a href="@Url.Action("Details", "Home", new { id = products.ProductId })" class="product-card">
+
+                <div class="product-card-image">
+
+
+                    <img src="@Url.Content(products.ImageUrl)" alt="@products.Name" style="width: 100%; height: 100%; object-fit: cover;" />
+                </div>
+
+                <div class="product-card-body">
+                    <h3 class="product-card-title">@products.Name</h3>
+                    </div>
+
+                    <div class="product-card-price">
+
+
+                        @products.Price.ToString("C")
+
+                        @if (products.OldPrice.HasValue && products.OldPrice.Value > products.Price)
+                        {
+                            <span class="product-card-price-old">
+
+                                @products.OldPrice.Value.ToString("C")
+                            </span>
+                        }
+                        <div class="product-card-rating">
+                            @products.Rating Stars (@products.ReviewCount)
+                        </div>
+
+                    </div>
+            </a>
+        }
+    </div>       
+</div>
+ 

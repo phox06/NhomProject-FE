@@ -1,0 +1,62 @@
+﻿@model NhomProject.Models.Order
+    
+@{
+    ViewData["Title"] = "Checkout";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var cart = ViewBag.Cart as NhomProject.Models.Cart;
+}
+<link href="~/Content/Site.css" rel="stylesheet" />
+<div class="container">
+    <h2 class="section-title">Checkout</h2>
+
+    <div class="checkout-container">
+
+        <div class="checkout-form">
+            <h3>Shipping Information</h3>
+
+            @* This form will POST to your new Checkout action *@
+            @using (Html.BeginForm("Checkout", "Home", FormMethod.Post))
+            {
+                <div class="form-group">
+                    <label for="CustomerName">Full Name</label>
+                    @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control", placeholder = "Your Name" })
+                </div>
+
+                <div class="form-group">
+                    <label for="Phone">Phone</label>
+                    @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", placeholder = "Your Phone Number" })
+                </div>
+
+                <div class="form-group">
+                    <label for="Address">Address</label>
+                    @Html.TextBoxFor(m => m.Address, new { @class = "form-control", placeholder = "Your Shipping Address" })
+                </div>
+
+                <button type="submit" class="btn checkout-btn">Place Order</button>
+            }
+        </div>
+
+        <div class="checkout-summary">
+            <h3>Order Summary</h3>
+
+            @if (cart != null)
+            {
+                <ul class="summary-item-list">
+                    @foreach (var item in cart.Items)
+                    {
+                        <li class="summary-item">
+                            <span class="summary-item-name">@item.ProductName (x @item.Quantity)</span>
+                            <span class="summary-item-price">@item.Total.ToString("C")</span>
+                        </li>
+                    }
+                </ul>
+
+                <div class="summary-total">
+                    <strong>Total:</strong>
+                    <strong>@cart.GetTotal().ToString("C")</strong>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>

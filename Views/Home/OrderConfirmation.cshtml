@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewBag.Title = "OrderConfirmation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewData["Title"] = "Order Confirmed";
+}
+<link href="~/Content/Site.css" rel="stylesheet" />
+<div class="container" style="text-align: center; padding: 4rem 1rem;">
+    <h2 class="section-title">Thank You For Your Order!</h2>
+    <p>Your order has been placed successfully.</p>
+    <p>Your Order ID is: <strong>@ViewBag.OrderId</strong></p>
+    <br />
+    <a href="@Url.Action("Index", "Home")" class="btn checkout-btn">Continue Shopping</a>
+</div>
+

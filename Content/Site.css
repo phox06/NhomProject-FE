@@ -1,0 +1,535 @@
+﻿/* --- Global Styles & Variables --- */
+:root {
+    --primary-color: #feda00; 
+    --dark-color: #333;
+    --light-color: #fff;
+    --grey-color: #f0f0f0;
+    --border-color: #ddd;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f9f9f9;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+a {
+    text-decoration: none;
+    color: var(--dark-color);
+}
+
+/* --- Header Layout --- */
+.header-top-bar {
+    background-color: var(--primary-color);
+    padding: 0.5rem 0;
+    font-size: 0.8rem;
+}
+
+    .header-top-bar .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-top-bar .user-links a {
+        margin-left: 1rem;
+    }
+
+.header-main {
+    background-color: var(--light-color);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+    .header-main .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--dark-color);
+}
+
+.search-bar {
+    display: flex;
+    flex-grow: 1; /* Makes search bar take available space */
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+    .search-bar input {
+        width: 100%;
+        padding: 0.75rem;
+        border: none;
+        outline: none;
+    }
+
+    .search-bar button {
+        padding: 0 1rem;
+        border: none;
+        background-color: var(--primary-color);
+        cursor: pointer;
+        font-size: 1.2rem;
+    }
+
+.cart-link {
+    font-weight: bold;
+}
+
+.hamburger-menu {
+    display: none; /* Hidden on desktop */
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.header-nav-bar {
+    background-color: var(--dark-color);
+}
+
+    .header-nav-bar .container {
+        display: flex;
+        justify-content: flex-start;
+        gap: 1.5rem;
+    }
+
+    .header-nav-bar a {
+        color: var(--light-color);
+        padding: 1rem 0.5rem;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+        .header-nav-bar a:hover {
+            background-color: var(--primary-color);
+            color: var(--dark-color);
+        }
+
+/* --- Main Content & Footer --- */
+main {
+    padding: 1.5rem 0;
+}
+
+.site-footer {
+    background-color: var(--light-color);
+    border-top: 1px solid var(--border-color);
+    padding: 2rem 0;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+/* --- Homepage-Specific Styles --- */
+.promo-carousel {
+    background-color: var(--grey-color);
+    height: 400px; /* Placeholder */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #999;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--primary-color);
+    display: inline-block;
+    padding-bottom: 0.25rem;
+}
+
+.product-grid {
+    display: grid;
+    /* This grid is responsive by default: */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.product-card {
+    background-color: var(--light-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+    .product-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+.product-card-image {
+    background-color: var(--grey-color);
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+}
+
+.product-card-body {
+    padding: 1rem;
+}
+
+.product-card-title {
+    font-weight: bold;
+    font-size: 1rem;
+    height: 40px; /* Set fixed height */
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.product-card-price {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #28a745; /* <-- Changed to green */
+    margin-bottom: 0.5rem;
+}
+
+.product-card-price-old {
+    font-size: 0.9rem;
+    text-decoration: line-through;
+    color: #d00; /* <-- Changed to red */
+    margin-left: 0.5rem;
+}
+.product-card-rating {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+/* --- RESPONSIVE DESIGN --- */
+@media (max-width: 768px) {
+    .header-main .container {
+        flex-wrap: wrap; /* Allow items to wrap */
+    }
+
+    .logo {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .search-bar {
+        order: 3; /* Move search bar to the bottom */
+        width: 100%;
+    }
+
+    .hamburger-menu {
+        display: block; /* Show hamburger icon */
+        order: 2; /* Position it after logo */
+    }
+
+    .header-nav-bar {
+        display: none; /* Hide the nav bar on mobile */
+        /* You would use JavaScript to show this when .hamburger-menu is clicked */
+    }
+        .header-nav-bar.is-active {
+            display: block;
+            width: 100%;
+            order: 4; /* Ensures it appears below the logo and search bar */
+        }
+
+            /* Style the links for the mobile dropdown */
+            .header-nav-bar.is-active a {
+                display: block; /* Make each link take its own line */
+                background-color: var(--dark-color);
+                color: var(--light-color);
+                border-bottom: 1px solid #555;
+            }
+
+                .header-nav-bar.is-active a:hover {
+                    background-color: var(--primary-color);
+                    color: var(--dark-color);
+                }
+
+    .header-top-bar {
+        display: none; /* Often hidden on mobile to save space */
+    }
+
+    .product-grid {
+        /* On mobile, we want 2 columns */
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* --- Add this to your site.css file --- */
+
+    .promo-carousel {
+        height: 400px;
+        margin-bottom: 2rem;
+        border-radius: 8px;
+        overflow: hidden; /* Important for border-radius */
+    }
+
+    /* This makes the whole slide a clickable link */
+    .carousel-link {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* On mobile, make the carousel shorter */
+    @media (max-width: 768px) {
+        .promo-carousel {
+            height: 200px;
+        }
+    }
+   
+}
+/* --- Shopping Cart Page Styles --- */
+
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--light-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+    .cart-table th,
+    .cart-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .cart-table th {
+        background-color: var(--grey-color);
+        font-weight: bold;
+    }
+
+.cart-item-image img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.cart-item-name {
+    font-weight: bold;
+}
+
+.cart-item-remove a {
+    color: #d00;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+    .cart-item-remove a:hover {
+        color: #800;
+    }
+
+.cart-summary {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: var(--light-color);
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.cart-total {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-right: 2rem;
+}
+
+.checkout-btn {
+    background-color: var(--primary-color);
+    color: var(--dark-color);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+    .checkout-btn:hover {
+        background-color: #e6c600;
+    }
+
+@media (max-width: 768px) {
+    .cart-table {
+        font-size: 0.9rem;
+    }
+
+        .cart-table th,
+        .cart-table td {
+            padding: 0.5rem;
+        }
+
+    .cart-item-image img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .cart-summary {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .cart-total {
+        margin-right: 0;
+    }
+}
+/* --- Checkout Page Styles --- */
+
+.checkout-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2/3 for form, 1/3 for summary */
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.checkout-form {
+    background-color: var(--light-color);
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+}
+
+.checkout-summary {
+    background-color: var(--light-color);
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    height: fit-content; /* Makes it only as tall as its content */
+}
+
+    .checkout-summary h3 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.5rem;
+    }
+
+.summary-item-list {
+    list-style: none;
+    margin-bottom: 1rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.summary-item-name {
+    color: #555;
+}
+
+.summary-item-price {
+    font-weight: bold;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-top: 2px solid var(--dark-color);
+    padding-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .checkout-container {
+        grid-template-columns: 1fr; /* Stack columns on mobile */
+    }
+
+    .checkout-summary {
+        /* Move summary to the top on mobile */
+        order: -1;
+    }
+}
+/* --- Category Page Enhancements --- */
+
+.category-header {
+    background-color: var(--light-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.category-description {
+    font-size: 1rem;
+    color: #555;
+    margin-top: 0.5rem;
+}
+
+.sort-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+    .sort-bar label {
+        font-weight: bold;
+        margin-right: 0.5rem;
+    }
+
+    .sort-bar select {
+        /* Re-using 'form-control' style from checkout */
+        display: inline-block;
+        width: auto;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+    }
+.product-info-price {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #28a745; /* <-- Changed to green */
+    margin-bottom: 1rem;
+}
+.product-info-price-old {
+    font-size: 1.5rem;
+    text-decoration: line-through;
+    color: #d00; /* <-- Changed to red */
+    margin-left: 1rem;
+}

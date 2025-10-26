@@ -1,0 +1,35 @@
+﻿@model NhomProject.Models.Order
+
+<div class="center-content">
+    <h2>📦 Chi tiết đơn hàng #@Model.Id</h2>
+    <p><strong>Khách hàng:</strong> @Model.CustomerName</p>
+    <p><strong>Địa chỉ:</strong> @Model.Address</p>
+    <p><strong>Số điện thoại:</strong> @Model.Phone</p>
+    <p><strong>Phương thức thanh toán:</strong> @Model.PaymentMethod</p>
+    <p><strong>Ngày đặt:</strong> @Model.Date.ToString("dd/MM/yyyy HH:mm")</p>
+
+    <h4>Danh sách sản phẩm:</h4>
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Giá</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@item.Quantity</td>
+                    <td>@String.Format("{0:N0} ₫", item.Price)</td>
+                    <td>@String.Format("{0:N0} ₫", item.Price * item.Quantity)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h5><strong>Tổng cộng:</strong> @String.Format("{0:N0} ₫", Model.Total)</h5>
+</div>
