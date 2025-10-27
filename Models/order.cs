@@ -13,8 +13,6 @@ namespace NhomProject.Models
         public string Address { get; set; }
         public string Phone { get; set; }
 
-        // public string ID { get; set; } // <-- DELETE THIS LINE
-
         [Key]
         public int Id { get; set; }
 
@@ -24,13 +22,10 @@ namespace NhomProject.Models
         public DateTime Date { get; set; }
         public string PaymentMethod { get; set; }
         public decimal Total { get; set; }
-
-        // --- ADD THESE LINES ---
-        public int? UserId { get; set; } // Foreign key for the User
+        public int? UserId { get; set; } 
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
-        // -----------------------
-
+       
       
     }
 }

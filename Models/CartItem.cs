@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations; // <-- ADD THIS
-using System.ComponentModel.DataAnnotations.Schema; // <-- ADD THIS
+﻿using System.ComponentModel.DataAnnotations; 
+using System.ComponentModel.DataAnnotations.Schema; 
 
 namespace NhomProject.Models
 {
@@ -14,17 +14,16 @@ namespace NhomProject.Models
         public decimal Price { get; set; }
         public int Quantity { get; set; }
 
-        [NotMapped] // Not saved in database
+        [NotMapped] 
         public decimal Total
         {
             get { return Price * Quantity; }
         }
 
-        // --- THIS IS THE FIX ---
-        // Foreign key to link this Item to an Order
+        
         public int OrderId { get; set; }
         [ForeignKey("OrderId")]
         public virtual Order Order { get; set; }
-        // -----------------------
+     
     }
 }

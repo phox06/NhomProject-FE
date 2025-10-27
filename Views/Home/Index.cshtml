@@ -27,9 +27,7 @@
         {
             <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-card">
                 <div class="product-card-image">
-                    @* SỬA LỖI: Kiểm tra xem ThumbnailUrl có rỗng không.
-                        Nếu có, hiển thị một hình ảnh giữ chỗ.
-                    *@
+                    
                     <img src="@(string.IsNullOrEmpty(product.ThumbnailUrl) ? "https://placehold.co/200x180/f0f0f0/999?text=No+Image" : Url.Content(product.ThumbnailUrl))" alt="@product.Name" style="width: 100%; height: 100%; object-fit: cover;" />
                 </div>
                 <div class="product-card-body">
@@ -57,7 +55,7 @@
         {
             <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-card">
                 <div class="product-card-image">
-                    @* SỬA LỖI: Áp dụng cùng một logic kiểm tra rỗng ở đây *@
+                    
                     <img src="@(string.IsNullOrEmpty(product.ThumbnailUrl) ? "https://placehold.co/200x180/f0f0f0/999?text=No+Image" : Url.Content(product.ThumbnailUrl))" alt="@product.Name" style="width: 100%; height: 100%; object-fit: cover;" />
                 </div>
                 <div class="product-card-body">
@@ -85,7 +83,7 @@
         {
             <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-card">
                 <div class="product-card-image">
-                    @* SỬA LỖI: Áp dụng cùng một logic kiểm tra rỗng ở đây *@
+                   
                     <img src="@(string.IsNullOrEmpty(product.ThumbnailUrl) ? "https://placehold.co/200x180/f0f0f0/999?text=No+Image" : Url.Content(product.ThumbnailUrl))" alt="@product.Name" style="width: 100%; height: 100%; object-fit: cover;" />
                 </div>
                 <div class="product-card-body">

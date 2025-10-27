@@ -15,7 +15,7 @@ namespace NhomProject.Controllers
         // GET: Auth/Login
         public ActionResult Login()
         {
-            // Nếu đã đăng nhập, chuyển về trang chủ
+            
             if (Session["UserId"] != null)
             {
                 return RedirectToAction("Index", "Home");
@@ -43,7 +43,7 @@ namespace NhomProject.Controllers
                 Session["FullName"] = user.FullName;
                 Session["Email"] = user.Email;
 
-                // Redirect về trang trước đó hoặc trang chủ
+               
                 string returnUrl = Request.QueryString["returnUrl"];
                 if (!string.IsNullOrEmpty(returnUrl))
                 {
@@ -61,7 +61,7 @@ namespace NhomProject.Controllers
         // GET: Auth/Register
         public ActionResult Register()
         {
-            // Nếu đã đăng nhập, chuyển về trang chủ
+            
             if (Session["UserId"] != null)
             {
                 return RedirectToAction("Index", "Home");
@@ -76,14 +76,14 @@ namespace NhomProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Kiểm tra username đã tồn tại chưa
+                
                 if (_db.Users.Any(u => u.Username == user.Username))
                 {
                     ViewBag.Error = "Tên đăng nhập đã tồn tại";
                     return View(user);
                 }
 
-                // Kiểm tra email đã tồn tại chưa
+                
                 if (_db.Users.Any(u => u.Email == user.Email))
                 {
                     ViewBag.Error = "Email đã tồn tại";
@@ -125,7 +125,7 @@ namespace NhomProject.Controllers
                 return HttpNotFound();
             }
 
-            // Tạo ViewModel từ User model
+            
             var viewModel = new ProfileViewModel
             {
                 Username = user.Username,
@@ -135,15 +135,15 @@ namespace NhomProject.Controllers
                 Address = user.Address
             };
 
-            // Truyền CreatedDate qua ViewBag để hiển thị
+            
             ViewBag.CreatedDate = user.CreatedDate;
-            return View(viewModel); // Trả về ViewModel
+            return View(viewModel); 
         }
 
-        // POST: Auth/Profile
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        // Nhận về ProfileViewModel thay vì User
+       
         public ActionResult Profile(ProfileViewModel model)
         {
             var userId = Session["UserId"] as int?;
@@ -158,10 +158,10 @@ namespace NhomProject.Controllers
                 return HttpNotFound();
             }
 
-            // Truyền lại CreatedDate cho ViewBag vì nếu lỗi, view cần nó
+            
             ViewBag.CreatedDate = existingUser.CreatedDate;
 
-            // Kiểm tra email trùng lặp (trừ user hiện tại)
+            
             if (_db.Users.Any(u => u.Email == model.Email && u.UserId != userId))
             {
                 ModelState.AddModelError("Email", "Email này đã tồn tại.");
@@ -169,28 +169,28 @@ namespace NhomProject.Controllers
 
             if (ModelState.IsValid)
             {
-                // Cập nhật thông tin từ ViewModel
+                
                 existingUser.FullName = model.FullName;
                 existingUser.Email = model.Email;
                 existingUser.Phone = model.Phone;
                 existingUser.Address = model.Address;
 
-                // Chỉ cập nhật mật khẩu NẾU người dùng nhập mật khẩu mới
+                
                 if (!string.IsNullOrEmpty(model.NewPassword))
                 {
-                    // Chú ý: Đây là code an toàn (xem Lỗi 2)
+                    
                     existingUser.Password = System.Web.Helpers.Crypto.HashPassword(model.NewPassword);
                 }
 
                 _db.SaveChanges();
                 ViewBag.Success = "Cập nhật thông tin thành công";
 
-                // Cập nhật lại Session
+                
                 Session["FullName"] = existingUser.FullName;
                 Session["Email"] = existingUser.Email;
             }
 
-            return View(model); // Trả về ViewModel
+            return View(model); 
         }
 
         protected override void Dispose(bool disposing)

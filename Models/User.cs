@@ -9,14 +9,14 @@ namespace NhomProject.Models
     public class User
     {
         [Key]
-        public int UserId { get; set; } // The Primary Key
+        public int UserId { get; set; } 
 
         [Required]
         [StringLength(50)]
         public string Username { get; set; }
 
         [Required]
-        [StringLength(200)] // Store a hashed password
+        [StringLength(200)] 
         public string Password { get; set; }
 
         [Required]
@@ -37,7 +37,7 @@ namespace NhomProject.Models
         public DateTime CreatedDate { get; set; }
         public bool IsActive { get; set; }
 
-        // Navigation property: A User can have many Orders
+      
         public virtual ICollection<Order> Orders { get; set; }
     }
 }

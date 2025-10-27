@@ -18,15 +18,15 @@ namespace NhomProject.Models
         public decimal Price { get; set; }
         public decimal? OldPrice { get; set; }
 
-        // --- IMAGE FIX ---
-        public string ThumbnailUrl { get; set; } // For cards (home, category)
-        public string MainImageUrl { get; set; } // For the details page
+        
+        public string ThumbnailUrl { get; set; } 
+        public string MainImageUrl { get; set; } 
         // -----------------
 
         public decimal Rating { get; set; }
         public int ReviewCount { get; set; }
 
-        // Foreign key for Category
+        
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
     }

@@ -13,7 +13,7 @@ namespace NhomProject.Models
         public string Name { get; set; }
         public string Description { get; set; }
 
-        // Navigation property: A Category can have many Products
+        
         public virtual ICollection<Products> Products { get; set; }
     }
 }

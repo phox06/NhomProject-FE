@@ -15,12 +15,12 @@ namespace NhomProject.Models
 
         public void AddItem(Products product, int quantity)
         {
-            // Find if the item is already in the cart
+            
             var item = Items.FirstOrDefault(p => p.ProductId == product.ProductId);
 
             if (item == null)
             {
-                // Not in cart, add as a new item
+               
                 Items.Add(new CartItem
                 {
                     ProductId = product.ProductId,
@@ -32,7 +32,7 @@ namespace NhomProject.Models
             }
             else
             {
-                // Item already in cart, just update the quantity
+                
                 item.Quantity += quantity;
             }
         }

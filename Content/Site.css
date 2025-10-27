@@ -1,4 +1,4 @@
-﻿/* --- Global Styles & Variables --- */
+﻿
 :root {
     --primary-color: #feda00; 
     --dark-color: #333;
@@ -30,7 +30,7 @@ a {
     color: var(--dark-color);
 }
 
-/* --- Header Layout --- */
+
 .header-top-bar {
     background-color: var(--primary-color);
     padding: 0.5rem 0;
@@ -68,7 +68,7 @@ a {
 
 .search-bar {
     display: flex;
-    flex-grow: 1; /* Makes search bar take available space */
+    flex-grow: 1; 
     border: 1px solid var(--border-color);
     border-radius: 5px;
     overflow: hidden;
@@ -94,7 +94,7 @@ a {
 }
 
 .hamburger-menu {
-    display: none; /* Hidden on desktop */
+    display: none;
     font-size: 2rem;
     cursor: pointer;
 }
@@ -137,7 +137,7 @@ main {
 /* --- Homepage-Specific Styles --- */
 .promo-carousel {
     background-color: var(--grey-color);
-    height: 400px; /* Placeholder */
+    height: 400px; 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -158,7 +158,7 @@ main {
 
 .product-grid {
     display: grid;
-    /* This grid is responsive by default: */
+    
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
@@ -192,7 +192,7 @@ main {
 .product-card-title {
     font-weight: bold;
     font-size: 1rem;
-    height: 40px; /* Set fixed height */
+    height: 40px;
     overflow: hidden;
     margin-bottom: 0.5rem;
 }
@@ -200,14 +200,14 @@ main {
 .product-card-price {
     font-size: 1.2rem;
     font-weight: bold;
-    color: #28a745; /* <-- Changed to green */
+    color: #28a745; 
     margin-bottom: 0.5rem;
 }
 
 .product-card-price-old {
     font-size: 0.9rem;
     text-decoration: line-through;
-    color: #d00; /* <-- Changed to red */
+    color: #d00; 
     margin-left: 0.5rem;
 }
 .product-card-rating {
@@ -218,7 +218,7 @@ main {
 /* --- RESPONSIVE DESIGN --- */
 @media (max-width: 768px) {
     .header-main .container {
-        flex-wrap: wrap; /* Allow items to wrap */
+        flex-wrap: wrap;
     }
 
     .logo {
@@ -228,28 +228,28 @@ main {
     }
 
     .search-bar {
-        order: 3; /* Move search bar to the bottom */
+        order: 3; 
         width: 100%;
     }
 
     .hamburger-menu {
-        display: block; /* Show hamburger icon */
-        order: 2; /* Position it after logo */
+        display: block;
+        order: 2;
     }
 
     .header-nav-bar {
-        display: none; /* Hide the nav bar on mobile */
-        /* You would use JavaScript to show this when .hamburger-menu is clicked */
+        display: none; 
+       
     }
         .header-nav-bar.is-active {
             display: block;
             width: 100%;
-            order: 4; /* Ensures it appears below the logo and search bar */
+            order: 4; 
         }
 
-            /* Style the links for the mobile dropdown */
+          
             .header-nav-bar.is-active a {
-                display: block; /* Make each link take its own line */
+                display: block; 
                 background-color: var(--dark-color);
                 color: var(--light-color);
                 border-bottom: 1px solid #555;
@@ -261,31 +261,31 @@ main {
                 }
 
     .header-top-bar {
-        display: none; /* Often hidden on mobile to save space */
+        display: none; 
     }
 
     .product-grid {
-        /* On mobile, we want 2 columns */
+       
         grid-template-columns: repeat(2, 1fr);
     }
 
-    /* --- Add this to your site.css file --- */
+  
 
     .promo-carousel {
         height: 400px;
         margin-bottom: 2rem;
         border-radius: 8px;
-        overflow: hidden; /* Important for border-radius */
+        overflow: hidden; 
     }
 
-    /* This makes the whole slide a clickable link */
+    
     .carousel-link {
         display: block;
         width: 100%;
         height: 100%;
     }
 
-    /* On mobile, make the carousel shorter */
+    
     @media (max-width: 768px) {
         .promo-carousel {
             height: 200px;
@@ -399,7 +399,7 @@ main {
 
 .checkout-container {
     display: grid;
-    grid-template-columns: 2fr 1fr; /* 2/3 for form, 1/3 for summary */
+    grid-template-columns: 2fr 1fr; 
     gap: 2rem;
     margin-top: 1rem;
 }
@@ -434,7 +434,7 @@ main {
     padding: 2rem;
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    height: fit-content; /* Makes it only as tall as its content */
+    height: fit-content; 
 }
 
     .checkout-summary h3 {
@@ -475,15 +475,15 @@ main {
 
 @media (max-width: 768px) {
     .checkout-container {
-        grid-template-columns: 1fr; /* Stack columns on mobile */
+        grid-template-columns: 1fr; 
     }
 
     .checkout-summary {
-        /* Move summary to the top on mobile */
+       
         order: -1;
     }
 }
-/* --- Category Page Enhancements --- */
+
 
 .category-header {
     background-color: var(--light-color);
@@ -513,7 +513,7 @@ main {
     }
 
     .sort-bar select {
-        /* Re-using 'form-control' style from checkout */
+       
         display: inline-block;
         width: auto;
         padding: 0.5rem 1rem;
@@ -524,13 +524,13 @@ main {
 .product-info-price {
     font-size: 2.5rem;
     font-weight: bold;
-    color: #28a745; /* <-- Changed to green */
+    color: #28a745; 
     margin-bottom: 1rem;
 }
 .product-info-price-old {
     font-size: 1.5rem;
     text-decoration: line-through;
-    color: #d00; /* <-- Changed to red */
+    color: #d00; 
     margin-left: 1rem;
 }
 .payment-options {
@@ -558,7 +558,7 @@ main {
         margin-right: 0.5rem;
     }
 product-info-description ul {
-    list-style-type: none; /* Removes the default black bullets */
+    list-style-type: none; 
     padding-left: 0;
     margin-top: 1rem;
     color: #333;
@@ -566,24 +566,24 @@ product-info-description ul {
 
 .product-info-description li {
     padding: 0.5rem 0;
-    border-bottom: 1px solid var(--border-color); /* Adds a nice line separator */
+    border-bottom: 1px solid var(--border-color);
     font-size: 0.95rem;
 }
 
     .product-info-description li:last-child {
-        border-bottom: none; /* Removes the line from the last item */
+        border-bottom: none; 
     }
 
     .product-info-description li strong {
         color: #000;
         margin-right: 0.5rem;
-        min-width: 100px; /* Aligns the text */
+        min-width: 100px; 
         display: inline-block;
     }
 .product-image-gallery img {
     width: 100%;
-    height: 500px; /* <-- ĐÃ THAY ĐỔI TỪ 400px LÊN 500px */
-    object-fit: cover; /* Giữ cho hình ảnh không bị méo */
+    height: 500px; 
+    object-fit: cover; 
     border: 1px solid var(--border-color);
     border-radius: 8px;
 }
