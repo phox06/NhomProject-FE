@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewBag.Title = "OrderHistory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@* This is the new Order History page. *@
+@model IEnumerable<NhomProject.Models.Order>
+@{
+    ViewData["Title"] = "Lịch sử đơn hàng";
+}
+
+<div class="container">
+    <div class="row my-4">
+        <div class="col-md-3">
+            <!-- Sidebar -->
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-user"></i> Tài khoản</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="@Url.Action("Profile", "Auth")" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user"></i> Thông tin cá nhân
+                    </a>
+                    <a href="@Url.Action("OrderHistory", "Home")" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-history"></i> Lịch sử đơn hàng
+                    </a>
+                    <a href="@Url.Action("Logout", "Auth")" class="list-group-item list-group-item-action">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-history"></i> Lịch sử đơn hàng</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.Any())
+                    {
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Mã ĐH</th>
+                                    <th>Ngày đặt</th>
+                                    <th>Tổng tiền</th>
+                                    <th>Trạng thái</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var order in Model)
+                                {
+                                    <tr>
+                                        <td>#@order.Id</td>
+                                        <td>@order.Date.ToString("dd/MM/yyyy")</td>
+                                        <td>@order.Total.ToString("C")</td>
+                                        <td><span class="badge bg-warning text-dark">@order.Status</span></td>
+                                        <td>
+                                            <a href="@Url.Action("OrderDetails", "Home", new { id = order.Id })" class="btn btn-sm btn-outline-primary">
+                                                Xem
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">Bạn chưa có đơn hàng nào.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

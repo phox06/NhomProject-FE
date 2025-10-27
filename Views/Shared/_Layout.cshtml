@@ -4,11 +4,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Electronics Store</title>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
+    <!-- Swiper Carousel CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- Font Awesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Correct path to your site's CSS -->
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <header>
@@ -16,40 +21,54 @@
             <div class="container">
                 <a href="#" class="location-link">Ho Chi Minh City</a>
                 <div class="user-links">
-                    @Html.ActionLink("Lịch sử mua hàng", "Index", "Orders")
+
+                    @* --- INTEGRATION FIX ---
+                        This logic checks the Session to show the correct links
+                    *@
+                    @if (Session["UserId"] == null)
+                    {
+                        @* User is logged out *@
+                        <a href="@Url.Action("Login", "Auth")">Đăng nhập / Đăng ký</a>
+                    }
+                    else
+                    {
+                        @* User is logged in *@
+                        <a href="@Url.Action("Profile", "Auth")">Hello, @Session["FullName"]</a>
+                        <a href="@Url.Action("OrderHistory", "Home")">Lịch sử mua hàng</a>
+                        <a href="@Url.Action("Logout", "Auth")">Đăng xuất</a>
+                    }
+
                     <a href="@Url.Action("Cart", "Home")" class="cart-link">
                         <i class="fa fa-shopping-cart"></i> Cart
                     </a>
-                    @Html.ActionLink("Đặt hàng", "Index", "Checkout")
-                    @Html.ActionLink("Chi tiết đơn", "Detail", "Orders", new { id = 1 }, null)
-                    @Html.ActionLink("Đăng nhập / Đăng ký", "Login", "Home")
-
                 </div>
             </div>
         </div>
 
         <div class="header-main">
             <div class="container">
-                <a asp-controller="Home" asp-action="Index" class="logo">Electronics</a>
+                @* --- SYNTAX FIX --- *@
+                <a href="@Url.Action("Index", "Home")" class="logo">Electronics</a>
 
-                <form class="search-bar" action="/Home/Category">
-                    <input type="text" name="id" placeholder="Search for products..." />
-                    <button type="submit">&#128269;</button>
-                </form>
+                @* --- SEARCH BAR FIX ---
+                    Changed to a form, points to "Search" action, and has name="term"
+                *@
+                @using (Html.BeginForm("Search", "Home", FormMethod.Get, new { @class = "search-bar" }))
+                {
+                    <input type="text" name="term" placeholder="Search for products..." />
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                }
 
-                <div class="hamburger-menu">&#9776;</div>
+                <div class="hamburger-menu"><i class="fa fa-bars"></i></div>
             </div>
         </div>
 
         <nav class="header-nav-bar">
             <div class="container">
                 <a href="@Url.Action("Index", "Home")">Home</a>
-
                 <a href="@Url.Action("Category", "Home", new { id = "Laptops" })">Laptops</a>
                 <a href="@Url.Action("Category", "Home", new { id = "Phones" })">Phones</a>
                 <a href="@Url.Action("Category", "Home", new { id = "Accessories" })">Accessories</a>
-
-
             </div>
         </nav>
     </header>
@@ -60,31 +79,29 @@
 
     <footer class="site-footer">
         <div class="container">
-            <p>&copy; 2025 Cửa hàng điện tử. Mọi quyền được bảo lưu.</p>
+            <p>&copy; @DateTime.Now.Year Cửa hàng điện tử. Mọi quyền được bảo lưu.</p>
             <p>
                 Chuyên cung cấp điện thoại, laptop, phụ kiện chính hãng với giá ưu đãi.
                 Cập nhật liên tục các chương trình khuyến mãi hot mỗi ngày!
             </p>
-
+            <p>
+                Các thành viên trong nhóm:
+                1: Châu Minh Phú-24DH111420
+                2: Phan Võ Minh Tâm-24DH111646
+                3: Nguyễn Tiến Đạt-23DH110744
+            </p>
         </div>
     </footer>
 
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    @* --- DUPLICATE TAGS REMOVED --- *@
 
-    <header>
-    </header>
-
-    <main role="main">
-
-    </main>
-
-    <footer class="site-footer">
-    </footer>
-
+    <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="~/Scripts/Site.js" asp-append-version="true"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- Correct path to your site's JS -->
+    <script src="~/Scripts/Site.js"></script>
 </body>
 </html>
+

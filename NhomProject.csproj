@@ -120,6 +120,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AuthController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -136,6 +137,18 @@
     <Compile Include="Migrations\202510261256294_AddRatingAndReviewCountToProducts.Designer.cs">
       <DependentUpon>202510261256294_AddRatingAndReviewCountToProducts.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202510270617380_Test.cs" />
+    <Compile Include="Migrations\202510270617380_Test.Designer.cs">
+      <DependentUpon>202510270617380_Test.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202510270700086_AddUserTable.cs" />
+    <Compile Include="Migrations\202510270700086_AddUserTable.Designer.cs">
+      <DependentUpon>202510270700086_AddUserTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202510270712545_UpdatedAllModelsForController.cs" />
+    <Compile Include="Migrations\202510270712545_UpdatedAllModelsForController.Designer.cs">
+      <DependentUpon>202510270712545_UpdatedAllModelsForController.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs.cs" />
     <Compile Include="Models\Cart.cs" />
@@ -144,6 +157,7 @@
     <Compile Include="Models\order.cs" />
     <Compile Include="Models\OrderDetail.cs" />
     <Compile Include="Models\Products.cs" />
+    <Compile Include="Models\ProfileViewModel.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -207,6 +221,11 @@
     <Content Include="Views\Home\Cart.cshtml" />
     <Content Include="Views\Home\Checkout.cshtml" />
     <Content Include="Views\Home\OrderConfirmation.cshtml" />
+    <Content Include="Views\Auth\Login.cshtml" />
+    <Content Include="Views\Auth\Register.cshtml" />
+    <Content Include="Views\Auth\Profile.cshtml" />
+    <Content Include="Views\Home\OrderHistory.cshtml" />
+    <Content Include="Views\Home\OrderDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -250,6 +269,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202510261256294_AddRatingAndReviewCountToProducts.resx">
       <DependentUpon>202510261256294_AddRatingAndReviewCountToProducts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202510270617380_Test.resx">
+      <DependentUpon>202510270617380_Test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202510270700086_AddUserTable.resx">
+      <DependentUpon>202510270700086_AddUserTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202510270712545_UpdatedAllModelsForController.resx">
+      <DependentUpon>202510270712545_UpdatedAllModelsForController.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

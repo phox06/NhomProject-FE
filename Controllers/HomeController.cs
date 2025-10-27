@@ -1,20 +1,32 @@
 ﻿using NhomProject.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity; // <-- Make sure to add this
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Data.Entity; 
 
 namespace NhomProject.Controllers
 {
     public class HomeController : Controller
     {
-        // 1. Home Page
         private ApplicationDbContext _db = new ApplicationDbContext();
+
+        // Helper method to get the current cart from the Session
+        private Cart GetCart()
+        {
+            Cart cart = Session["Cart"] as Cart;
+            if (cart == null)
+            {
+                cart = new Cart();
+                Session["Cart"] = cart;
+            }
+            return cart;
+        }
+
+        // 1. Home Page
         public ActionResult Index()
         {
-         
             var products = _db.Products.ToList();
             return View(products);
         }
@@ -22,33 +34,21 @@ namespace NhomProject.Controllers
         // 2. Category of Products Page
         public ActionResult Category(string id, string sortOrder)
         {
-            // If no id is provided, redirect to home.
             if (string.IsNullOrEmpty(id))
             {
                 return RedirectToAction("Index");
             }
-
-            // 1. Find the category and include its products
-            // (This is more efficient than two separate queries)
             var category = _db.Categories
-                              .Include(c => c.Products) // Make sure to add 'using System.Data.Entity;'
+                              .Include(c => c.Products)
                               .FirstOrDefault(c => c.Name.ToLower() == id.ToLower());
-
-            // Handle if category doesn't exist
             if (category == null)
             {
                 return HttpNotFound();
             }
-
-            // 2. Pass category info to the view
             ViewData["CategoryName"] = category.Name;
-            ViewData["CategoryDescription"] = category.Description; // <-- NEW
-            ViewData["CurrentSort"] = sortOrder; // <-- NEW
-
-            // 3. Get the list of products
+            ViewData["CategoryDescription"] = category.Description;
+            ViewData["CurrentSort"] = sortOrder;
             var products = category.Products.ToList();
-
-            // 4. Apply sorting based on the sortOrder parameter
             switch (sortOrder)
             {
                 case "price_asc":
@@ -61,33 +61,25 @@ namespace NhomProject.Controllers
                     products = products.OrderBy(p => p.Name).ToList();
                     break;
                 default:
-                    products = products.OrderBy(p => p.Name).ToList(); // Default sort
+                    products = products.OrderBy(p => p.Name).ToList();
                     break;
             }
-
-            // 5. Pass the filtered and sorted list of products to the view
             return View(products);
         }
 
-        public ActionResult Details(int? id) 
+        // 3. Product Details Page
+        public ActionResult Details(int? id)
         {
-           
             if (id == null)
             {
-                
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
             }
-
-            
+            // Use ProductId, which matches your views
             var product = _db.Products.FirstOrDefault(p => p.ProductId == id.Value);
-
-           
             if (product == null)
             {
                 return HttpNotFound();
             }
-
-           
             return View(product);
         }
 
@@ -98,54 +90,133 @@ namespace NhomProject.Controllers
             return View(cart);
         }
 
-        // 5. Sign In / Sign Up Page
-        public ActionResult Login()
+        // ACTION TO ADD AN ITEM TO THE CART
+        [HttpPost]
+        public ActionResult AddToCart(int id, int quantity)
         {
-            return View();
+            // Use ProductId
+            var product = _db.Products.FirstOrDefault(p => p.ProductId == id);
+            if (product != null)
+            {
+                Cart cart = GetCart();
+                cart.AddItem(product, quantity);
+            }
+            return RedirectToAction("Cart");
         }
-        public ActionResult Register()
+
+        // ACTION TO REMOVE AN ITEM FROM THE CART
+        public ActionResult RemoveFromCart(int id)
         {
-            return View();
+            Cart cart = GetCart();
+            cart.RemoveItem(id); // Assumes Cart.RemoveItem uses ProductId
+            return RedirectToAction("Cart");
         }
+
+        // 5. SIGN IN / SIGN UP ACTIONS (REMOVED)
+        // These are now handled by AuthController.cs
 
         // 6. Customer Shopping History Page
         public ActionResult OrderHistory()
         {
-            return View();
+            // Check if user is logged in
+            var userId = Session["UserId"] as int?;
+            if (userId == null)
+            {
+                // If not, redirect to login
+                return RedirectToAction("Login", "Auth");
+            }
+
+            // Find orders for the logged-in user and show newest first
+            var orders = _db.Orders
+                            .Where(o => o.UserId == userId)
+                            .OrderByDescending(o => o.Date)
+                            .ToList();
+
+            return View(orders);
         }
 
         // 7. Order Details Page
         public ActionResult OrderDetails(int id)
         {
-           
-            ViewData["OrderId"] = id;
-            return View();
+            var userId = Session["UserId"] as int?;
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            // Find the order AND check if it belongs to the logged-in user
+            var order = _db.Orders
+                           .Include(o => o.Items) // Load the products
+                           .FirstOrDefault(o => o.Id == id && o.UserId == userId);
+
+            if (order == null)
+            {
+                // If no order, or order doesn't belong to user, return Not Found
+                return HttpNotFound();
+            }
+
+            return View(order);
         }
 
-        // 8. Payment/Finalize Order Page
         // 8. Payment/Finalize Order Page (GET)
-        [HttpPost]
-        public ActionResult Checkout(Order model) // Receives customer info from the form
+        public ActionResult Checkout()
         {
-            Cart cart = GetCart();
+            // Check if user is logged in
+            if (Session["UserId"] == null)
+            {
+                // If not, redirect to login and pass the current page as returnUrl
+                return RedirectToAction("Login", "Auth", new { returnUrl = Url.Action("Checkout", "Home") });
+            }
 
+            Cart cart = GetCart();
             if (cart.Items.Count == 0)
             {
                 return RedirectToAction("Cart");
             }
 
-            // 1. Create the new Order object
+            // --- NEW: Auto-fill checkout form ---
+            var userId = (int)Session["UserId"];
+            var user = _db.Users.Find(userId);
+
+            var model = new Order
+            {
+                CustomerName = user.FullName, // Use FullName
+                Address = user.Address,
+                Phone = user.Phone
+            };
+
+            ViewBag.Cart = cart;
+            return View(model); // Pass the pre-filled model to the view
+        }
+
+        // 8. Payment/Finalize Order Page (POST)
+        [HttpPost]
+        public ActionResult Checkout(Order model)
+        {
+            var userId = Session["UserId"] as int?;
+            if (userId == null)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            Cart cart = GetCart();
+            if (cart.Items.Count == 0)
+            {
+                return RedirectToAction("Cart");
+            }
+
             var order = new Order
             {
                 CustomerName = model.CustomerName,
                 Address = model.Address,
                 Phone = model.Phone,
+                PaymentMethod = model.PaymentMethod,
                 Date = DateTime.Now,
                 Status = "Pending",
-                Total = cart.GetTotal() // Use Total from order.cs
+                Total = cart.GetTotal(),
+                UserId = userId // <-- LINK THE ORDER TO THE USER
             };
 
-            // 2. Add the cart items to the order
             foreach (var item in cart.Items)
             {
                 order.Items.Add(new CartItem
@@ -158,74 +229,46 @@ namespace NhomProject.Controllers
                 });
             }
 
-            // 3. Save the order to the database
             _db.Orders.Add(order);
             _db.SaveChanges();
 
-            // 4. Clear the user's cart
             Session["Cart"] = null;
 
-            // 5. Redirect to a confirmation page
             return RedirectToAction("OrderConfirmation", new { id = order.Id });
         }
+
+        // 9. Search Results Page
+        public ActionResult Search(string term)
+        {
+            var products = new List<Products>();
+            ViewData["SearchTerm"] = term;
+            if (!string.IsNullOrEmpty(term))
+            {
+                string searchTerm = term.ToLower();
+                products = _db.Products
+                               .Where(p => p.Name.ToLower().Contains(searchTerm) ||
+                                           p.Description.ToLower().Contains(searchTerm))
+                               .ToList();
+            }
+            return View(products);
+        }
+
         // 10. Order Confirmation Page
         public ActionResult OrderConfirmation(int id)
         {
-            // Pass the Order ID to the view
             ViewBag.OrderId = id;
             return View();
         }
-        // Helper method to get the current cart from the Session
-        private Cart GetCart()
+
+        // Make sure to dispose the db context
+        protected override void Dispose(bool disposing)
         {
-            Cart cart = Session["Cart"] as Cart;
-            if (cart == null)
+            if (disposing)
             {
-                cart = new Cart();
-                Session["Cart"] = cart;
+                _db.Dispose();
             }
-            return cart;
-        }
-        // 8. Payment/Finalize Order Page (GET)
-        public ActionResult Checkout()
-        {
-            Cart cart = GetCart();
-
-            // If cart is empty, redirect them back to the cart page
-            if (cart.Items.Count == 0)
-            {
-                return RedirectToAction("Cart");
-            }
-
-            ViewBag.Cart = cart; // Pass the cart to the view for summary
-            return View();
-        }
-        [HttpPost] // This action is called by a form submission
-        public ActionResult AddToCart(int id, int quantity)
-        {
-            // Find the product in the database
-            var product = _db.Products.FirstOrDefault(p => p.ProductId == id);
-
-            if (product != null)
-            {
-                // Get the cart from the session
-                Cart cart = GetCart();
-                // Add the product to the cart
-                cart.AddItem(product, quantity);
-            }
-
-            // Redirect the user to their cart page
-            return RedirectToAction("Cart");
-        }
-
-        // ACTION TO REMOVE AN ITEM FROM THE CART
-        public ActionResult RemoveFromCart(int id)
-        {
-            Cart cart = GetCart();
-            cart.RemoveItem(id);
-
-            // Redirect back to the cart page
-            return RedirectToAction("Cart");
+            base.Dispose(disposing);
         }
     }
 }
+

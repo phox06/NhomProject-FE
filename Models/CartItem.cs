@@ -5,7 +5,7 @@ namespace NhomProject.Models
 {
     public class CartItem
     {
-        [Key] // <-- ADD THIS. This is the new primary key.
+        [Key]
         public int Id { get; set; }
 
         public int ProductId { get; set; }
@@ -14,11 +14,17 @@ namespace NhomProject.Models
         public decimal Price { get; set; }
         public int Quantity { get; set; }
 
-        // Read-only property to calculate the total for this item
-        [NotMapped] // <-- ADD THIS. Tells EF not to save this in the database.
+        [NotMapped] // Not saved in database
         public decimal Total
         {
             get { return Price * Quantity; }
         }
+
+        // --- THIS IS THE FIX ---
+        // Foreign key to link this Item to an Order
+        public int OrderId { get; set; }
+        [ForeignKey("OrderId")]
+        public virtual Order Order { get; set; }
+        // -----------------------
     }
 }
