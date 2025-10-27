@@ -557,3 +557,33 @@ main {
     .payment-option input[type="radio"] {
         margin-right: 0.5rem;
     }
+product-info-description ul {
+    list-style-type: none; /* Removes the default black bullets */
+    padding-left: 0;
+    margin-top: 1rem;
+    color: #333;
+}
+
+.product-info-description li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color); /* Adds a nice line separator */
+    font-size: 0.95rem;
+}
+
+    .product-info-description li:last-child {
+        border-bottom: none; /* Removes the line from the last item */
+    }
+
+    .product-info-description li strong {
+        color: #000;
+        margin-right: 0.5rem;
+        min-width: 100px; /* Aligns the text */
+        display: inline-block;
+    }
+.product-image-gallery img {
+    width: 100%;
+    height: 500px; /* <-- ĐÃ THAY ĐỔI TỪ 400px LÊN 500px */
+    object-fit: cover; /* Giữ cho hình ảnh không bị méo */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}

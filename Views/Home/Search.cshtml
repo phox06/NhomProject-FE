@@ -1,0 +1,59 @@
+﻿@model IEnumerable<NhomProject.Models.Products>
+
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@{
+    ViewData["Title"] = "Search Results";
+}
+
+<div class="container">
+
+    
+    <h2 class="section-title">Kết Quả tìm kiểm cho "@ViewData["SearchTerm"]"</h2>
+
+    <div class="product-grid">
+
+        
+        @if (Model.Any())
+        {
+            
+            foreach (var product in Model)
+            {
+                <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-card">
+
+                    <div class="product-card-image">
+                        <img src="@Url.Content(product.MainImageUrl)" alt="@product.Name" style="width: 100%; height: 100%; object-fit: cover;" />
+                    </div>
+
+                    <div class="product-card-body">
+                        <h3 class="product-card-title">@product.Name</h3>
+
+                        <div class="product-card-price">
+                            @product.Price.ToString("C")
+
+                            @if (product.OldPrice.HasValue && product.OldPrice.Value > product.Price)
+                            {
+                                <span class="product-card-price-old">
+                                    @product.OldPrice.Value.ToString("C")
+                                </span>
+                            }
+                        </div>
+
+                        <div class="product-card-rating">
+                            @product.Rating Stars (@product.ReviewCount)
+                        </div>
+                    </div>
+                </a>
+            }
+        }
+        else
+        {
+            
+            <p>Không có sản phẩm nào phù hợp với tìm kiếm của bạn "@ViewData["SearchTerm"]".</p>
+        }
+    </div>
+</div>

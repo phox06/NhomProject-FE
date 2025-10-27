@@ -1,15 +1,11 @@
-﻿@model IEnumerable<NhomProject.Models.Products>
+﻿@model NhomProject.Models.HomeViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
-@* We can delete the <link href="~/Content/Site.css" ... /> line,
-    because our new _Layout.cshtml file already loads it.
-*@
 
 <div class="container">
     <div class="swiper promo-carousel">
         <div class="swiper-wrapper">
-            <!-- These image paths must be correct in your project -->
             <div class="swiper-slide" style="background-image: url('/images/1.png'); background-size: cover; background-position: center; ">
                 <a href="#" class="carousel-link"></a>
             </div>
@@ -27,22 +23,19 @@
 
     <h2 class="section-title">Flash Sale</h2>
     <div class="product-grid">
-        @* I changed 'products' to 'product' for clarity *@
-        @foreach (var product in Model)
+        @foreach (var product in Model.FlashSaleProducts)
         {
             <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-card">
-
                 <div class="product-card-image">
-                    <img src="@Url.Content(product.ImageUrl)" alt="@product.Name" style="width: 100%; height: 100%; object-fit: cover;" />
+                    @* SỬA LỖI: Kiểm tra xem ThumbnailUrl có rỗng không.
+                        Nếu có, hiển thị một hình ảnh giữ chỗ.
+                    *@
+                    <img src="@(string.IsNullOrEmpty(product.ThumbnailUrl) ? "https://placehold.co/200x180/f0f0f0/999?text=No+Image" : Url.Content(product.ThumbnailUrl))" alt="@product.Name" style="width: 100%; height: 100%; object-fit: cover;" />
                 </div>
-
-             
                 <div class="product-card-body">
                     <h3 class="product-card-title">@product.Name</h3>
-
                     <div class="product-card-price">
                         @product.Price.ToString("C")
-
                         @if (product.OldPrice.HasValue && product.OldPrice.Value > product.Price)
                         {
                             <span class="product-card-price-old">
@@ -50,7 +43,6 @@
                             </span>
                         }
                     </div>
-
                     <div class="product-card-rating">
                         @product.Rating Stars (@product.ReviewCount)
                     </div>
@@ -58,4 +50,62 @@
             </a>
         }
     </div>
+
+    <h2 class="section-title">Điện Thoại Nổi Bật</h2>
+    <div class="product-grid">
+        @foreach (var product in Model.PhoneProducts)
+        {
+            <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-card">
+                <div class="product-card-image">
+                    @* SỬA LỖI: Áp dụng cùng một logic kiểm tra rỗng ở đây *@
+                    <img src="@(string.IsNullOrEmpty(product.ThumbnailUrl) ? "https://placehold.co/200x180/f0f0f0/999?text=No+Image" : Url.Content(product.ThumbnailUrl))" alt="@product.Name" style="width: 100%; height: 100%; object-fit: cover;" />
+                </div>
+                <div class="product-card-body">
+                    <h3 class="product-card-title">@product.Name</h3>
+                    <div class="product-card-price">
+                        @product.Price.ToString("C")
+                        @if (product.OldPrice.HasValue && product.OldPrice.Value > product.Price)
+                        {
+                            <span class="product-card-price-old">
+                                @product.OldPrice.Value.ToString("C")
+                            </span>
+                        }
+                    </div>
+                    <div class="product-card-rating">
+                        @product.Rating Stars (@product.ReviewCount)
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+
+    <h2 class="section-title">Laptops Bán Chạy</h2>
+    <div class="product-grid">
+        @foreach (var product in Model.LaptopProducts)
+        {
+            <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-card">
+                <div class="product-card-image">
+                    @* SỬA LỖI: Áp dụng cùng một logic kiểm tra rỗng ở đây *@
+                    <img src="@(string.IsNullOrEmpty(product.ThumbnailUrl) ? "https://placehold.co/200x180/f0f0f0/999?text=No+Image" : Url.Content(product.ThumbnailUrl))" alt="@product.Name" style="width: 100%; height: 100%; object-fit: cover;" />
+                </div>
+                <div class="product-card-body">
+                    <h3 class="product-card-title">@product.Name</h3>
+                    <div class="product-card-price">
+                        @product.Price.ToString("C")
+                        @if (product.OldPrice.HasValue && product.OldPrice.Value > product.Price)
+                        {
+                            <span class="product-card-price-old">
+                                @product.OldPrice.Value.ToString("C")
+                            </span>
+                        }
+                    </div>
+                    <div class="product-card-rating">
+                        @product.Rating Stars (@product.ReviewCount)
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+
 </div>
+

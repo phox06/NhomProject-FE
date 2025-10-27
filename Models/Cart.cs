@@ -25,7 +25,7 @@ namespace NhomProject.Models
                 {
                     ProductId = product.ProductId,
                     ProductName = product.Name,
-                    ImageUrl = product.ImageUrl,
+                    ImageUrl = product.MainImageUrl,
                     Price = product.Price,
                     Quantity = quantity
                 });

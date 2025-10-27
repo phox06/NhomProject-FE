@@ -55,9 +55,11 @@
       <HintPath>packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.4.1.0\lib\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Extensions.FileSystemGlobbing, Version=9.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="sysglobl" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -149,11 +151,16 @@
     <Compile Include="Migrations\202510270712545_UpdatedAllModelsForController.Designer.cs">
       <DependentUpon>202510270712545_UpdatedAllModelsForController.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202510271416403_AddSeparateProductImages.cs" />
+    <Compile Include="Migrations\202510271416403_AddSeparateProductImages.Designer.cs">
+      <DependentUpon>202510271416403_AddSeparateProductImages.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs.cs" />
     <Compile Include="Models\Cart.cs" />
     <Compile Include="Models\CartItem.cs" />
     <Compile Include="Models\Catagory.cs" />
+    <Compile Include="Models\HomeViewModel.cs" />
     <Compile Include="Models\order.cs" />
     <Compile Include="Models\OrderDetail.cs" />
     <Compile Include="Models\Products.cs" />
@@ -226,6 +233,7 @@
     <Content Include="Views\Auth\Profile.cshtml" />
     <Content Include="Views\Home\OrderHistory.cshtml" />
     <Content Include="Views\Home\OrderDetails.cshtml" />
+    <Content Include="Views\Home\Search.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -279,6 +287,12 @@
     <EmbeddedResource Include="Migrations\202510270712545_UpdatedAllModelsForController.resx">
       <DependentUpon>202510270712545_UpdatedAllModelsForController.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202510271416403_AddSeparateProductImages.resx">
+      <DependentUpon>202510271416403_AddSeparateProductImages.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,6 +1,5 @@
-﻿@* This model name must match your Product model file.
-    If your file is 'Product.cs', change 'Products' to 'Product' here.
-*@
+﻿
+
 @model IEnumerable<NhomProject.Models.Products>
 
 @{
@@ -20,14 +19,14 @@
     </div>
 
     <div class="sort-bar">
-        @* This form re-submits the page with the new sortOrder value *@
+       
         @using (Html.BeginForm("Category", "Home", new { id = ViewData["CategoryName"] }, FormMethod.Get))
         {
-            <label for="sortOrder">Sort By:</label>
+            <label for="sortOrder">Sắp Xếp Theo:</label>
             <select name="sortOrder" id="sortOrder" class="form-control" onchange="this.form.submit()">
-                <option value="name_asc" @(currentSort == "name_asc" ? "selected" : "")>Name (A-Z)</option>
-                <option value="price_asc" @(currentSort == "price_asc" ? "selected" : "")>Price (Low to High)</option>
-                <option value="price_desc" @(currentSort == "price_desc" ? "selected" : "")>Price (High to Low)</option>
+                <option value="name_asc" @(currentSort == "name_asc" ? "selected" : "")>Tên (A-Z)</option>
+                <option value="price_asc" @(currentSort == "price_asc" ? "selected" : "")>Giá (giá tăng dần)</option>
+                <option value="price_desc" @(currentSort == "price_desc" ? "selected" : "")>Giá (giá giảm dần)</option>
             </select>
         }
     </div>
@@ -41,7 +40,7 @@
                 <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-card">
 
                     <div class="product-card-image">
-                        <img src="@Url.Content(product.ImageUrl)" alt="@product.Name" style="width: 100%; height: 100%; object-fit: cover;" />
+                        <img src="@Url.Content(product.ThumbnailUrl)" alt="@product.Name" style="width: 100%; height: 100%; object-fit: cover;" />
                     </div>
 
                     <div class="product-card-body">
@@ -59,7 +58,7 @@
                         </div>
 
                         <div class="product-card-rating">
-                            @* Assumes your Product model has 'Rating' and 'ReviewCount' properties *@
+                            
                             @product.Rating Stars (@product.ReviewCount)
                         </div>
 
@@ -69,7 +68,7 @@
         }
         else
         {
-            <p>There are no products available in this category.</p>
+            <p>Không có sản phẩm nào trong danh mục này.</p>
         }
     </div>
 </div>

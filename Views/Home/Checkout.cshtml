@@ -12,47 +12,47 @@
     <div class="checkout-container">
 
         <div class="checkout-form">
-            <h3>Shipping Information</h3>
+            <h3>Chi tiết Đơn Hàng</h3>
 
-            @* This form will POST to your new Checkout action *@
+            
             @using (Html.BeginForm("Checkout", "Home", FormMethod.Post))
             {
                 <div class="form-group">
-                    <label for="CustomerName">Full Name</label>
+                    <label for="CustomerName">Họ Và Tên</label>
                     @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control", placeholder = "Your Name" })
                 </div>
 
                 <div class="form-group">
-                    <label for="Phone">Phone</label>
+                    <label for="Phone">Điện Thoại</label>
                     @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", placeholder = "Your Phone Number" })
                 </div>
 
                 <div class="form-group">
-                    <label for="Address">Address</label>
+                    <label for="Address">Địa Chỉ</label>
                     @Html.TextBoxFor(m => m.Address, new { @class = "form-control", placeholder = "Your Shipping Address" })
                 </div>
             
                 <div class="form-group">
-                    <label>Payment Method</label>
+                    <label>Phương Thức Thanh Toán</label>
                     <div class="payment-options">
                         <label class="payment-option">
                             @Html.RadioButtonFor(m => m.PaymentMethod, "Cash on Delivery", new { id = "payment_cod", @checked = true })
-                            Cash on Delivery
+                            COD (Thanh Toán tiền mặt khi nhặn hàng)
                         </label>
                         <label class="payment-option">
                             @Html.RadioButtonFor(m => m.PaymentMethod, "Credit Card", new { id = "payment_card" })
-                            Credit Card (Online)
+                            Thẻ Ngân Hàng (Tín dụng / Ghi nợ)
                         </label>
                     </div>
                 </div>
-                <button type="submit" class="btn checkout-btn">Place Order</button>
+                <button type="submit" class="btn checkout-btn">Đặt Hàng</button>
             }
            
             
         </div>
 
         <div class="checkout-summary">
-            <h3>Order Summary</h3>
+            <h3>Xác nhặn Mua Hàng</h3>
 
             @if (cart != null)
             {
@@ -67,7 +67,7 @@
                 </ul>
 
                 <div class="summary-total">
-                    <strong>Total:</strong>
+                    <strong>Tổng Cộng: </strong>
                     <strong>@cart.GetTotal().ToString("C")</strong>
                 </div>
             }

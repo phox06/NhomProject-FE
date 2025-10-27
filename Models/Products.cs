@@ -10,16 +10,19 @@ namespace NhomProject.Models
     public class Products
     {
         [Key]
-        public int ProductId { get; set; } // Primary Key
+        public int ProductId { get; set; }
 
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
-        public decimal? OldPrice { get; set; } // Nullable
-        public string ImageUrl { get; set; }
+        public decimal? OldPrice { get; set; }
 
-        // Properties for rating
+        // --- IMAGE FIX ---
+        public string ThumbnailUrl { get; set; } // For cards (home, category)
+        public string MainImageUrl { get; set; } // For the details page
+        // -----------------
+
         public decimal Rating { get; set; }
         public int ReviewCount { get; set; }
 

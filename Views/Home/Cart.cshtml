@@ -9,17 +9,17 @@
 }
 
 <div class="container">
-    <h2 class="section-title">Your Shopping Cart</h2>
+    <h2 class="section-title">Giỏ Hàng Của Bạn</h2>
 
     @if (Model.Items.Any())
     {
         <table class="cart-table">
             <thead>
                 <tr>
-                    <th colspan="2">Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
+                    <th colspan="2">Sản Phẩm</th>
+                    <th>Giá: </th>
+                    <th>Số Lượng: </th>
+                    <th>Tổng Cộng: </th>
                     <th></th>
                 </tr>
             </thead>
@@ -49,19 +49,19 @@
 
         <div class="cart-summary">
             <div class="cart-total">
-                <strong>Total: @Model.GetTotal().ToString("C")</strong>
+                <strong>Tổng Cộng:  @Model.GetTotal().ToString("C")</strong>
             </div>
             <div class="cart-actions">
                 <a href="@Url.Action("Checkout", "Home")" class="btn checkout-btn">
-                    Proceed to Checkout
+                    Tiến Hành Thanh Toán
                 </a>
             </div>
         </div>
     }
     else
     {
-        <p>Your cart is empty.</p>
-        <a href="@Url.Action("Index", "Home")" class="btn">Continue Shopping</a>
+        <p>Giỏ Hàng Đang Trống.</p>
+        <a href="@Url.Action("Index", "Home")" class="btn">Tiếp Tục Mua Sắm</a>
     }
 
 </div>

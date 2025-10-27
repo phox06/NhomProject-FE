@@ -27,9 +27,31 @@ namespace NhomProject.Controllers
         // 1. Home Page
         public ActionResult Index()
         {
-            var products = _db.Products.ToList();
-            return View(products);
+            var allProducts = _db.Products.Include(p => p.Category).ToList();
+
+            var viewModel = new HomeViewModel
+            {
+                // Flash Sale vẫn là tất cả sản phẩm
+                FlashSaleProducts = allProducts,
+
+                // --- SỬA LỖI ---
+                // Thay đổi "phones" thành "điện thoại" (hoặc bất cứ tên nào bạn dùng trong CSDL)
+                PhoneProducts = allProducts
+                                    .Where(p => p.Category != null &&
+                                                p.Category.Name.ToLower() == "điện thoại")
+                                    .ToList(),
+
+                // --- SỬA LỖI ---
+                // Thay đổi "laptops" thành "laptop"
+                LaptopProducts = allProducts
+                                    .Where(p => p.Category != null &&
+                                                p.Category.Name.ToLower() == "laptops")
+                                    .ToList()
+            };
+
+            return View(viewModel);
         }
+
 
         // 2. Category of Products Page
         public ActionResult Category(string id, string sortOrder)
