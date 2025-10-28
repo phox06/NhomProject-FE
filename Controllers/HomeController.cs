@@ -11,8 +11,6 @@ namespace NhomProject.Controllers
     public class HomeController : Controller
     {
         private ApplicationDbContext _db = new ApplicationDbContext();
-
-        
         private Cart GetCart()
         {
             Cart cart = Session["Cart"] as Cart;
@@ -23,8 +21,6 @@ namespace NhomProject.Controllers
             }
             return cart;
         }
-
-        
         public ActionResult Index()
         {
             var allProducts = _db.Products.Include(p => p.Category).ToList();
@@ -49,9 +45,6 @@ namespace NhomProject.Controllers
 
             return View(viewModel);
         }
-
-
-        
         public ActionResult Category(string id, string sortOrder)
         {
             if (string.IsNullOrEmpty(id))
@@ -86,8 +79,6 @@ namespace NhomProject.Controllers
             }
             return View(products);
         }
-
-       
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -102,7 +93,6 @@ namespace NhomProject.Controllers
             }
             return View(product);
         }
-
         
         public ActionResult Cart()
         {
