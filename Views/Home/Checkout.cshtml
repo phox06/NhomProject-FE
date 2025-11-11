@@ -61,7 +61,7 @@
                     {
                         <li class="summary-item">
                             <span class="summary-item-name">@item.ProductName (x @item.Quantity)</span>
-                            <span class="summary-item-price">@item.Total.ToString("C")</span>
+                            <span class="summary-item-price">@((item.Quantity * item.Price).ToString("C"))</span>
                         </li>
                     }
                 </ul>

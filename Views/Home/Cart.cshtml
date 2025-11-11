@@ -35,7 +35,7 @@
                         </td>
                         <td>@item.Price.ToString("C")</td>
                         <td>@item.Quantity</td>
-                        <td>@item.Total.ToString("C")</td>
+                        <td>@((item.Quantity * item.Price).ToString("C"))</td>
                         <td class="cart-item-remove">
                             <a href="@Url.Action("RemoveFromCart", "Home", new { id = item.ProductId })"
                                title="Remove item">
