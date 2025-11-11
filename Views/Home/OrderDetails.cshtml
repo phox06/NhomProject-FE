@@ -46,7 +46,7 @@
                             <td>@item.ProductName</td>
                             <td>@item.Quantity</td>
                             <td>@item.Price.ToString("C")</td>
-                            <td>@item.Total.ToString("C")</td>
+                            <td>@((item.Quantity * item.Price).ToString("C"))</td>
                         </tr>
                     }
                 </tbody>
