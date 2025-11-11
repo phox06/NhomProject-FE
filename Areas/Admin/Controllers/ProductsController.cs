@@ -12,7 +12,7 @@ namespace NhomProject.Areas.Admin.Controllers
 {
     public class ProductsController : Controller
     {
-        private ApplicationDbContext _db = new ApplicationDbContext();
+        private MyProjectDatabaseEntities _db = new MyProjectDatabaseEntities();
         // GET: Admin/Products
         public ActionResult Index()
         {

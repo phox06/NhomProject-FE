@@ -10,7 +10,7 @@ namespace NhomProject.Controllers
 {
     public class HomeController : Controller
     {
-        private ApplicationDbContext _db = new ApplicationDbContext();
+        private MyProjectDatabaseEntities _db = new MyProjectDatabaseEntities();
         private Cart GetCart()
         {
             Cart cart = Session["Cart"] as Cart;
@@ -152,7 +152,7 @@ namespace NhomProject.Controllers
             }
 
             var order = _db.Orders
-                           .Include(o => o.Items)
+                           .Include(o => o.CartItems)
                            .FirstOrDefault(o => o.Id == id && o.UserId == userId);
 
             if (order == null)
@@ -224,7 +224,7 @@ namespace NhomProject.Controllers
 
             foreach (var item in cart.Items)
             {
-                order.Items.Add(new CartItem
+                order.CartItems.Add(new CartItem
                 {
                     ProductId = item.ProductId,
                     ProductName = item.ProductName,
@@ -245,7 +245,7 @@ namespace NhomProject.Controllers
         
         public ActionResult Search(string term)
         {
-            var products = new List<Products>();
+            var products = new List<Product>();
             ViewData["SearchTerm"] = term;
             if (!string.IsNullOrEmpty(term))
             {

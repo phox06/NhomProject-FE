@@ -12,16 +12,12 @@ namespace NhomProject.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CartItem
+    public partial class sysdiagram
     {
-        public int Id { get; set; }
-        public string ProductName { get; set; }
-        public int Quantity { get; set; }
-        public decimal Price { get; set; }
-        public int OrderId { get; set; }
-        public int ProductId { get; set; }
-        public string ImageUrl { get; set; }
-    
-        public virtual Order Order { get; set; }
+        public string name { get; set; }
+        public int principal_id { get; set; }
+        public int diagram_id { get; set; }
+        public Nullable<int> version { get; set; }
+        public byte[] definition { get; set; }
     }
 }

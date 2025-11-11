@@ -13,7 +13,7 @@ namespace NhomProject.Models
             Items = new List<CartItem>();
         }
 
-        public void AddItem(Products product, int quantity)
+        public void AddItem(Product product, int quantity)
         {
             
             var item = Items.FirstOrDefault(p => p.ProductId == product.ProductId);
@@ -44,7 +44,7 @@ namespace NhomProject.Models
 
         public decimal GetTotal()
         {
-            return Items.Sum(p => p.Total);
+            return Items.Sum(p => p.Quantity * p.Price);
         }
     }
 }

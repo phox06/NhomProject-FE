@@ -12,16 +12,11 @@ namespace NhomProject.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CartItem
+    public partial class C__MigrationHistory
     {
-        public int Id { get; set; }
-        public string ProductName { get; set; }
-        public int Quantity { get; set; }
-        public decimal Price { get; set; }
-        public int OrderId { get; set; }
-        public int ProductId { get; set; }
-        public string ImageUrl { get; set; }
-    
-        public virtual Order Order { get; set; }
+        public string MigrationId { get; set; }
+        public string ContextKey { get; set; }
+        public byte[] Model { get; set; }
+        public string ProductVersion { get; set; }
     }
 }

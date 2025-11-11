@@ -10,7 +10,7 @@ namespace NhomProject.Controllers
 {
     public class AuthController : Controller
     {
-        private ApplicationDbContext _db = new ApplicationDbContext();
+        private MyProjectDatabaseEntities _db = new MyProjectDatabaseEntities();
 
         // GET: Auth/Login
         public ActionResult Login()

@@ -7,8 +7,8 @@ namespace NhomProject.Models
 {
     public class HomeViewModel
     {
-        public IEnumerable<Products> FlashSaleProducts { get; set; }
-        public IEnumerable<Products> PhoneProducts { get; set; }
-        public IEnumerable<Products> LaptopProducts { get; set; }
+        public IEnumerable<Product> FlashSaleProducts { get; set; }
+        public IEnumerable<Product> PhoneProducts { get; set; }
+        public IEnumerable<Product> LaptopProducts { get; set; }
     }
 }

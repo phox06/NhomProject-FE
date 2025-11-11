@@ -17,6 +17,6 @@ namespace NhomProject.Areas.Admin.Model.ViewModel
         public string SortOrder { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; } = 10; 
-        public IPagedList<Products> Products { get; set; }
+        public IPagedList<Product> Products { get; set; }
     }
 }
