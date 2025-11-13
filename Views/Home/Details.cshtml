@@ -1,54 +1,114 @@
 ﻿@model NhomProject.Models.Product
 
 @{
-    
     ViewData["Title"] = Model.Name;
 }
 
 <div class="container">
-    <div class="product-details-container">
+    <div class="row">
+        <div class="col-lg-8">
 
-        <div class="product-image-gallery">
-            <img src="@Url.Content(Model.MainImageUrl)" alt="@Model.Name" />
+            <div class="card product-card-main-image mb-3">
+                <img src="@(string.IsNullOrEmpty(Model.MainImageUrl) ? "https://placehold.co/750x500/f0f0f0/999?text=No+Image" : Url.Content(Model.MainImageUrl))"
+                     alt="@Model.Name" class="img-fluid" />
+            </div>
+
+            <div class="card product-tabs-container">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="productTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button" role="tab" aria-controls="specs" aria-selected="true">Thông số kỹ thuật</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="false">Thông tin sản phẩm</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments" type="button" role="tab" aria-controls="comments" aria-selected="false">Đánh giá & Bình luận</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body tab-content" id="productTabContent">
+
+                    <div class="tab-pane fade show active" id="specs" role="tabpanel" aria-labelledby="specs-tab">
+                        <h4 class="tab-title">Thông số kỹ thuật</h4>
+                        <div class="product-info-description">
+                            @* Chúng ta chuyển mô tả (là thông số kỹ thuật) của bạn vào đây *@
+                            @Html.Raw(Model.Description)
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="description" role="tabpanel" aria-labelledby="description-tab">
+                        <h4 class="tab-title">Mô tả sản phẩm</h4>
+                        <p>Đây là nơi mô tả tiếp thị chi tiết về sản phẩm sẽ xuất hiện, giải thích các tính năng và lợi ích của nó.</p>
+                    </div>
+
+                    <div class="tab-pane fade" id="comments" role="tabpanel" aria-labelledby="comments-tab">
+                        <h4 class="tab-title">Đánh giá từ khách hàng</h4>
+                        <p>Đây là nơi phần bình luận và đánh giá sẽ được tải. Chúng ta cần cập nhật cơ sở dữ liệu để hỗ trợ tính năng này.</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <div class="product-info">
+        <div class="col-lg-4 product-sidebar">
 
-            <h1 class="product-info-title">@Model.Name</h1>
-
-            <div class="product-info-rating">
-                @Model.Rating Stars (@Model.ReviewCount reviews)
-            </div>
-
-            <div class="product-info-price">
-                @Model.Price.ToString("C")
-
-                
-                @if (Model.OldPrice.HasValue && Model.OldPrice.Value > Model.Price)
-                {
-                    <span class="product-info-price-old">
-                        @Model.OldPrice.Value.ToString("C")
-                    </span>
-                }
-            </div>
-
-            <div class="product-info-description">
-                @Html.Raw(Model.Description)
-            </div>
-
-            @using (Html.BeginForm("AddToCart", "Home", new { id = Model.ProductId }))
-            {
-                <div class="product-info-actions">
-                    <label for="quantity">Số Lượng: </label>
-
-                   
-                    <input type="number" id="quantity" name="quantity" value="1" min="1" class="quantity-input" />
-
-                    <button type="submit" class="btn add-to-cart-btn btn-primary">
-                        Thêm vào Giỏ Hàng
-                    </button>
+            <div class="sidebar-box">
+                <h1 class="product-info-title">@Model.Name</h1>
+                <div class="product-info-rating">
+                    @Model.Rating Stars (@Model.ReviewCount reviews)
                 </div>
-            }
+            </div>
+
+            <div class="sidebar-box card">
+                <div class="card-body">
+                    <div class="product-info-price">
+                        @Model.Price.ToString("C")
+                        @if (Model.OldPrice.HasValue && Model.OldPrice.Value > Model.Price)
+                        {
+                            <span class="product-info-price-old">
+                                @Model.OldPrice.Value.ToString("C")
+                            </span>
+                        }
+                    </div>
+                    <div class="product-promotions">
+                        <strong>Ưu đãi:</strong>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> Giảm 500.000đ khi thanh toán online.</li>
+                            <li><i class="fas fa-check-circle"></i> Trả góp 0%.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-box card">
+                <div class="card-body">
+                    @using (Html.BeginForm("AddToCart", "Home", new { id = Model.ProductId }))
+                    {
+                        <div class="product-info-actions">
+                            <label for="quantity">Số Lượng:</label>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control mb-3" />
+
+                            <button type="submit" class="btn btn-outline-primary btn-lg w-100 mb-2">
+                                <i class="fas fa-cart-plus"></i> Thêm vào Giỏ Hàng
+                            </button>
+                        </div>
+                    }
+                    <a href="@Url.Action("Checkout", "Home")" class="btn btn-danger btn-lg w-100">
+                        Mua ngay
+                    </a>
+                </div>
+            </div>
+
+            <div class="sidebar-box card">
+                <div class="card-body">
+                    <strong>Cửa Hàng Cam kết:</strong>
+                    <ul class="product-commit-list">
+                        <li><i class="fas fa-exchange-alt"></i> 1 đổi 1 trong 30 ngày.</li>
+                        <li><i class="fas fa-shield-alt"></i> Bảo hành chính hãng 1 năm.</li>
+                    </ul>
+                </div>
+            </div>
 
         </div>
     </div>

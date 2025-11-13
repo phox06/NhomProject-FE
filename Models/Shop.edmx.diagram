@@ -16,6 +16,8 @@
         <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_OrderDetails_dbo_Orders_OrderId" ManuallyRouted="false" />
         <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_OrderDetails_dbo_Products_ProductId" ManuallyRouted="false" />
         <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_Orders_dbo_Users_User_UserId" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="MyProjectDatabaseModel.ProductImage" Width="1.5" PointX="8.25" PointY="8.125" />
+        <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_ProductImage_dbo_Products_ProductId" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
