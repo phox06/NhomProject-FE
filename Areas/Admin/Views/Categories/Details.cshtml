@@ -1,0 +1,36 @@
+﻿@model NhomProject.Models.Category
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="bg-success">THÔNG TIN CHI TIẾT DANH MỤC</h2>
+
+<div>
+    
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @*@Html.DisplayNameFor(model => model.Name)*@
+            Tên danh mục
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt col-sm-3>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd >
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Cập nhật", "Edit", new { id = Model.CategoryId }, new { @class = "btn btn-primary" }) |
+    @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-primary" })
+</p>
