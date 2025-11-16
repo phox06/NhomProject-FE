@@ -1,98 +1,113 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Trang quản trị Admin</title>
+    <meta charset="utf-t" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Admin Dashboard</title>
 
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f2f5; 
+        }
 
-    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
-</head>
-<body>
-    <header>
-        <div class="header-top-bar">
-            <div class="container">
-                <a href="#" class="location-link"> <i class="fas fa-map-marker-alt"> </i>Thành Phố Hồ Chí Minh</a>
-                <div class="user-links">
+       
+        .top-nav {
+            background-color: #232a34;
+        }
 
+            .top-nav .navbar-brand {
+                font-weight: bold;
+                color: #fff;
+            }
 
-                    @if (Session["UserId"] == null)
-                    {
+            .top-nav .nav-link {
+                color: #c8cdd3; 
+                font-size: 0.9rem;
+            }
 
-                        <a href="@Url.Action("Login", "Auth")">Đăng nhập / Đăng ký</a>
-                    }
-                    else
-                    {
-
-                        <a href="@Url.Action("Profile", "Auth")">Xin chào!, @Session["FullName"]</a>
-                        <a href="@Url.Action("OrderHistory", "Home")">Lịch sử mua hàng</a>
-                        <a href="@Url.Action("Logout", "Auth")">Đăng xuất</a>
-                    }
-
-                    <a href="@Url.Action("Cart", "Home")" class="cart-link">
-                        <i class="fa fa-shopping-cart"></i> Giỏ Hàng
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="header-main">
-            <div class="container">
-
-                <a href="@Url.Action("Index", "Home")" class="logo">Cửa Hàng Điện Tử</a>
-
-
-                @using (Html.BeginForm("Search", "Home", FormMethod.Get, new { @class = "search-bar" }))
-                {
-                    <input type="text" name="term" placeholder="Tìm Sản Phẩm...." />
-                    <button type="submit"><i class="fa fa-search"></i></button>
+                .top-nav .nav-link:hover {
+                    color: #fff;
                 }
 
-                <div class="hamburger-menu"><i class="fa fa-bars"></i></div>
-            </div>
+       
+        .sub-nav {
+            background-color: #ffffff; 
+            border-bottom: 1px solid #dee2e6;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+            .sub-nav .nav-link {
+                color: #333;
+                font-weight: 500;
+            }
+
+            .sub-nav .nav-item.active .nav-link {
+                color: #007bff; 
+                font-weight: bold;
+            }
+
+       
+        .admin-content {
+            background-color: #ffffff;
+            margin: 20px;
+            padding: 25px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+       
+        .admin-footer {
+            text-align: center;
+            padding: 20px;
+            color: #888;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark top-nav">
+        <div class="container-fluid">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    @Html.ActionLink("Dashboard", "Index", "Home", new { area = "Admin" }, new { @class = "nav-link" })
+                </li>
+                <li class="nav-item active">
+                    @Html.ActionLink("Quản lý Sản phẩm", "Index", "Products", new { area = "Admin" }, new { @class = "nav-link" })
+                </li>
+                <li class="nav-item">
+                    @Html.ActionLink("Quản lý Đơn hàng", "Index", "Orders", new { area = "Admin" }, new { @class = "nav-link" })
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Quản lý Hàng</a>
+                </li>
+                <li class="nav-item">
+                    @Html.ActionLink("Quản lý Danh mục", "Index", "Categories", new { area = "Admin" }, new { @class = "nav-link" })
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Đăng xuất</a>
+                </li>
+            </ul>
         </div>
+    </nav>
 
-        <nav class="header-nav-bar">
-            <div class="container">
-                <a href="@Url.Action("Index", "Home")">Home</a>
-                <a href="@Url.Action("Category", "Home", new { id = "Laptops" })">Laptops</a>
-                <a href="@Url.Action("Category", "Home", new { id = "Điện Thoại" })">Điện Thoại</a>
-                <a href="@Url.Action("Category", "Home", new { id = "Phụ Kiện" })">Phụ Kiện</a>
-                <a href="@Url.Action("Category", "Home", new { id = "Đồng Hồ" })">Đồng Hồ</a>
-                <a href="@Url.Action("Category", "Home", new { id = "Đồng Hồ Thông Minh" })">Đồng Hồ Thông Minh</a>
-            </div>
-        </nav>
-    </header>
+    <div class="container-fluid">
+        <main role="main" class="admin-content">
+            @RenderBody()
+        </main>
+    </div>
 
-    <main role="main">
-        @RenderBody()
-    </main>
-
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; @DateTime.Now.Year Cửa hàng điện tử. Mọi quyền được bảo lưu.</p>
-            <p>
-                Chuyên cung cấp điện thoại, laptop, phụ kiện chính hãng với giá ưu đãi.
-                Cập nhật liên tục các chương trình khuyến mãi hot mỗi ngày!
-            </p>
-            <p>
-                Các thành viên trong nhóm:
-                1: Châu Minh Phú-24DH111420
-                2: Phan Võ Minh Tâm-24DH111646
-                3: Nguyễn Tiến Đạt-23DH110744
-            </p>
-        </div>
+    <footer class="admin-footer">
+        © @DateTime.Now.Year Cửa hàng điện tử. Mọi quyền được bảo lưu.
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/Scripts/Site.js"></script>
-    @RenderSection("Scripts", required: false)
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    @RenderSection("scripts", required: false)
 </body>
 </html>
-

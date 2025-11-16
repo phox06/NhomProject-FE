@@ -158,10 +158,10 @@ main {
 
 .product-grid {
     display: grid;
-    
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
+    /* SỬA LỖI: Đổi thành lưới 4 cột cố định trên màn hình lớn */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem; /* Tăng khoảng cách một chút */
+    margin-bottom: 3rem; /* Thêm không gian giữa các phần */
 }
 
 .product-card {
@@ -169,11 +169,15 @@ main {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     overflow: hidden;
-    transition: box-shadow 0.3s ease;
+    /* SỬA LỖI: Thêm bóng mờ mặc định tinh tế và chuyển đổi 'transform' */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
 }
 
     .product-card:hover {
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        /* SỬA LỖI: Làm cho hiệu ứng di chuột rõ rệt hơn */
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        transform: translateY(-5px);
     }
 
 .product-card-image {
@@ -213,12 +217,27 @@ main {
 .product-card-rating {
     font-size: 0.9rem;
     color: #777;
+    /* SỬA LỖI: Căn chỉnh biểu tượng ngôi sao */
+    display: flex;
+    align-items: center;
 }
+
+    /* SỬA LỖI: Thêm kiểu cho chính biểu tượng ngôi sao */
+    .product-card-rating .fa-star {
+        color: #f5c518; /* Màu vàng */
+        font-size: 0.8rem;
+        margin-right: 4px;
+    }
 
 /* --- RESPONSIVE DESIGN --- */
 @media (max-width: 768px) {
     .header-main .container {
         flex-wrap: wrap;
+    }
+    @media (max-width: 992px) and (min-width: 769px) {
+        .product-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
     }
 
     .logo {
@@ -730,4 +749,52 @@ product-info-description ul {
 
 .quantity-input {
     width: 100px; /* Thu hẹp ô nhập số lượng */
+}
+/* --- THIẾT KẾ ĐA PHƯƠNG TIỆN CHO ĐIỆN THOẠI NHỎ --- */
+@media (max-width: 480px) {
+
+    /* Đây là mục tiêu cho các màn hình hẹp (ví dụ: iPhone, Galaxy S24).
+      Chúng ta sẽ chuyển lưới sản phẩm sang 1 cột duy nhất.
+    */
+    .product-grid {
+        grid-template-columns: 1fr; /* Chỉ 1 cột */
+        gap: 1rem; /* Giảm khoảng cách một chút */
+    }
+
+    /* Trên lưới 1 cột, chúng ta có thể làm cho hình ảnh
+      của thẻ sản phẩm cao hơn một chút.
+    */
+    .product-card-image {
+        height: 250px;
+    }
+
+    /* Giảm kích thước văn bản một chút để dễ đọc hơn */
+    .product-card-title {
+        font-size: 0.95rem;
+    }
+
+    .product-card-price {
+        font-size: 1.15rem;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+    }
+
+    /* Thu nhỏ băng chuyền quảng cáo (promo carousel) trên điện thoại */
+    .promo-carousel {
+        height: 180px;
+    }
+
+    /* Thu nhỏ logo */
+    .logo {
+        font-size: 1.5rem;
+    }
+
+    /* Trên điện thoại, ẩn thanh điều hướng trên cùng
+      (Thành Phố Hồ Chí Minh, Đăng nhập) để tiết kiệm không gian.
+    */
+    .header-top-bar {
+        display: none;
+    }
 }

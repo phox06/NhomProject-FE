@@ -93,14 +93,18 @@ namespace NhomProject.Controllers
             }
             return View(product);
         }
-        
+
         public ActionResult Cart()
         {
             Cart cart = GetCart();
+
+            // Add this line to read any errors from other controllers
+            ViewBag.Error = TempData["Error"];
+
             return View(cart);
         }
 
-        
+
         [HttpPost]
         public ActionResult AddToCart(int id, int quantity)
         {
@@ -210,39 +214,52 @@ namespace NhomProject.Controllers
                 return RedirectToAction("Cart");
             }
 
-            var order = new Order
+            // Check which payment method was selected
+            if (model.PaymentMethod == "PayPal")
             {
-                CustomerName = model.CustomerName,
-                Address = model.Address,
-                Phone = model.Phone,
-                PaymentMethod = model.PaymentMethod,
-                Date = DateTime.Now,
-                Status = "Pending",
-                Total = cart.GetTotal(),
-                UserId = userId 
-            };
-
-            foreach (var item in cart.Items)
-            {
-                order.CartItems.Add(new CartItem
-                {
-                    ProductId = item.ProductId,
-                    ProductName = item.ProductName,
-                    ImageUrl = item.ImageUrl,
-                    Price = item.Price,
-                    Quantity = item.Quantity
-                });
+                // Save the shipping info to session
+                Session["OrderModel"] = model;
+                // Redirect to PayPal controller to create payment
+                return RedirectToAction("CreatePayment", "Paypal");
             }
+            else
+            {
+                // --- THIS IS YOUR EXISTING LOGIC FOR "CASH ON DELIVERY" ---
+                // Assume "COD" or other method if not PayPal
+                var order = new Order
+                {
+                    CustomerName = model.CustomerName,
+                    Address = model.Address,
+                    Phone = model.Phone,
+                    PaymentMethod = model.PaymentMethod, // e.g., "COD"
+                    Date = DateTime.Now,
+                    Status = "Pending", // Status is Pending for COD
+                    Total = cart.GetTotal(),
+                    UserId = userId
+                };
 
-            _db.Orders.Add(order);
-            _db.SaveChanges();
+                foreach (var item in cart.Items)
+                {
+                    order.CartItems.Add(new CartItem
+                    {
+                        ProductId = item.ProductId,
+                        ProductName = item.ProductName,
+                        ImageUrl = item.ImageUrl,
+                        Price = item.Price,
+                        Quantity = item.Quantity
+                    });
+                }
 
-            Session["Cart"] = null;
+                _db.Orders.Add(order);
+                _db.SaveChanges();
 
-            return RedirectToAction("OrderConfirmation", new { id = order.Id });
+                Session["Cart"] = null;
+
+                return RedirectToAction("OrderConfirmation", new { id = order.Id });
+            }
         }
 
-        
+
         public ActionResult Search(string term)
         {
             var products = new List<Product>();

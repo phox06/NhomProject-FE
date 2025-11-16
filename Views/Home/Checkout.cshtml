@@ -44,6 +44,10 @@
                             Thẻ Ngân Hàng (Tín dụng / Ghi nợ)
                         </label>
                     </div>
+                    <label class="payment-option">
+                        @Html.RadioButtonFor(m => m.PaymentMethod, "PayPal", new { @class = "form-check-input", id = "paypal" })
+                        PayPal
+                    </label>
                 </div>
                 <button type="submit" class="btn checkout-btn">Đặt Hàng</button>
             }
