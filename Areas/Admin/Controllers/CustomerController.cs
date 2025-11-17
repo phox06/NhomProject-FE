@@ -20,13 +20,13 @@ namespace NhomProject.Areas.Admin.Controllers
         // GET: Admin/Customer
         public ActionResult Index(string searchTerm, int? page)
         {
-            int pageSize = 10; // 10 khách hàng mỗi trang
+            int pageSize = 10;
             int pageNumber = (page ?? 1);
 
-            // Bắt đầu truy vấn, bao gồm cả thông tin User (để lấy Username)
+           
             var customers = db.Users.AsQueryable();
 
-            // Xử lý tìm kiếm
+           
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 customers = customers.Where(c => c.Username.Contains(searchTerm) ||
@@ -34,11 +34,11 @@ namespace NhomProject.Areas.Admin.Controllers
                                                   c.Username.Contains(searchTerm));
             }
 
-            // Sắp xếp (ví dụ: theo tên) và phân trang
+           
             var pagedCustomers = customers.OrderBy(c => c.Username)
                                             .ToPagedList(pageNumber, pageSize);
 
-            // Gửi searchTerm lại cho View để giữ giá trị trong ô tìm kiếm
+            
             ViewBag.SearchTerm = searchTerm;
 
             return View(pagedCustomers);
@@ -52,7 +52,7 @@ namespace NhomProject.Areas.Admin.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            // Tải thông tin Customer, VÀ tải cả danh sách Orders liên quan
+           
             User customer = db.Users
                                    .Include(c => c.Orders)
                                    .SingleOrDefault(c => c.UserId == id);

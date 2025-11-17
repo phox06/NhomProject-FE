@@ -12,18 +12,17 @@ namespace NhomProject.Areas.Admin.Controllers
         // GET: Admin/Base
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            // Check if the action has the [AllowAnonymous] attribute
+            
             bool skipAuthorization = filterContext.ActionDescriptor.IsDefined(typeof(AllowAnonymousAttribute), true);
 
-            // If it DOES have the attribute (like Login), skip the security check.
+           
             if (skipAuthorization)
             {
                 base.OnActionExecuting(filterContext);
                 return;
             }
 
-            // --- This is your original security check ---
-            // If the attribute is NOT present, run the check as normal.
+            
             var session = filterContext.HttpContext.Session;
 
             if (session["UserRole"] == null || session["UserRole"].ToString() != "Admin")

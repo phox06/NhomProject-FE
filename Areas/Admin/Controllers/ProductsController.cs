@@ -21,7 +21,7 @@ namespace NhomProject.Areas.Admin.Controllers
             var model = new ProductSearchVM();
             var products = db.Products.Include(p => p.Category).AsQueryable();
 
-            // Tìm kiếm sản phẩm dựa trên từ khóa
+            
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 products = products.Where(p =>
@@ -30,19 +30,16 @@ namespace NhomProject.Areas.Admin.Controllers
                     p.Category.Name.Contains(searchTerm));
             }
 
-            // Tìm kiếm theo giá tối thiểu
             if (minPrice.HasValue)
             {
                 products = products.Where(p => p.Price >= minPrice.Value);
             }
 
-            // Tìm kiếm theo giá tối đa
             if (maxPrice.HasValue)
             {
                 products = products.Where(p => p.Price <= maxPrice.Value);
             }
 
-            // Sắp xếp kết quả
             switch (sortOrder)
             {
                 case "name_asc":
@@ -62,11 +59,11 @@ namespace NhomProject.Areas.Admin.Controllers
                     break;
             }
 
-            // Đoạn code liên quan tới phân trang
+            
             int pageNumber = page ?? 1;
             int pageSize = 10; // Số sản phẩm mỗi trang
 
-            // Convert to list first, then to paged list
+            
             var productList = products.ToList();
             model.Products = new StaticPagedList<Product>(
                 productList.Skip((pageNumber - 1) * pageSize).Take(pageSize),
@@ -88,12 +85,12 @@ namespace NhomProject.Areas.Admin.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest); // mã lỗi 400: thiếu giá trị truyền vào
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest); 
             }
             Product product = db.Products.Find(id);
             if (product == null)
             {
-                return HttpNotFound(); // mã lỗi 404
+                return HttpNotFound(); 
             }
             return View(product);
         }
@@ -108,7 +105,7 @@ namespace NhomProject.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Thêm đoạn code để lấy đường link của ảnh đã upload và lưu ảnh vào thư mục Content/images
+                
                 if (UploadImg != null && UploadImg.ContentLength > 0)
                 {
                     string filename = Path.GetFileName(UploadImg.FileName);
@@ -118,11 +115,9 @@ namespace NhomProject.Areas.Admin.Controllers
                 }
                 else
                 {
-                    // Nếu không upload ảnh, sử dụng ảnh mặc định
                     product.MainImageUrl = product.MainImageUrl ?? "~/Content/images/default_img.png";
                 }
 
-                // Set default values for Rating and ReviewCount if not provided
                 if (product.Rating == 0)
                     product.Rating = 0;
                 if (product.ReviewCount == 0)
@@ -155,7 +150,6 @@ namespace NhomProject.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Thêm đoạn code để lấy đường link của ảnh đã upload và lưu ảnh vào thư mục Content/images
                 if (UploadImg != null && UploadImg.ContentLength > 0)
                 {
                     string filename = Path.GetFileName(UploadImg.FileName);
@@ -163,7 +157,6 @@ namespace NhomProject.Areas.Admin.Controllers
                     product.MainImageUrl = savePath + filename;
                     UploadImg.SaveAs(Path.Combine(Server.MapPath(savePath), filename));
                 }
-                // If no new image uploaded, keep existing MainImageUrl (already in model)
 
                 db.Entry(product).State = EntityState.Modified;
                 db.SaveChanges();

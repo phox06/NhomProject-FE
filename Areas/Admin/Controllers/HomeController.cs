@@ -15,24 +15,24 @@ namespace NhomProject.Areas.Admin.Controllers
     {
         private MyProjectDatabaseEntities db = new MyProjectDatabaseEntities();
 
-        // This action will now get all the data for the dashboard
+        
         public ActionResult Index()
         {
-            // This LINQ query does all the calculations from your PowerPoint
+            
             var stats = db.Categories
-                .Include(c => c.Products) // Eager load products
+                .Include(c => c.Products) 
                 .Select(c => new CategoryStatisticVM
                 {
                     CategoryName = c.Name,
                     ProductCount = c.Products.Count(),
 
-                    // Use ternary operator to avoid errors on categories with 0 products
+                   
                     HighestPrice = c.Products.Any() ? c.Products.Max(p => p.Price) : 0,
                     LowestPrice = c.Products.Any() ? c.Products.Min(p => p.Price) : 0,
                     AveragePrice = c.Products.Any() ? c.Products.Average(p => p.Price) : 0
                 }).ToList();
 
-            // Pass the list of statistics to the view
+            
             return View(stats);
         }
 
@@ -44,13 +44,12 @@ namespace NhomProject.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AllowAnonymous] // 3. ADD [AllowAnonymous]
+        [AllowAnonymous] 
         public ActionResult Login(NhomProject.Models.User model)
         {
             if (ModelState.IsValid)
             {
-                // Note: I also fixed model.UserName to model.Username (lowercase 'n')
-                // to match your view's bindings 
+                
                 var user = db.Users.SingleOrDefault(u => u.Username == model.Username
                                                       && u.Password == model.Password
                                                       && u.UserRole == "Admin");

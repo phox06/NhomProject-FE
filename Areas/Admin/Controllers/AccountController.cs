@@ -38,15 +38,37 @@ namespace NhomProject.Areas.Admin.Controllers
             return View();
         }
 
-        // POST: Admin/AdminUsers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Username,Password")] User user)
         {
             if (ModelState.IsValid)
             {
+                // Check if username already exists
+                if (db.Users.Any(u => u.Username == user.Username))
+                {
+                    ModelState.AddModelError("Username", "This username is already taken.");
+                    return View(user);
+                }
 
+                // --- START OF FIX ---
+                // Manually add all the other required fields
+
+                // 1. Set the role
                 user.UserRole = "Admin";
+
+                // 2. Set the created date
+                user.CreatedDate = System.DateTime.Now;
+
+                // 3. Set the account to active
+                user.IsActive = true;
+
+                // 4. Set default values for other required fields
+                // (We can just use the username as a default for these)
+                user.FullName = user.Username;
+                user.Email = user.Username + "@admin.com"; // Or any default
+                                                           // --- END OF FIX ---
+
                 db.Users.Add(user);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -87,13 +109,14 @@ namespace NhomProject.Areas.Admin.Controllers
         }
 
         // GET: Admin/AdminUsers/Delete/admin_username
-        public ActionResult Delete(string id)
+        public ActionResult Delete(int? id) // <-- CHANGED from string to int?
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.Users.SingleOrDefault(u => u.Username == id && u.UserRole == "Admin");
+            // CHANGED from u.Username == id to u.UserId == id.Value
+            User user = db.Users.SingleOrDefault(u => u.UserId == id.Value && u.UserRole == "Admin");
             if (user == null)
             {
                 return HttpNotFound();
@@ -104,9 +127,10 @@ namespace NhomProject.Areas.Admin.Controllers
         // POST: Admin/AdminUsers/Delete/admin_username
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(string id)
+        public ActionResult DeleteConfirmed(int id) // <-- CHANGED from string to int
         {
-            User user = db.Users.SingleOrDefault(u => u.Username == id && u.UserRole == "Admin");
+            // CHANGED from u.Username == id to u.UserId == id
+            User user = db.Users.SingleOrDefault(u => u.UserId == id && u.UserRole == "Admin");
             if (user != null)
             {
                 db.Users.Remove(user);
