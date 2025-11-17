@@ -1,0 +1,126 @@
+﻿@model NhomProject.Models.ViewModel.ProductSearchVM
+@using PagedList
+
+<style>
+    img {
+        height: 150px;
+        max-width: 150px;
+        object-fit: cover;
+    }
+</style>
+
+<!-- Hiển thị danh sách sản phẩm -->
+@if (Model != null && Model.Products != null && Model.Products.Any())
+{
+    <h2 class="bg-success">DANH SÁCH SẢN PHẨM</h2>
+
+    <table class="table bg-info table-responsive">
+        <thead>
+            <tr>
+                <th class="bg-success col-md-2">Hình ảnh</th>
+                <th class="bg-success col-md-3">Tên sản phẩm</th>
+                <th class="bg-success col-md-1">Đơn giá</th>
+                <th class="bg-success col-md-2">Danh mục</th>
+                <th class="bg-success col-md-4"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model.Products)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(product.MainImageUrl))
+                        {
+                            <img src="@Url.Content(product.MainImageUrl)" alt="@product.Name" />
+                        }
+                        else if (!string.IsNullOrEmpty(product.ThumbnailUrl))
+                        {
+                            <img src="@Url.Content(product.ThumbnailUrl)" alt="@product.Name" />
+                        }
+                        else
+                        {
+                            <img src="@Url.Content("~/Content/images/default_img.png")" alt="@product.Name" />
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => product.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => product.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => product.Category.Name)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Sửa", "Edit", new { id = product.ProductId }, new { @class = "btn btn-primary btn-sm" })
+                        @Html.ActionLink("Chi tiết", "Details", new { id = product.ProductId }, new { @class = "btn btn-info btn-sm" })
+                        @Html.ActionLink("Xóa", "Delete", new { id = product.ProductId }, new { @class = "btn btn-danger btn-sm" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Hiển thị phân trang -->
+    <div class="pagination-container">
+        @if (Model.Products != null && Model.Products.PageCount > 1)
+        {
+            <nav>
+                <ul class="pagination">
+                    @if (Model.Products.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            @Html.ActionLink("«", "Index", new { page = Model.Products.PageNumber - 1, searchTerm = Model.SearchTerm, minPrice = Model.MinPrice, maxPrice = Model.MaxPrice, sortOrder = Model.SortOrder }, new { @class = "page-link" })
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">«</span>
+                        </li>
+                    }
+
+                    @for (int i = 1; i <= Model.Products.PageCount; i++)
+                    {
+                        if (i == Model.Products.PageNumber)
+                        {
+                            <li class="page-item active">
+                                <span class="page-link">@i</span>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                @Html.ActionLink(i.ToString(), "Index", new { page = i, searchTerm = Model.SearchTerm, minPrice = Model.MinPrice, maxPrice = Model.MaxPrice, sortOrder = Model.SortOrder }, new { @class = "page-link" })
+                            </li>
+                        }
+                    }
+
+                    @if (Model.Products.HasNextPage)
+                    {
+                        <li class="page-item">
+                            @Html.ActionLink("»", "Index", new { page = Model.Products.PageNumber + 1, searchTerm = Model.SearchTerm, minPrice = Model.MinPrice, maxPrice = Model.MaxPrice, sortOrder = Model.SortOrder }, new { @class = "page-link" })
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">»</span>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
+}
+else
+{
+    <p>Không tìm được sản phẩm nào phù hợp.</p>
+}
+
+<div class="form-group">
+    <div class="col-md-offset-8 col-md-4">
+        @Html.ActionLink("Thêm mới", "Create", null, new { @class = "btn btn-primary" })
+    </div>
+</div>
+

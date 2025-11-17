@@ -1,0 +1,18 @@
+﻿@model NhomProject.Models.Product
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="bg-success">CHI TIẾT SẢN PHẨM</h2>
+
+<div>
+    @* Nhúng Partial View để hiển thị thông tin sản phẩm *@
+    @Html.Partial("PVProductInfo", Model)
+</div>
+
+<p>
+    @Html.ActionLink("Sửa", "Edit", new { id = Model.ProductId }, new { @class = "btn btn-primary" })
+    @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-primary" })
+</p>

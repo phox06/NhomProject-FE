@@ -1,0 +1,25 @@
+﻿@model NhomProject.Models.Product
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="bg-success">XÓA SẢN PHẨM</h2>
+
+<h4 class="alert-danger">Bạn thực sự muốn xóa sản phẩm này à?</h4>
+
+<div>
+    @* Nhúng Partial View để hiển thị thông tin sản phẩm *@
+    @Html.Partial("PVProductInfo", Model)
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-actions no-color">
+        <input type="submit" value="Xóa" class="btn btn-primary" />
+        @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-primary" })
+    </div>
+}

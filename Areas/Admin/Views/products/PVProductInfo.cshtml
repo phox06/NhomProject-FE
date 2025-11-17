@@ -1,0 +1,47 @@
+﻿@model NhomProject.Models.Product
+
+@* Partial View để hiển thị thông tin sản phẩm, dùng chung cho Details và Delete *@
+
+<head>
+    <style>
+        img {
+            height: 250px;
+            max-width: 250px;
+        }
+    </style>
+</head>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            @if (!string.IsNullOrEmpty(Model.MainImageUrl))
+            {
+                <img src="@Url.Content(Model.MainImageUrl)" alt="@Model.Name" />
+            }
+            else if (!string.IsNullOrEmpty(Model.ThumbnailUrl))
+            {
+                <img src="@Url.Content(Model.ThumbnailUrl)" alt="@Model.Name" />
+            }
+            else
+            {
+                <img src="@Url.Content("~/Content/images/default_img.png")" alt="@Model.Name" />
+            }
+        </div>
+        <div class="col-md-9">
+            <dl class="dl-horizontal">
+                <dt>Tên sản phẩm</dt>
+                <dd>@Html.DisplayFor(model => model.Name)</dd>
+
+                <dt>Mô tả</dt>
+                <dd>@Html.DisplayFor(model => model.Description)</dd>
+
+                <dt>Đơn giá</dt>
+                <dd>@Html.DisplayFor(model => model.Price)</dd>
+
+                <dt>Danh mục</dt>
+                <dd>@Html.DisplayFor(model => model.Category.Name)</dd>
+            </dl>
+        </div>
+    </div>
+</div>
+

@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-t" />
+    <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Admin Dashboard</title>
 
@@ -75,21 +75,22 @@
                 <li class="nav-item">
                     @Html.ActionLink("Dashboard", "Index", "Home", new { area = "Admin" }, new { @class = "nav-link" })
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item">
+                    @Html.ActionLink("Quản lý Tài khoản Admin", "Index", "Account", new { area = "Admin" }, new { @class = "nav-link" })
+                </li>
+                <li class="nav-item">
+                    @Html.ActionLink("Quản lý Khách hàng", "Index", "Customer", new { area = "Admin" }, new { @class = "nav-link" })
+                </li>
+                <li class="nav-item">
                     @Html.ActionLink("Quản lý Sản phẩm", "Index", "Products", new { area = "Admin" }, new { @class = "nav-link" })
                 </li>
                 <li class="nav-item">
                     @Html.ActionLink("Quản lý Đơn hàng", "Index", "Orders", new { area = "Admin" }, new { @class = "nav-link" })
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Quản lý Hàng</a>
-                </li>
-                <li class="nav-item">
                     @Html.ActionLink("Quản lý Danh mục", "Index", "Categories", new { area = "Admin" }, new { @class = "nav-link" })
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Đăng xuất</a>
-                </li>
+
             </ul>
         </div>
     </nav>

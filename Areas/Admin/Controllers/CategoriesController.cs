@@ -10,7 +10,7 @@ using NhomProject.Models;
 
 namespace NhomProject.Areas.Admin.Controllers
 {
-    public class CategoriesController : Controller
+    public class CategoriesController : BaseController
     {
         private MyProjectDatabaseEntities db = new MyProjectDatabaseEntities();
 

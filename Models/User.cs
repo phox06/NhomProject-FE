@@ -11,6 +11,7 @@ namespace NhomProject.Models
 {
     using System;
     using System.Collections.Generic;
+    using PagedList;
     
     public partial class User
     {
@@ -29,6 +30,7 @@ namespace NhomProject.Models
         public string Phone { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public bool IsActive { get; set; }
+        public string UserRole { get; set; } // <-- Add this line
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order> Orders { get; set; }

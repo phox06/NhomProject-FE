@@ -1,0 +1,72 @@
+﻿@model NhomProject.Models.Product
+
+@* Model sẽ được truyền giữa trang Partial View và trang cha *@
+@* các phần chung của 02 form Edit.cshtml và Create.cshtml *@
+
+<style>
+    textarea {
+        width: 100%;
+        height: 150px;
+        padding: 12px 5px;
+        box-sizing: border-box;
+        border: 1px solid #d9d0d0;
+        border-radius: 10px;
+        background-color: whitesmoke;
+        resize: none;
+    }
+</style>
+
+<div class="form-group">
+    <div class="control-label col-md-2">Danh mục</div>
+    <div class="col-md-10">
+        @Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="control-label col-md-2">Tên sản phẩm</div>
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="control-label col-md-2">Mô tả</div>
+    <div class="col-md-10">
+        @Html.TextAreaFor(model => model.Description, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="control-label col-md-2">Đơn giá</div>
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="control-label col-md-2">Hình ảnh</div>
+    <div class="col-md-10">
+        @* Không preview ảnh trước khi upload *@
+        <input type="file" name="UploadImg" class="form-control" accept="image/png,image/jpeg,image/jpg,image/gif" />
+        <span class="text-muted">Chỉ chấp nhận các định dạng ảnh PNG, JPG và GIF</span>
+        @if (Model != null && !string.IsNullOrEmpty(Model.MainImageUrl))
+        {
+            <div style="margin-top: 10px;">
+                <p>Ảnh hiện tại:</p>
+                <img src="@Url.Content(Model.MainImageUrl)" alt="Current Image" style="max-width: 150px; height: auto;" />
+            </div>
+        }
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        <input type="submit" value="Lưu" class="btn btn-primary" />
+        @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-primary" })
+    </div>
+</div>

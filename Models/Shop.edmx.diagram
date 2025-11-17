@@ -6,15 +6,15 @@
     <edmx:Diagrams>
       <Diagram DiagramId="514056c935a549bbbcb09b971ff39a08" Name="Diagram1" ZoomLevel="97">
         <EntityTypeShape EntityType="MyProjectDatabaseModel.CartItem" Width="1.5" PointX="5.25" PointY="2.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="MyProjectDatabaseModel.OrderDetail" Width="1.5" PointX="8.25" PointY="2.75" IsExpanded="true" />
         <EntityTypeShape EntityType="MyProjectDatabaseModel.Order" Width="1.5" PointX="3" PointY="2.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="MyProjectDatabaseModel.User" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
         <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_CartItems_dbo_Orders_OrderId" ManuallyRouted="false" />
-        <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_OrderDetails_dbo_Orders_OrderId" ManuallyRouted="false" />
-        <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_Orders_dbo_Users_User_UserId" ManuallyRouted="false" />
         <EntityTypeShape EntityType="MyProjectDatabaseModel.Category" Width="1.5" PointX="0.75" PointY="7.875" />
         <EntityTypeShape EntityType="MyProjectDatabaseModel.Product" Width="1.5" PointX="3" PointY="7" />
         <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_Products_dbo_Categories_CategoryId" />
+        <EntityTypeShape EntityType="MyProjectDatabaseModel.User" Width="1.5" PointX="0.75" PointY="2.375" />
+        <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_Orders_dbo_Users_User_UserId" />
+        <EntityTypeShape EntityType="MyProjectDatabaseModel.OrderDetail" Width="1.5" PointX="7.5" PointY="6" />
+        <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_OrderDetails_dbo_Orders_OrderId" />
         <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_OrderDetails_dbo_Products_ProductId" />
       </Diagram>
     </edmx:Diagrams>
