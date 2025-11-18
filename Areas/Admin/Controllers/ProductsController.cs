@@ -61,7 +61,7 @@ namespace NhomProject.Areas.Admin.Controllers
 
             
             int pageNumber = page ?? 1;
-            int pageSize = 10; // Số sản phẩm mỗi trang
+            int pageSize = 10;
 
             
             var productList = products.ToList();

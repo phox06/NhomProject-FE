@@ -15,9 +15,9 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ProductId)
-        @Html.HiddenFor(model => model.MainImageUrl) @* Keep existing image if not uploading new one *@
+        @Html.HiddenFor(model => model.MainImageUrl) 
 
-        @* Nhúng Partial View vào form cha *@
+       
         @Html.Partial("PVCreateEditProduct", Model)
     </div>
 }

@@ -9,7 +9,6 @@
     }
 </style>
 
-<!-- Hiển thị danh sách sản phẩm -->
 @if (Model != null && Model.Products != null && Model.Products.Any())
 {
     <h2 class="bg-success">DANH SÁCH SẢN PHẨM</h2>
@@ -61,7 +60,7 @@
         </tbody>
     </table>
 
-    <!-- Hiển thị phân trang -->
+    
     <div class="pagination-container">
         @if (Model.Products != null && Model.Products.PageCount > 1)
         {

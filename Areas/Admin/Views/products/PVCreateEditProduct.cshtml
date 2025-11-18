@@ -1,8 +1,5 @@
 ﻿@model NhomProject.Models.Product
 
-@* Model sẽ được truyền giữa trang Partial View và trang cha *@
-@* các phần chung của 02 form Edit.cshtml và Create.cshtml *@
-
 <style>
     textarea {
         width: 100%;
@@ -51,7 +48,7 @@
 <div class="form-group">
     <div class="control-label col-md-2">Hình ảnh</div>
     <div class="col-md-10">
-        @* Không preview ảnh trước khi upload *@
+        
         <input type="file" name="UploadImg" class="form-control" accept="image/png,image/jpeg,image/jpg,image/gif" />
         <span class="text-muted">Chỉ chấp nhận các định dạng ảnh PNG, JPG và GIF</span>
         @if (Model != null && !string.IsNullOrEmpty(Model.MainImageUrl))

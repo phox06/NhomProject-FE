@@ -98,7 +98,7 @@ namespace NhomProject.Controllers
         {
             Cart cart = GetCart();
 
-            // Add this line to read any errors from other controllers
+            
             ViewBag.Error = TempData["Error"];
 
             return View(cart);
@@ -214,26 +214,21 @@ namespace NhomProject.Controllers
                 return RedirectToAction("Cart");
             }
 
-            // Check which payment method was selected
             if (model.PaymentMethod == "PayPal")
             {
-                // Save the shipping info to session
                 Session["OrderModel"] = model;
-                // Redirect to PayPal controller to create payment
                 return RedirectToAction("CreatePayment", "Paypal");
             }
             else
             {
-                // --- THIS IS YOUR EXISTING LOGIC FOR "CASH ON DELIVERY" ---
-                // Assume "COD" or other method if not PayPal
                 var order = new Order
                 {
                     CustomerName = model.CustomerName,
                     Address = model.Address,
                     Phone = model.Phone,
-                    PaymentMethod = model.PaymentMethod, // e.g., "COD"
+                    PaymentMethod = model.PaymentMethod, 
                     Date = DateTime.Now,
-                    Status = "Pending", // Status is Pending for COD
+                    Status = "Pending", 
                     Total = cart.GetTotal(),
                     UserId = userId
                 };

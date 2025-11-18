@@ -16,7 +16,6 @@ namespace NhomProject.Controllers
 
         public ActionResult CreatePayment()
         {
-            // Get Cart and Shipping Details from Session
             var cart = Session["Cart"] as Cart;
             var shippingDetails = Session["OrderModel"] as NhomProject.Models.Order;
             var userId = Session["UserId"] as int?;
@@ -33,14 +32,12 @@ namespace NhomProject.Controllers
             {
                 var total = cart.GetTotal();
 
-                // NEW CHECK: PayPal will fail if the total is 0
                 if (total <= 0)
                 {
                     TempData["Error"] = "Cannot checkout with a total of 0. Please add items to your cart.";
                     return RedirectToAction("PaymentCancel");
                 }
 
-                // Create a list of PayPal items
                 var itemList = new ItemList() { items = new List<Item>() };
                 foreach (var item in cart.Items)
                 {
@@ -48,40 +45,39 @@ namespace NhomProject.Controllers
                     {
                         name = item.ProductName,
                         currency = "USD",
-                        // THE FIX: Force dot decimal separator
                         price = item.Price.ToString("F2", CultureInfo.InvariantCulture),
                         quantity = item.Quantity.ToString(),
                         sku = item.ProductId.ToString()
                     });
                 }
 
-                // Create payment details
+                
                 var details = new Details()
                 {
-                    // THE FIX: Force dot decimal separator
+                    
                     subtotal = total.ToString("F2", CultureInfo.InvariantCulture)
                 };
 
-                // Create amount
+                
                 var amount = new Amount()
                 {
                     currency = "USD",
-                    // THE FIX: Force dot decimal separator
+                    
                     total = total.ToString("F2", CultureInfo.InvariantCulture),
                     details = details
                 };
 
-                // Create transaction
+                
                 var transactionList = new List<Transaction>();
                 transactionList.Add(new Transaction()
                 {
                     description = "Test order description.",
-                    invoice_number = Convert.ToString(new Random().Next(100000)), // A unique invoice number
+                    invoice_number = Convert.ToString(new Random().Next(100000)), 
                     amount = amount,
                     item_list = itemList
                 });
 
-                // Create payment
+               
                 var payment = new Payment()
                 {
                     intent = "sale",
@@ -94,7 +90,7 @@ namespace NhomProject.Controllers
                     }
                 };
 
-                // Create the payment and get the approval URL
+               
                 var createdPayment = payment.Create(apiContext);
                 var approvalUrl = createdPayment.links.FirstOrDefault(
                     x => x.rel.Equals("approval_url", StringComparison.OrdinalIgnoreCase));
@@ -131,7 +127,7 @@ namespace NhomProject.Controllers
                     return RedirectToAction("PaymentCancel");
                 }
 
-                // Execute the payment
+                
                 var paymentExecution = new PaymentExecution() { payer_id = payerId };
                 var payment = new Payment() { id = paymentId };
 
@@ -139,12 +135,10 @@ namespace NhomProject.Controllers
 
                 if (executedPayment.state.Equals("approved", StringComparison.OrdinalIgnoreCase))
                 {
-                    // PAYMENT SUCCEEDED - Create the order in your database
                     var cart = Session["Cart"] as Cart;
                     var shippingDetails = Session["OrderModel"] as NhomProject.Models.Order;
                     var userId = (int)Session["UserId"];
 
-                    // Create the final order object
                     var order = new NhomProject.Models.Order
                     {
                         CustomerName = shippingDetails.CustomerName,
@@ -157,7 +151,6 @@ namespace NhomProject.Controllers
                         UserId = userId
                     };
 
-                    // Add cart items to the order
                     foreach (var item in cart.Items)
                     {
                         order.CartItems.Add(new CartItem
@@ -173,12 +166,10 @@ namespace NhomProject.Controllers
                     _db.Orders.Add(order);
                     _db.SaveChanges();
 
-                    // Clear session data
                     Session["Cart"] = null;
                     Session["OrderModel"] = null;
                     Session["paypalPaymentId"] = null;
 
-                    // Redirect to confirmation page
                     return RedirectToAction("OrderConfirmation", "Home", new { id = order.Id });
                 }
                 else
@@ -187,11 +178,10 @@ namespace NhomProject.Controllers
                     return RedirectToAction("PaymentCancel");
                 }
             }
-            // NEW CATCH BLOCK
             catch (PayPal.PaymentsException ex)
             {
                 TempData["Error"] = ex.Response;
-                return RedirectToAction("PaymentCancel"); // <-- SET BREAKPOINT HERE
+                return RedirectToAction("PaymentCancel"); 
             }
             catch (Exception ex)
             {
@@ -202,10 +192,10 @@ namespace NhomProject.Controllers
 
         public ActionResult PaymentCancel()
         {
-            // Clear any lingering PayPal session
+            
             Session["paypalPaymentId"] = null;
 
-            // Show an error on the cart page
+            
             if (TempData["Error"] != null)
             {
                 ViewBag.Error = TempData["Error"];
@@ -215,7 +205,7 @@ namespace NhomProject.Controllers
                 ViewBag.Error = "Payment was canceled.";
             }
 
-            // Redirect back to the cart to try again
+            
             return RedirectToAction("Cart", "Home");
         }
 
