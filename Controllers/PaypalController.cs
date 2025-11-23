@@ -30,54 +30,62 @@ namespace NhomProject.Controllers
 
             try
             {
-                var total = cart.GetTotal();
+                // 1. Get the total in VND
+                decimal totalVND = cart.GetTotal();
 
-                if (total <= 0)
+                // 2. Set a conversion rate (e.g., 1 USD = 25,000 VND)
+                decimal exchangeRate = 25000m;
+
+                // 3. Convert total to USD
+                decimal totalUSD = totalVND / exchangeRate;
+
+                if (totalVND <= 0)
                 {
-                    TempData["Error"] = "Cannot checkout with a total of 0. Please add items to your cart.";
+                    TempData["Error"] = "Cannot checkout with a total of 0.";
                     return RedirectToAction("PaymentCancel");
                 }
 
                 var itemList = new ItemList() { items = new List<Item>() };
                 foreach (var item in cart.Items)
                 {
+                    // Convert item price to USD
+                    decimal itemPriceUSD = item.Price / exchangeRate;
+
                     itemList.items.Add(new Item()
                     {
                         name = item.ProductName,
-                        currency = "USD",
-                        price = item.Price.ToString("F2", CultureInfo.InvariantCulture),
+                        currency = "USD", // Send USD to PayPal
+                        price = itemPriceUSD.ToString("F2", CultureInfo.InvariantCulture),
                         quantity = item.Quantity.ToString(),
                         sku = item.ProductId.ToString()
                     });
                 }
 
-                
+                // Recalculate the total based on the converted item prices to avoid rounding errors
+                // (PayPal is strict: sum of items must exactly match total)
+                decimal subtotalUSD = itemList.items.Sum(i => decimal.Parse(i.price, CultureInfo.InvariantCulture) * int.Parse(i.quantity));
+
                 var details = new Details()
                 {
-                    
-                    subtotal = total.ToString("F2", CultureInfo.InvariantCulture)
+                    subtotal = subtotalUSD.ToString("F2", CultureInfo.InvariantCulture)
                 };
 
-                
                 var amount = new Amount()
                 {
-                    currency = "USD",
-                    
-                    total = total.ToString("F2", CultureInfo.InvariantCulture),
+                    currency = "USD", // Send USD to PayPal
+                    total = subtotalUSD.ToString("F2", CultureInfo.InvariantCulture),
                     details = details
                 };
 
-                
                 var transactionList = new List<Transaction>();
                 transactionList.Add(new Transaction()
                 {
-                    description = "Test order description.",
-                    invoice_number = Convert.ToString(new Random().Next(100000)), 
+                    description = "Order #" + Convert.ToString(new Random().Next(100000)),
+                    invoice_number = Guid.NewGuid().ToString(), // Use GUID for unique invoice ID
                     amount = amount,
                     item_list = itemList
                 });
 
-               
                 var payment = new Payment()
                 {
                     intent = "sale",
@@ -90,7 +98,6 @@ namespace NhomProject.Controllers
                     }
                 };
 
-               
                 var createdPayment = payment.Create(apiContext);
                 var approvalUrl = createdPayment.links.FirstOrDefault(
                     x => x.rel.Equals("approval_url", StringComparison.OrdinalIgnoreCase));
