@@ -644,7 +644,7 @@ product-info-description ul {
     margin-bottom: 1rem;
 }
 
-
+/* Định dạng lại danh sách thông số kỹ thuật (đã có từ trước) */
 .product-info-description ul {
     list-style-type: none;
     padding-left: 0;
@@ -665,17 +665,17 @@ product-info-description ul {
     .product-info-description li strong {
         color: #000;
         margin-right: 0.5rem;
-        min-width: 150px;
+        min-width: 150px; /* Căn chỉnh các tiêu đề */
         flex-shrink: 0;
     }
 
 
-
+/* Cột phụ (Sidebar) bên phải */
 .product-sidebar {
-    
+    /* Làm cho sidebar "dính" lại khi cuộn */
     position: sticky;
     top: 20px;
-    align-self: flex-start; 
+    align-self: flex-start; /* Ngăn nó kéo dài */
 }
 
 .sidebar-box {
@@ -683,7 +683,7 @@ product-info-description ul {
 }
 
     .sidebar-box .product-info-title {
-        font-size: 1.75rem; 
+        font-size: 1.75rem; /* Hơi nhỏ hơn trước */
         font-weight: 600;
     }
 
@@ -731,38 +731,43 @@ product-info-description ul {
         text-align: center;
     }
 
-
+/* Nút Mua Ngay Mới */
 .btn-danger {
     background-color: #d00;
     border-color: #d00;
 }
 
-
+/* Ghi đè các kiểu cũ */
 .product-info {
-    
+    /* Chúng ta không cần các kiểu này nữa vì đã chuyển vào sidebar */
 }
 
 .product-info-actions {
-    display: block; 
+    display: block; /* Không cần flex nữa */
 }
 
 .quantity-input {
-    width: 100px;
+    width: 100px; /* Thu hẹp ô nhập số lượng */
 }
+/* --- THIẾT KẾ ĐA PHƯƠNG TIỆN CHO ĐIỆN THOẠI NHỎ --- */
 @media (max-width: 480px) {
 
-    
+    /* Đây là mục tiêu cho các màn hình hẹp (ví dụ: iPhone, Galaxy S24).
+      Chúng ta sẽ chuyển lưới sản phẩm sang 1 cột duy nhất.
+    */
     .product-grid {
-        grid-template-columns: 1fr; 
-        gap: 1rem; 
+        grid-template-columns: 1fr; /* Chỉ 1 cột */
+        gap: 1rem; /* Giảm khoảng cách một chút */
     }
 
-    
+    /* Trên lưới 1 cột, chúng ta có thể làm cho hình ảnh
+      của thẻ sản phẩm cao hơn một chút.
+    */
     .product-card-image {
         height: 250px;
     }
 
-    
+    /* Giảm kích thước văn bản một chút để dễ đọc hơn */
     .product-card-title {
         font-size: 0.95rem;
     }
@@ -775,17 +780,19 @@ product-info-description ul {
         font-size: 1.3rem;
     }
 
-   
+    /* Thu nhỏ băng chuyền quảng cáo (promo carousel) trên điện thoại */
     .promo-carousel {
         height: 180px;
     }
 
-    
+    /* Thu nhỏ logo */
     .logo {
         font-size: 1.5rem;
     }
 
-   
+    /* Trên điện thoại, ẩn thanh điều hướng trên cùng
+      (Thành Phố Hồ Chí Minh, Đăng nhập) để tiết kiệm không gian.
+    */
     .header-top-bar {
         display: none;
     }
