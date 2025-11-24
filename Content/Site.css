@@ -230,16 +230,15 @@ main {
     }
 
 /* --- RESPONSIVE DESIGN --- */
-@media (max-width: 768px) {
-    .header-main .container {
-        flex-wrap: wrap;
-    }
-    @media (max-width: 992px) and (min-width: 769px) {
-        .product-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
+@@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -260px;
     }
 
+        #sidebar.active {
+            margin-left: 0;
+        }
+}
     .logo {
         width: 100%;
         text-align: center;

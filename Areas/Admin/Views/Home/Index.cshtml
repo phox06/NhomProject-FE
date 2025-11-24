@@ -47,16 +47,16 @@
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
 
-    
+
     google.load('visualization', '1.0', { 'packages': ['corechart'] });
 
-   
+
     google.setOnLoadCallback(drawChart);
 
-   
+
     function drawChart() {
 
-        
+
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Loại hàng');
         data.addColumn('number', 'Số lượng');
@@ -64,8 +64,8 @@
         data.addRows([
             @foreach(var item in Model)
             {
-                
-                <text>['@item.CategoryName', @item.ProductCount],</text>
+
+               <text>['@Html.Raw(item.CategoryName)', @item.ProductCount],</text>
             }
         ]);
 
@@ -77,7 +77,7 @@
             'legend': {'position': 'right'}
         };
 
-        
+
         var chart = new google.visualization.PieChart(document.getElementById('piechart_div'));
         chart.draw(data, options);
     }
