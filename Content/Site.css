@@ -181,13 +181,23 @@ main {
     }
 
 .product-card-image {
-    background-color: var(--grey-color);
-    height: 180px;
+    background-color: #fff; /* Changed from grey to white for cleaner look */
+    height: 200px; /* Fixed height for consistency */
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #999;
+    padding: 10px; /* Add padding so image doesn't touch edges */
+    overflow: hidden;
 }
+
+    /* Add this rule to target images inside the card image container */
+    .product-card-image img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain; /* Crucial: prevents cropping */
+        width: auto; /* Overwrite width: 100% if set elsewhere */
+        height: auto;
+    }
 
 .product-card-body {
     padding: 1rem;

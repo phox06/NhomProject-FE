@@ -21,7 +21,7 @@ namespace NhomProject.Models
         public int OrderId { get; set; }
         public int ProductId { get; set; }
         public string ImageUrl { get; set; }
-    
+        public int UserId { get; set; }
         public virtual Order Order { get; set; }
     }
 }

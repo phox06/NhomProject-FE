@@ -15,12 +15,9 @@ namespace NhomProject.Models
 
         public void AddItem(Product product, int quantity)
         {
-            
             var item = Items.FirstOrDefault(p => p.ProductId == product.ProductId);
-
             if (item == null)
             {
-               
                 Items.Add(new CartItem
                 {
                     ProductId = product.ProductId,
@@ -32,7 +29,6 @@ namespace NhomProject.Models
             }
             else
             {
-                
                 item.Quantity += quantity;
             }
         }
@@ -46,6 +42,7 @@ namespace NhomProject.Models
         {
             return Items.Sum(p => p.Quantity * p.Price);
         }
+
         public void UpdateQuantity(int productId, int quantity)
         {
             var item = Items.FirstOrDefault(p => p.ProductId == productId);
@@ -57,10 +54,15 @@ namespace NhomProject.Models
                 }
                 else
                 {
-                    
                     Items.Remove(item);
                 }
             }
+        }
+
+       
+        public void Clear()
+        {
+            Items.Clear();
         }
     }
 }

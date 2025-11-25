@@ -13,9 +13,10 @@
           <Property Name="ProductName" Type="nvarchar(max)" />
           <Property Name="Quantity" Type="int" Nullable="false" />
           <Property Name="Price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="OrderId" Type="int" Nullable="false" />
+          <Property Name="OrderId" Type="int" />
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="ImageUrl" Type="nvarchar(max)" />
+          <Property Name="UserId" Type="int" />
         </EntityType>
         <EntityType Name="Categories">
           <Key>
@@ -81,7 +82,7 @@
           <Property Name="UserRole" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <Association Name="FK_dbo_CartItems_dbo_Orders_OrderId">
-          <End Role="Orders" Type="Self.Orders" Multiplicity="1">
+          <End Role="Orders" Type="Self.Orders" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
           <End Role="CartItems" Type="Self.CartItems" Multiplicity="*" />
@@ -180,19 +181,6 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MyProjectDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="CartItem">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ProductName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Quantity" Type="Int32" Nullable="false" />
-          <Property Name="Price" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="OrderId" Type="Int32" Nullable="false" />
-          <Property Name="ProductId" Type="Int32" Nullable="false" />
-          <Property Name="ImageUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Order" Relationship="Self.FK_dbo_CartItems_dbo_Orders_OrderId" FromRole="CartItems" ToRole="Orders" />
-        </EntityType>
         <EntityType Name="Order">
           <Key>
             <PropertyRef Name="Id" />
@@ -207,31 +195,12 @@
           <Property Name="UserId" Type="Int32" />
           <Property Name="TotalAmount" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="PaymentMethod" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="CartItems" Relationship="Self.FK_dbo_CartItems_dbo_Orders_OrderId" FromRole="Orders" ToRole="CartItems" />
           <NavigationProperty Name="User" Relationship="MyProjectDatabaseModel.FK_dbo_Orders_dbo_Users_User_UserId" FromRole="Order" ToRole="User" />
           <NavigationProperty Name="OrderDetails" Relationship="MyProjectDatabaseModel.FK_dbo_OrderDetails_dbo_Orders_OrderId" FromRole="Order" ToRole="OrderDetail" />
+          <NavigationProperty Name="CartItems" Relationship="MyProjectDatabaseModel.FK_dbo_CartItems_dbo_Orders_OrderId" FromRole="Order" ToRole="CartItem" />
         </EntityType>
-        <Association Name="FK_dbo_CartItems_dbo_Orders_OrderId">
-          <End Role="Orders" Type="Self.Order" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="CartItems" Type="Self.CartItem" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Orders">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="CartItems">
-              <PropertyRef Name="OrderId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="MyProjectDatabaseEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="CartItems" EntityType="Self.CartItem" />
           <EntitySet Name="Orders" EntityType="Self.Order" />
-          <AssociationSet Name="FK_dbo_CartItems_dbo_Orders_OrderId" Association="Self.FK_dbo_CartItems_dbo_Orders_OrderId">
-            <End Role="Orders" EntitySet="Orders" />
-            <End Role="CartItems" EntitySet="CartItems" />
-          </AssociationSet>
           <EntitySet Name="Categories" EntityType="MyProjectDatabaseModel.Category" />
           <EntitySet Name="Products" EntityType="MyProjectDatabaseModel.Product" />
           <AssociationSet Name="FK_dbo_Products_dbo_Categories_CategoryId" Association="MyProjectDatabaseModel.FK_dbo_Products_dbo_Categories_CategoryId">
@@ -251,6 +220,11 @@
           <AssociationSet Name="FK_dbo_OrderDetails_dbo_Products_ProductId" Association="MyProjectDatabaseModel.FK_dbo_OrderDetails_dbo_Products_ProductId">
             <End Role="Product" EntitySet="Products" />
             <End Role="OrderDetail" EntitySet="OrderDetails" />
+          </AssociationSet>
+          <EntitySet Name="CartItems" EntityType="MyProjectDatabaseModel.CartItem" />
+          <AssociationSet Name="FK_dbo_CartItems_dbo_Orders_OrderId" Association="MyProjectDatabaseModel.FK_dbo_CartItems_dbo_Orders_OrderId">
+            <End Role="Order" EntitySet="Orders" />
+            <End Role="CartItem" EntitySet="CartItems" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Category">
@@ -361,25 +335,40 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="CartItem">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="OrderId" Type="Int32" />
+          <Property Name="ProductId" Type="Int32" Nullable="false" />
+          <Property Name="ImageUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="Int32" />
+          <NavigationProperty Name="Order" Relationship="MyProjectDatabaseModel.FK_dbo_CartItems_dbo_Orders_OrderId" FromRole="CartItem" ToRole="Order" />
+        </EntityType>
+        <Association Name="FK_dbo_CartItems_dbo_Orders_OrderId">
+          <End Type="MyProjectDatabaseModel.Order" Role="Order" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="MyProjectDatabaseModel.CartItem" Role="CartItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="CartItem">
+              <PropertyRef Name="OrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="MyProjectDatabaseModelStoreContainer" CdmEntityContainer="MyProjectDatabaseEntities">
-          <EntitySetMapping Name="CartItems">
-            <EntityTypeMapping TypeName="MyProjectDatabaseModel.CartItem">
-              <MappingFragment StoreEntitySet="CartItems">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Orders">
             <EntityTypeMapping TypeName="MyProjectDatabaseModel.Order">
               <MappingFragment StoreEntitySet="Orders">
@@ -445,6 +434,20 @@
                 <ScalarProperty Name="UnitPrice" ColumnName="UnitPrice" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CartItems">
+            <EntityTypeMapping TypeName="MyProjectDatabaseModel.CartItem">
+              <MappingFragment StoreEntitySet="CartItems">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

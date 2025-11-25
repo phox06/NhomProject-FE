@@ -28,12 +28,19 @@
         #sidebar {
             min-width: 260px;
             max-width: 260px;
-            background: #2c3e50; /* Modern Dark Blue/Gray */
+            background: #2c3e50;
             color: #fff;
             transition: all 0.3s;
             min-height: 100vh;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            /* DEFAULT STATE (DESKTOP): Visible */
+            margin-left: 0;
         }
+            #sidebar.active {
+                margin-left: -260px;
+            }
+
+
 
         #sidebar .sidebar-header {
             padding: 20px;
@@ -129,7 +136,7 @@
             margin-bottom: 20px;
         }
 
-        /* Footer */
+       
         .footer {
             background: #fff;
             padding: 15px;
@@ -139,7 +146,7 @@
             border-top: 1px solid #eee;
         }
 
-        /* Responsive tweaks */
+        
         @@media (max-width: 768px) {
             #sidebar {
                 margin-left: -260px;
@@ -219,7 +226,7 @@
             </div>
 
             <div class="footer">
-                <p>&copy; @DateTime.Now.Year Cửa hàng điện tử. Designed for Modern Web.</p>
+                <p>&copy; @DateTime.Now.Year Cửa hàng điện tử.</p>
             </div>
         </div>
     </div>
@@ -230,12 +237,14 @@
 
     <script>
         $(document).ready(function () {
-            // Toggle Sidebar
-            $('#sidebarCollapse').on('click', function () {
+
+            
+            $('#sidebarCollapse').on('click', function (e) {
+                e.preventDefault(); // Prevents page jumping
                 $('#sidebar').toggleClass('active');
             });
 
-            // Highlight active link based on URL
+          
             var path = window.location.pathname;
             $('#sidebar ul li a').each(function () {
                 var href = $(this).attr('href');

@@ -1,4 +1,5 @@
 ﻿using NhomProject.Models;
+using NhomProject.Models.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity; 
@@ -24,12 +25,11 @@ namespace NhomProject.Controllers
         [HttpPost]
         public ActionResult UpdateCart(int productId, int quantity)
         {
-            // Get current cart from Session
+            
             Cart cart = Session["Cart"] as Cart;
             if (cart != null)
             {
                 cart.UpdateQuantity(productId, quantity);
-                // Save back to session (optional depending on your setup, but good practice)
                 Session["Cart"] = cart;
             }
             return RedirectToAction("Cart");
@@ -98,13 +98,36 @@ namespace NhomProject.Controllers
             {
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
             }
-            
-            var product = _db.Products.FirstOrDefault(p => p.ProductId == id.Value);
+
+            var product = _db.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == id);
             if (product == null)
             {
                 return HttpNotFound();
             }
-            return View(product);
+
+            // 1. Get Related Products (Same Category, exclude current product)
+            var relatedProducts = _db.Products
+                .Where(p => p.CategoryId == product.CategoryId && p.ProductId != product.ProductId)
+                .Take(4) // Show 4 items
+                .ToList();
+
+            // 2. Get Top Products (Most sold based on OrderDetails count)
+            var topProducts = _db.Products
+                .OrderByDescending(p => p.OrderDetails.Count())
+                .Take(4) // Show 4 items
+                .ToList();
+
+            // 3. Prepare ViewModel
+            var model = new ProductDetailVM
+            {
+                Product = product,
+                RelatedProducts = relatedProducts,
+                TopProducts = topProducts,
+                Quantity = 1,
+                EstimatedValue = product.Price
+            };
+
+            return View(model);
         }
 
         public ActionResult Cart()

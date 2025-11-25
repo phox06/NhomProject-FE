@@ -5,9 +5,7 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="514056c935a549bbbcb09b971ff39a08" Name="Diagram1" ZoomLevel="97">
-        <EntityTypeShape EntityType="MyProjectDatabaseModel.CartItem" Width="1.5" PointX="5.25" PointY="2.625" IsExpanded="true" />
         <EntityTypeShape EntityType="MyProjectDatabaseModel.Order" Width="1.5" PointX="3" PointY="2.125" IsExpanded="true" />
-        <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_CartItems_dbo_Orders_OrderId" ManuallyRouted="false" />
         <EntityTypeShape EntityType="MyProjectDatabaseModel.Category" Width="1.5" PointX="0.75" PointY="7.875" />
         <EntityTypeShape EntityType="MyProjectDatabaseModel.Product" Width="1.5" PointX="3" PointY="7" />
         <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_Products_dbo_Categories_CategoryId" />
@@ -16,6 +14,8 @@
         <EntityTypeShape EntityType="MyProjectDatabaseModel.OrderDetail" Width="1.5" PointX="7.5" PointY="6" />
         <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_OrderDetails_dbo_Orders_OrderId" />
         <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_OrderDetails_dbo_Products_ProductId" />
+        <EntityTypeShape EntityType="MyProjectDatabaseModel.CartItem" Width="1.5" PointX="5.25" PointY="2.5" />
+        <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_CartItems_dbo_Orders_OrderId" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

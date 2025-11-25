@@ -1,14 +1,11 @@
-﻿
-@model IEnumerable<NhomProject.Models.Product>
+﻿@model IEnumerable<NhomProject.Models.Product>
 
 @{
     ViewData["Title"] = ViewData["CategoryName"];
-    var currentSort = ViewData["CurrentSort"] as string; 
-
+    var currentSort = ViewData["CurrentSort"] as string;
 }
 
-    <link href="~/Content/Site.css" rel="stylesheet" />
-
+<link href="~/Content/Site.css" rel="stylesheet" />
 
 <div class="container">
 
@@ -18,7 +15,6 @@
     </div>
 
     <div class="sort-bar">
-       
         @using (Html.BeginForm("Category", "Home", new { id = ViewData["CategoryName"] }, FormMethod.Get))
         {
             <label for="sortOrder">Sắp Xếp Theo:</label>
@@ -31,29 +27,19 @@
     </div>
 
     <div class="product-grid">
-
         @if (Model.Any())
         {
             foreach (var product in Model)
             {
                 <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-card">
 
-                    <div class="product-card-image">
-                        @if (!string.IsNullOrEmpty(product.ThumbnailUrl))
-                        {
-                            <!-- If Thumbnail exists, show it -->
-                            <img src="@Url.Content(product.ThumbnailUrl)" alt="@product.Name" />
-                        }
-                        else if (!string.IsNullOrEmpty(product.MainImageUrl))
-                        {
-                            <!-- Fallback to MainImage if Thumbnail is missing -->
-                            <img src="@Url.Content(product.MainImageUrl)" alt="@product.Name" />
-                        }
-                        else
-                        {
-                            <!-- Fallback to a default placeholder if BOTH are missing -->
-                            <img src="@Url.Content("~/Content/images/default_img.png")" alt="No Image Available" />
-                        }
+                    <div class="product-card-image" style="height: 200px; padding: 10px; background-color: #fff; display: flex; align-items: center; justify-content: center;">
+                        <!-- UPDATED IMAGE LOGIC -->
+                        <img src="@(string.IsNullOrEmpty(product.ThumbnailUrl) ?
+                                    (string.IsNullOrEmpty(product.MainImageUrl) ? "https://placehold.co/200x200?text=No+Image" : Url.Content(product.MainImageUrl))
+                                    : Url.Content(product.ThumbnailUrl))"
+                             alt="@product.Name"
+                             style="max-width: 100%; max-height: 100%; object-fit: contain;" />
                     </div>
 
                     <div class="product-card-body">
@@ -71,7 +57,6 @@
                         </div>
 
                         <div class="product-card-rating">
-                            
                             @product.Rating Stars (@product.ReviewCount)
                         </div>
 
