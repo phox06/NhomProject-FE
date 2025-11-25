@@ -101,33 +101,29 @@ namespace NhomProject.Areas.Admin.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ProductId,Name,Description,Price,OldPrice,CategoryId,Rating,ReviewCount,ThumbnailUrl,MainImageUrl")] Product product, HttpPostedFileBase UploadImg)
+        public ActionResult Create(Product product, HttpPostedFileBase UploadImage)
         {
             if (ModelState.IsValid)
             {
-                
-                if (UploadImg != null && UploadImg.ContentLength > 0)
+                // 1. Check if user uploaded a file
+                if (UploadImage != null && UploadImage.ContentLength > 0)
                 {
-                    string filename = Path.GetFileName(UploadImg.FileName);
-                    string savePath = "~/Content/images/";
-                    product.MainImageUrl = savePath + filename;
-                    UploadImg.SaveAs(Path.Combine(Server.MapPath(savePath), filename));
-                }
-                else
-                {
-                    product.MainImageUrl = product.MainImageUrl ?? "~/Content/images/default_img.png";
-                }
+                    // Logic to save file
+                    string filename = Path.GetFileName(UploadImage.FileName);
+                    string path = Path.Combine(Server.MapPath("~/Content/images/"), filename);
+                    UploadImage.SaveAs(path);
 
-                if (product.Rating == 0)
-                    product.Rating = 0;
-                if (product.ReviewCount == 0)
-                    product.ReviewCount = 0;
+                    // Set the image path to the uploaded file name
+                    product.MainImageUrl = filename;
+                }
+                // 2. If NO file uploaded, the product.ProductImage will already contain the URL 
+                // string from the text input (MVC binding handles this automatically).
 
                 db.Products.Add(product);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", product.CategoryId);
+
             return View(product);
         }
         public ActionResult Edit(int? id)

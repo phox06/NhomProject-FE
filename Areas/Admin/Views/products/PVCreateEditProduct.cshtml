@@ -13,57 +13,87 @@
     }
 </style>
 
-<div class="form-group">
-    <div class="control-label col-md-2">Danh mục</div>
-    <div class="col-md-10">
-        @Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
-    </div>
-</div>
+<div class="form-horizontal">
 
-<div class="form-group">
-    <div class="control-label col-md-2">Tên sản phẩm</div>
-    <div class="col-md-10">
-        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <div class="control-label col-md-2">Danh mục</div>
+        <div class="col-md-10">
+            @Html.DropDownList("CategoryId", null, htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
+        </div>
     </div>
-</div>
 
-<div class="form-group">
-    <div class="control-label col-md-2">Mô tả</div>
-    <div class="col-md-10">
-        @Html.TextAreaFor(model => model.Description, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <div class="control-label col-md-2">Tên sản phẩm</div>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
     </div>
-</div>
 
-<div class="form-group">
-    <div class="control-label col-md-2">Đơn giá</div>
-    <div class="col-md-10">
-        @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <div class="control-label col-md-2">Mô tả</div>
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.Description, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+        </div>
     </div>
-</div>
 
-<div class="form-group">
-    <div class="control-label col-md-2">Hình ảnh</div>
-    <div class="col-md-10">
-        
-        <input type="file" name="UploadImg" class="form-control" accept="image/png,image/jpeg,image/jpg,image/gif" />
-        <span class="text-muted">Chỉ chấp nhận các định dạng ảnh PNG, JPG và GIF</span>
-        @if (Model != null && !string.IsNullOrEmpty(Model.MainImageUrl))
-        {
-            <div style="margin-top: 10px;">
-                <p>Ảnh hiện tại:</p>
-                <img src="@Url.Content(Model.MainImageUrl)" alt="Current Image" style="max-width: 150px; height: auto;" />
+    <div class="form-group">
+        <div class="control-label col-md-2">Đơn giá (Mới)</div>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control", @type = "number" } })
+            @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="control-label col-md-2">Giá cũ (Giảm giá)</div>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.OldPrice, new { htmlAttributes = new { @class = "form-control", @type = "number", @placeholder = "Bỏ trống nếu không có giảm giá" } })
+            @Html.ValidationMessageFor(model => model.OldPrice, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.MainImageUrl, "Hình ảnh chính", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <div class="mb-2">
+                <label class="radio-inline mr-3">
+                    <input type="radio" name="imgOption" id="optFile" value="file" checked onchange="toggleImageInput()"> Upload từ máy
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="imgOption" id="optUrl" value="url" onchange="toggleImageInput()"> Dùng Link Online
+                </label>
             </div>
-        }
-    </div>
-</div>
 
-<div class="form-group">
-    <div class="col-md-offset-2 col-md-10">
-        <input type="submit" value="Lưu" class="btn btn-primary" />
-        @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-primary" })
+            <div id="fileInputSection">
+                <input type="file" name="UploadImage" class="form-control" accept="image/*" />
+                <small class="text-muted">Chọn ảnh từ máy tính của bạn.</small>
+            </div>
+
+            <div id="urlInputSection" style="display:none;">
+                @Html.EditorFor(model => model.MainImageUrl, new { htmlAttributes = new { @class = "form-control", @placeholder = "https://example.com/image.jpg", @id = "urlField" } })
+                <small class="text-muted">Dán đường dẫn ảnh trực tiếp vào đây.</small>
+            </div>
+
+            @Html.ValidationMessageFor(model => model.MainImageUrl, "", new { @class = "text-danger" })
+        </div>
     </div>
+
+    <div class="form-group">
+        <div class="control-label col-md-2">Link ảnh nhỏ (Thumbnail)</div>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.ThumbnailUrl, new { htmlAttributes = new { @class = "form-control", @placeholder = "Link ảnh thumbnail (nếu có)" } })
+            @Html.ValidationMessageFor(model => model.ThumbnailUrl, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Lưu" class="btn btn-primary" />
+            @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-outline-primary" })
+        </div>
+    </div>
+
 </div>

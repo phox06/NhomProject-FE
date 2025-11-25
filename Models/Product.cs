@@ -11,7 +11,8 @@ namespace NhomProject.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Web.Mvc;
+
     public partial class Product
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
@@ -22,6 +23,7 @@ namespace NhomProject.Models
     
         public int ProductId { get; set; }
         public string Name { get; set; }
+        [AllowHtml] // <--- ADD THIS LINE
         public string Description { get; set; }
         public decimal Price { get; set; }
         public Nullable<decimal> OldPrice { get; set; }
@@ -30,7 +32,8 @@ namespace NhomProject.Models
         public int ReviewCount { get; set; }
         public string ThumbnailUrl { get; set; }
         public string MainImageUrl { get; set; }
-    
+       
+
         public virtual Category Category { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
