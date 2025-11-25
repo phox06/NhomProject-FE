@@ -39,7 +39,21 @@
                 <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-card">
 
                     <div class="product-card-image">
-                        <img src="@Url.Content(product.ThumbnailUrl)" alt="@product.Name" style="width: 100%; height: 100%; object-fit: cover;" />
+                        @if (!string.IsNullOrEmpty(product.ThumbnailUrl))
+                        {
+                            <!-- If Thumbnail exists, show it -->
+                            <img src="@Url.Content(product.ThumbnailUrl)" alt="@product.Name" />
+                        }
+                        else if (!string.IsNullOrEmpty(product.MainImageUrl))
+                        {
+                            <!-- Fallback to MainImage if Thumbnail is missing -->
+                            <img src="@Url.Content(product.MainImageUrl)" alt="@product.Name" />
+                        }
+                        else
+                        {
+                            <!-- Fallback to a default placeholder if BOTH are missing -->
+                            <img src="@Url.Content("~/Content/images/default_img.png")" alt="No Image Available" />
+                        }
                     </div>
 
                     <div class="product-card-body">

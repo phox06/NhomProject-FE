@@ -41,12 +41,25 @@
                             @item.ProductName
                         </td>
                         <td>@item.Price.ToString("C")</td>
-                        <td>@item.Quantity</td>
+                        <td>
+                            @using (Html.BeginForm("UpdateCart", "Home", FormMethod.Post))
+                            {
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <input type="number" name="quantity" value="@item.Quantity" min="1"
+                                           style="width: 60px; text-align: center; border: 1px solid #ddd; padding: 5px; border-radius: 5px;" />
+
+                                    <button type="submit" class="btn btn-sm btn-primary" title="Cập nhật">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                </div>
+                            }
+                        </td>
                         <td>@((item.Quantity * item.Price).ToString("C"))</td>
                         <td class="cart-item-remove">
                             <a href="@Url.Action("RemoveFromCart", "Home", new { id = item.ProductId })"
-                               title="Remove item">
-                                &times;
+                               title="Xóa sản phẩm" class="text-danger">
+                                <i class="fas fa-trash"></i>
                             </a>
                         </td>
                     </tr>

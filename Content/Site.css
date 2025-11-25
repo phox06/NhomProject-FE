@@ -794,3 +794,17 @@ product-info-description ul {
         display: none;
     }
 }
+.cart-badge {
+    background-color: #ff0000; /* Red background */
+    color: white; /* White text */
+    border-radius: 50%; /* Make it a circle */
+    padding: 2px 6px; /* Size of the badge */
+    font-size: 11px; /* Small text */
+    font-weight: bold;
+    position: absolute; /* Floating position */
+    top: -8px; /* Move up */
+    right: -10px; /* Move right */
+    min-width: 18px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}

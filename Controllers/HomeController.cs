@@ -21,6 +21,19 @@ namespace NhomProject.Controllers
             }
             return cart;
         }
+        [HttpPost]
+        public ActionResult UpdateCart(int productId, int quantity)
+        {
+            // Get current cart from Session
+            Cart cart = Session["Cart"] as Cart;
+            if (cart != null)
+            {
+                cart.UpdateQuantity(productId, quantity);
+                // Save back to session (optional depending on your setup, but good practice)
+                Session["Cart"] = cart;
+            }
+            return RedirectToAction("Cart");
+        }
         public ActionResult Index()
         {
             var allProducts = _db.Products.Include(p => p.Category).ToList();

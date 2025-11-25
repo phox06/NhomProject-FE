@@ -46,5 +46,21 @@ namespace NhomProject.Models
         {
             return Items.Sum(p => p.Quantity * p.Price);
         }
+        public void UpdateQuantity(int productId, int quantity)
+        {
+            var item = Items.FirstOrDefault(p => p.ProductId == productId);
+            if (item != null)
+            {
+                if (quantity > 0)
+                {
+                    item.Quantity = quantity;
+                }
+                else
+                {
+                    
+                    Items.Remove(item);
+                }
+            }
+        }
     }
 }
