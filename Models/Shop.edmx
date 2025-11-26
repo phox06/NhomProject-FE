@@ -65,6 +65,7 @@
           <Property Name="ReviewCount" Type="int" Nullable="false" />
           <Property Name="ThumbnailUrl" Type="nvarchar(max)" />
           <Property Name="MainImageUrl" Type="nvarchar(max)" />
+          <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -80,6 +81,7 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="UserRole" Type="nvarchar" MaxLength="50" />
+          <Property Name="Role" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <Association Name="FK_dbo_CartItems_dbo_Orders_OrderId">
           <End Role="Orders" Type="Self.Orders" Multiplicity="0..1">
@@ -149,6 +151,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Orders_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Orders">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="MyProjectDatabaseModelStoreContainer">
           <EntitySet Name="CartItems" EntityType="Self.CartItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
@@ -175,6 +189,10 @@
           <AssociationSet Name="FK_dbo_Products_dbo_Categories_CategoryId" Association="Self.FK_dbo_Products_dbo_Categories_CategoryId">
             <End Role="Categories" EntitySet="Categories" />
             <End Role="Products" EntitySet="Products" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Orders_Users" Association="Self.FK_Orders_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Orders" EntitySet="Orders" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -252,6 +270,7 @@
           <Property Name="MainImageUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Category" Relationship="MyProjectDatabaseModel.FK_dbo_Products_dbo_Categories_CategoryId" FromRole="Product" ToRole="Category" />
           <NavigationProperty Name="OrderDetails" Relationship="MyProjectDatabaseModel.FK_dbo_OrderDetails_dbo_Products_ProductId" FromRole="Product" ToRole="OrderDetail" />
+          <Property Name="IsActive" Type="Boolean" />
         </EntityType>
         <Association Name="FK_dbo_Products_dbo_Categories_CategoryId">
           <End Type="MyProjectDatabaseModel.Category" Role="Category" Multiplicity="1">
@@ -282,6 +301,7 @@
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="Orders" Relationship="MyProjectDatabaseModel.FK_dbo_Orders_dbo_Users_User_UserId" FromRole="User" ToRole="Order" />
           <Property Name="UserRole" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Role" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_dbo_Orders_dbo_Users_User_UserId">
           <End Type="MyProjectDatabaseModel.User" Role="User" Multiplicity="0..1" />
@@ -397,6 +417,7 @@
           <EntitySetMapping Name="Products">
             <EntityTypeMapping TypeName="MyProjectDatabaseModel.Product">
               <MappingFragment StoreEntitySet="Products">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="MainImageUrl" ColumnName="MainImageUrl" />
                 <ScalarProperty Name="ThumbnailUrl" ColumnName="ThumbnailUrl" />
                 <ScalarProperty Name="ReviewCount" ColumnName="ReviewCount" />
@@ -413,6 +434,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="MyProjectDatabaseModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Role" ColumnName="Role" />
                 <ScalarProperty Name="UserRole" ColumnName="UserRole" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />

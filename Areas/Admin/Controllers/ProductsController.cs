@@ -178,9 +178,25 @@ namespace NhomProject.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            // 1. Check if this product is in any Order Details
+            bool isOrdered = db.OrderDetails.Any(od => od.ProductId == id);
+
+            if (isOrdered)
+            {
+                // 2. If true, cancel delete to protect order history
+                TempData["ErrorMessage"] = "Không thể xóa sản phẩm này vì nó nằm trong đơn hàng cũ của khách.";
+                return RedirectToAction("Index");
+            }
+
+            // 3. If false, proceed with delete
             Product product = db.Products.Find(id);
+
+            // (Optional: Delete associated image file from folder here if needed)
+
             db.Products.Remove(product);
             db.SaveChanges();
+
+            TempData["SuccessMessage"] = "Đã xóa sản phẩm thành công.";
             return RedirectToAction("Index");
         }
 

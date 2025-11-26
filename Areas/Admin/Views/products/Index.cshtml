@@ -15,23 +15,41 @@
         }
     </style>
 </head>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
 <body>
-   
+
     @using (Html.BeginForm("Index", "Products", FormMethod.Get))
     {
         <div class="form-group search-container">
             @Html.TextBoxFor(m => m.SearchTerm, new { @class = "form-control", placeholder = "Nhập tên, mô tả hoặc chủng loại sản phẩm", style = "width: 300px; margin-right: 10px;" })
-            
-            
+
+
             @Html.TextBoxFor(m => m.MinPrice, new { @class = "form-control", placeholder = "Nhập giá tối thiểu", type = "number", step = "0.01", style = "width: 150px; margin-right: 10px;" })
             @Html.TextBoxFor(m => m.MaxPrice, new { @class = "form-control", placeholder = "Nhập giá tối đa", type = "number", step = "0.01", style = "width: 150px; margin-right: 10px;" })
-            
+
             <button type="submit" class="btn btn-primary">Tìm kiếm</button>
         </div>
     }
 
-    
+
     @if (Model != null)
     {
         <div class="order-container">
@@ -43,6 +61,6 @@
         </div>
     }
 
-    
+
     @Html.Partial("PVListProduct", Model)
 </body>

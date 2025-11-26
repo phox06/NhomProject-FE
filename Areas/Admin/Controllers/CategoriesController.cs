@@ -109,9 +109,22 @@ namespace NhomProject.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+            // 1. Check if any products exist in this category
+            bool hasProducts = db.Products.Any(p => p.CategoryId == id);
+
+            if (hasProducts)
+            {
+                // 2. If true, cancel delete and show warning
+                TempData["ErrorMessage"] = "Không thể xóa Danh mục này vì đang có Sản phẩm thuộc danh mục.";
+                return RedirectToAction("Index");
+            }
+
+            // 3. If false, proceed with delete
             Category category = db.Categories.Find(id);
             db.Categories.Remove(category);
             db.SaveChanges();
+
+            TempData["SuccessMessage"] = "Đã xóa danh mục thành công.";
             return RedirectToAction("Index");
         }
 

@@ -32,7 +32,9 @@ namespace NhomProject.Models
         public int ReviewCount { get; set; }
         public string ThumbnailUrl { get; set; }
         public string MainImageUrl { get; set; }
-       
+        public bool IsActive { get; set; }
+        public int StockQuantity { get; set; }
+
 
         public virtual Category Category { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -232,6 +232,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model2.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RegisterAdminViewModel.cs" />
     <Compile Include="Models\Shop.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -373,6 +374,7 @@
     <Content Include="Views\Home\OrderHistory.cshtml" />
     <Content Include="Views\Home\OrderDetails.cshtml" />
     <Content Include="Views\Home\Search.cshtml" />
+    <Content Include="Views\Auth\RegisterAdmin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

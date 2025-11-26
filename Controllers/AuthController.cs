@@ -12,6 +12,7 @@ namespace NhomProject.Controllers
     {
         private MyProjectDatabaseEntities _db = new MyProjectDatabaseEntities();
 
+
         // GET: Auth/Login
         public ActionResult Login()
         {
@@ -22,7 +23,57 @@ namespace NhomProject.Controllers
             }
             return View();
         }
+        // GET: /Auth/RegisterAdmin
+        public ActionResult RegisterAdmin()
+        {
+            return View();
+        }
+        // POST: /Auth/RegisterAdmin
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RegisterAdmin(NhomProject.Models.RegisterAdminViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (model.SecretCode != "adminuser")
+                {
+                    ModelState.AddModelError("SecretCode", "Mã bí mật không đúng!");
+                    return View(model);
+                }
 
+                if (_db.Users.Any(u => u.Username == model.Username))
+                {
+                    ModelState.AddModelError("Username", "Tên đăng nhập đã tồn tại.");
+                    return View(model);
+                }
+
+                var user = new NhomProject.Models.User();
+                user.Username = model.Username;
+                user.Password = model.Password;
+                user.FullName = model.FullName;
+                user.Email = model.Email;
+                user.Role = "Admin";
+
+                // --- FIX STARTS HERE ---
+                // You likely have a 'CreatedDate' or 'CreatedAt' column. 
+                // You MUST set it to DateTime.Now, otherwise it defaults to year 0001 (causing the crash).
+
+                 user.CreatedDate = DateTime.Now; 
+               
+
+          
+                // user.DateOfBirth = DateTime.Now; 
+             
+
+                _db.Users.Add(user);
+                _db.SaveChanges(); // This line crashed before; now it should work.
+
+                TempData["SuccessMessage"] = "Tạo tài khoản Admin thành công!";
+                return RedirectToAction("Index", "Account", new { area = "Admin" });
+            }
+
+            return View(model);
+        }
         // POST: Auth/Login
         [HttpPost]
         [ValidateAntiForgeryToken]

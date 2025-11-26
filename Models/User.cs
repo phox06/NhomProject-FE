@@ -31,7 +31,8 @@ namespace NhomProject.Models
         public System.DateTime CreatedDate { get; set; }
         public bool IsActive { get; set; }
         public string UserRole { get; set; } // <-- Add this line
-    
+        public string Role { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order> Orders { get; set; }
     }
