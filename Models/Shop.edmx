@@ -65,7 +65,8 @@
           <Property Name="ReviewCount" Type="int" Nullable="false" />
           <Property Name="ThumbnailUrl" Type="nvarchar(max)" />
           <Property Name="MainImageUrl" Type="nvarchar(max)" />
-          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="StockQuantity" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -270,7 +271,8 @@
           <Property Name="MainImageUrl" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Category" Relationship="MyProjectDatabaseModel.FK_dbo_Products_dbo_Categories_CategoryId" FromRole="Product" ToRole="Category" />
           <NavigationProperty Name="OrderDetails" Relationship="MyProjectDatabaseModel.FK_dbo_OrderDetails_dbo_Products_ProductId" FromRole="Product" ToRole="OrderDetail" />
-          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="StockQuantity" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="FK_dbo_Products_dbo_Categories_CategoryId">
           <End Type="MyProjectDatabaseModel.Category" Role="Category" Multiplicity="1">
@@ -417,6 +419,7 @@
           <EntitySetMapping Name="Products">
             <EntityTypeMapping TypeName="MyProjectDatabaseModel.Product">
               <MappingFragment StoreEntitySet="Products">
+                <ScalarProperty Name="StockQuantity" ColumnName="StockQuantity" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="MainImageUrl" ColumnName="MainImageUrl" />
                 <ScalarProperty Name="ThumbnailUrl" ColumnName="ThumbnailUrl" />
