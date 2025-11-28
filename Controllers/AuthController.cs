@@ -35,41 +35,54 @@ namespace NhomProject.Controllers
         {
             if (ModelState.IsValid)
             {
+                // 1. Verify Secret Code
                 if (model.SecretCode != "adminuser")
                 {
                     ModelState.AddModelError("SecretCode", "Mã bí mật không đúng!");
                     return View(model);
                 }
 
+                // 2. Check duplicate username
                 if (_db.Users.Any(u => u.Username == model.Username))
                 {
                     ModelState.AddModelError("Username", "Tên đăng nhập đã tồn tại.");
                     return View(model);
                 }
 
+                // 3. Create the User
                 var user = new NhomProject.Models.User();
                 user.Username = model.Username;
-                user.Password = model.Password;
+                user.Password = model.Password; 
                 user.FullName = model.FullName;
                 user.Email = model.Email;
+                user.UserRole = "Admin";
                 user.Role = "Admin";
 
-                // --- FIX STARTS HERE ---
-                // You likely have a 'CreatedDate' or 'CreatedAt' column. 
-                // You MUST set it to DateTime.Now, otherwise it defaults to year 0001 (causing the crash).
-
-                 user.CreatedDate = DateTime.Now; 
-               
-
-          
-                // user.DateOfBirth = DateTime.Now; 
-             
+                // Add default values if required by your DB
+                user.CreatedDate = DateTime.Now;
+                user.IsActive = true;
+                // <-- Add this line
+                // user.IsActive = true; 
+                // user.StockQuantity = 0; // If you copied logic from Product? (Likely not needed for User)
 
                 _db.Users.Add(user);
-                _db.SaveChanges(); // This line crashed before; now it should work.
+                _db.SaveChanges(); // We save here to get the new User.UserId
+
+                // 4. Assign "Admin" Role
+                // We look up the role from the Roles table
+                var adminRole = _db.Users.FirstOrDefault(r => r.Role == "Admin");
+
+                if (adminRole != null)
+                {
+                    // FIX: Assign the role name string to the user's Role property
+                    user.Role = adminRole.Role;
+
+                    _db.SaveChanges(); // Save the relationship
+                }
 
                 TempData["SuccessMessage"] = "Tạo tài khoản Admin thành công!";
-                return RedirectToAction("Index", "Account", new { area = "Admin" });
+                // Redirect to the Admin Login page
+                return RedirectToAction("Login", "Home", new { area = "Admin" });
             }
 
             return View(model);

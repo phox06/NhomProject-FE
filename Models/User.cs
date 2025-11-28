@@ -19,6 +19,7 @@ namespace NhomProject.Models
         public User()
         {
             this.Orders = new HashSet<Order>();
+            this.Orders1 = new HashSet<Order>();
         }
     
         public int UserId { get; set; }
@@ -30,10 +31,13 @@ namespace NhomProject.Models
         public string Phone { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public bool IsActive { get; set; }
-        public string UserRole { get; set; } // <-- Add this line
+        public string UserRole { get; set; } 
         public string Role { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order> Orders { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Order> Orders1 { get; set; }
     }
 }

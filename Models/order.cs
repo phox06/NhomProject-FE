@@ -37,5 +37,7 @@ namespace NhomProject.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
         public virtual User User { get; set; }
+        // Add this property to match the database schema if there is a second FK to User
+        public virtual User User1 { get; set; }
     }
 }
