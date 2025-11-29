@@ -32,7 +32,7 @@ namespace NhomProject.Areas.Admin.Controllers
                     AveragePrice = c.Products.Any() ? c.Products.Average(p => p.Price) : 0
                 }).ToList();
 
-            
+       
             return View(stats);
         }
 

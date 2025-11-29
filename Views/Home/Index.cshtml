@@ -20,26 +20,28 @@
         <div class="swiper-button-prev"></div>
         <div class="swiper-button-next"></div>
     </div>
-   
-    
 
+    @* --- SECTION 1: ĐIỆN THOẠI --- *@
     <h2 class="section-title">Điện Thoại Nổi Bật</h2>
     <div class="product-grid">
         @foreach (var product in Model.PhoneProducts)
         {
             <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-card">
                 <div class="product-card-image">
-                    
                     <img src="@(string.IsNullOrEmpty(product.ThumbnailUrl) ? "https://placehold.co/200x180/f0f0f0/999?text=No+Image" : Url.Content(product.ThumbnailUrl))" alt="@product.Name" style="width: 100%; height: 100%; object-fit: cover;" />
                 </div>
                 <div class="product-card-body">
                     <h3 class="product-card-title">@product.Name</h3>
                     <div class="product-card-price">
-                        @product.Price.ToString("C")
+
+                        @* FIX 1: CHANGE THIS LINE *@
+                        @product.Price.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))Đ
+
                         @if (product.OldPrice.HasValue && product.OldPrice.Value > product.Price)
                         {
                             <span class="product-card-price-old">
-                                @product.OldPrice.Value.ToString("C")
+                                @* FIX 2: CHANGE THIS LINE *@
+                                @product.OldPrice.Value.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))Đ
                             </span>
                         }
                     </div>
@@ -51,23 +53,28 @@
         }
     </div>
 
+    @* --- SECTION 2: LAPTOPS --- *@
     <h2 class="section-title">Laptops Bán Chạy</h2>
     <div class="product-grid">
         @foreach (var product in Model.LaptopProducts)
         {
             <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-card">
                 <div class="product-card-image">
-                   
+
                     <img src="@(string.IsNullOrEmpty(product.ThumbnailUrl) ? "https://placehold.co/200x180/f0f0f0/999?text=No+Image" : Url.Content(product.ThumbnailUrl))" alt="@product.Name" style="width: 100%; height: 100%; object-fit: cover;" />
                 </div>
                 <div class="product-card-body">
                     <h3 class="product-card-title">@product.Name</h3>
                     <div class="product-card-price">
-                        @product.Price.ToString("C")
+
+                        @* FIX 3: CHANGE THIS LINE *@
+                        @product.Price.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))Đ
+
                         @if (product.OldPrice.HasValue && product.OldPrice.Value > product.Price)
                         {
                             <span class="product-card-price-old">
-                                @product.OldPrice.Value.ToString("C")
+                                @* FIX 4: CHANGE THIS LINE *@
+                                @product.OldPrice.Value.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))Đ
                             </span>
                         }
                     </div>
@@ -80,4 +87,3 @@
     </div>
 
 </div>
-

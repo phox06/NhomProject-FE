@@ -12,17 +12,12 @@ namespace NhomProject.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class CartItem
+    public partial class ProductImage
     {
-        public int Id { get; set; }
-        public string ProductName { get; set; }
-        public int Quantity { get; set; }
-        public decimal Price { get; set; }
-        public Nullable<int> OrderId { get; set; }
+        public int ImageId { get; set; }
         public int ProductId { get; set; }
         public string ImageUrl { get; set; }
-        public Nullable<int> UserId { get; set; }
     
-        public virtual Order Order { get; set; }
+        public virtual Product Product { get; set; }
     }
 }

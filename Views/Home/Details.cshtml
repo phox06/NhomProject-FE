@@ -1,152 +1,245 @@
 ﻿@model NhomProject.Models.ViewModel.ProductDetailVM
+@using System.Globalization
 
 @{
-    ViewData["Title"] = Model.Product.Name;
+    ViewBag.Title = Model.Product.Name;
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    // Helper to format money
+    var viCulture = new CultureInfo("vi-VN");
 }
 
-<div class="container">
+<style>
+    .product-gallery-thumbs {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        overflow-x: auto;
+    }
+
+    .thumb-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+        .thumb-img:hover {
+            border-color: #d00;
+        }
+
+    .main-img-container {
+        border: 1px solid #f0f0f0;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .main-img-container img {
+            max-height: 100%;
+            max-width: 100%;
+        }
+
+    .price-box {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .current-price {
+        font-size: 28px;
+        color: #d0021b;
+        font-weight: bold;
+    }
+
+    .old-price {
+        text-decoration: line-through;
+        color: #666;
+        margin-left: 10px;
+    }
+
+    .btn-buy-now {
+        background: #d0021b;
+        color: white;
+        font-weight: bold;
+        width: 100%;
+        padding: 15px;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 5px;
+    }
+
+        .btn-buy-now:hover {
+            background: #a80014;
+            color: white;
+        }
+
+    .specs-table td {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .specs-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+</style>
+
+<div class="container mt-4">
+    <!-- BREADCRUMB -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="@Url.Action("Category", "Home", new { id = Model.Product.Category?.Name })">@Model.Product.Category?.Name</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Product.Name</li>
+        </ol>
+    </nav>
+
     <div class="row">
-        <!-- LEFT COLUMN: Image and Tabs -->
-        <div class="col-lg-8">
-
-            <!-- Main Product Image -->
-            <div class="card product-card-main-image mb-3">
-                <div style="height: 500px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                    <img src="@(string.IsNullOrEmpty(Model.Product.MainImageUrl) ? "https://placehold.co/750x500/f0f0f0/999?text=No+Image" : Url.Content(Model.Product.MainImageUrl))"
-                         alt="@Model.Product.Name"
-                         style="max-height: 100%; max-width: 100%; object-fit: contain;" />
-                </div>
+        <!-- LEFT COLUMN: IMAGES (GALLERY) -->
+        <div class="col-md-5">
+            <!-- 1. Main Image -->
+            <div class="main-img-container">
+                <img id="mainImage"
+                     src="@(string.IsNullOrEmpty(Model.Product.MainImageUrl) ? "https://placehold.co/500x500?text=No+Image" : Url.Content(Model.Product.MainImageUrl))"
+                     alt="@Model.Product.Name" />
             </div>
 
-            <!-- Product Tabs -->
-            <div class="card product-tabs-container">
-                <div class="card-header">
-                    <ul class="nav nav-tabs card-header-tabs" id="productTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button">Thông số kỹ thuật</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button">Thông tin sản phẩm</button>
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-body tab-content" id="productTabContent">
-                    <div class="tab-pane fade show active" id="specs" role="tabpanel">
-                        <h4 class="tab-title">Thông số kỹ thuật</h4>
-                        <div class="product-info-description">
-                            @Html.Raw(Model.Product.Description)
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="description" role="tabpanel">
-                        <h4 class="tab-title">Mô tả sản phẩm</h4>
-                        <p>@Model.Product.Name là sản phẩm chính hãng...</p>
-                    </div>
-                </div>
-            </div>
+            <!-- 2. Thumbnails List (Images 3, 4...) -->
+            <div class="product-gallery-thumbs">
+                <!-- Thumbnail of Main Image -->
+                <img src="@(string.IsNullOrEmpty(Model.Product.MainImageUrl) ? "https://placehold.co/100x100" : Url.Content(Model.Product.MainImageUrl))"
+                     class="thumb-img" onclick="changeImage(this.src)" />
 
+                <!-- Loop through Extra Images (from Database) -->
+                @if (Model.Product.ProductImages != null)
+                {
+                    foreach (var img in Model.Product.ProductImages)
+                    {
+                        <img src="@Url.Content(img.ImageUrl)" class="thumb-img" onclick="changeImage(this.src)" />
+                    }
+                }
+            </div>
         </div>
 
-        <!-- RIGHT COLUMN: Info and Actions -->
-        <div class="col-lg-4 product-sidebar">
-            <div class="sidebar-box">
-                <h1 class="product-info-title">@Model.Product.Name</h1>
-                <div class="product-info-rating">
-                    @Model.Product.Rating Stars (@Model.Product.ReviewCount reviews)
-                </div>
-            </div>
+        <!-- RIGHT COLUMN: INFO & BUY -->
+        <div class="col-md-7">
+            <h1 style="font-size: 24px; font-weight: 700;">@Model.Product.Name</h1>
 
-            <div class="sidebar-box card">
-                <div class="card-body">
-                    <div class="product-info-price">
-                        @Model.Product.Price.ToString("C")
-                        @if (Model.Product.OldPrice.HasValue && Model.Product.OldPrice.Value > Model.Product.Price)
-                        {
-                            <span class="product-info-price-old">
-                                @Model.Product.OldPrice.Value.ToString("C")
-                            </span>
-                        }
-                    </div>
-                    <div class="product-promotions mt-3">
-                        <strong>Ưu đãi:</strong>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check-circle text-success"></i> Giảm giá khi thanh toán online.</li>
-                            <li><i class="fas fa-check-circle text-success"></i> Miễn phí vận chuyển.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sidebar-box card">
-                <div class="card-body">
-                    @using (Html.BeginForm("AddToCart", "Home", new { id = Model.Product.ProductId }, FormMethod.Post))
+            <div class="d-flex align-items-center mb-3">
+                <div class="text-warning mr-2">
+                    @for (int i = 1; i <= 5; i++)
                     {
-                        <div class="product-info-actions">
-                            <label for="quantity" class="form-label">Số Lượng:</label>
-                            <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control mb-3" />
-
-                            <button type="submit" class="btn btn-outline-primary btn-lg w-100 mb-2">
-                                <i class="fas fa-cart-plus"></i> Thêm vào Giỏ Hàng
-                            </button>
-                        </div>
+                        if (i <= Model.Product.Rating)
+                        {<i class="fas fa-star"></i> }
+                        else
+                        { <i class="far fa-star"></i>}
                     }
-                    <a href="@Url.Action("Checkout", "Home")" class="btn btn-danger btn-lg w-100">
-                        Mua ngay
-                    </a>
                 </div>
+                <span class="text-muted">(@Model.Product.ReviewCount đánh giá)</span>
             </div>
+
+            <!-- PRICE BOX -->
+            <div class="price-box">
+                <span class="current-price">@Model.Product.Price.ToString("N0", viCulture)Đ</span>
+                @if (Model.Product.OldPrice > Model.Product.Price)
+                {
+                    <span class="old-price">@Model.Product.OldPrice.Value.ToString("N0", viCulture)Đ</span>
+                }
+            </div>
+
+            <!-- SHORT INFO -->
+            <ul class="mb-4 list-unstyled">
+                <li><i class="fas fa-check text-success"></i> Hàng chính hãng, bảo hành 12 tháng</li>
+                <li><i class="fas fa-check text-success"></i> Giao hàng toàn quốc</li>
+                <li><i class="fas fa-check text-success"></i> Hỗ trợ trả góp 0%</li>
+            </ul>
+
+            <!-- BUY BUTTON FORM -->
+            @using (Html.BeginForm("AddToCart", "Cart", FormMethod.Post))
+            {
+                <input type="hidden" name="productId" value="@Model.Product.ProductId" />
+                <div class="d-flex align-items-center mb-3">
+                    <label class="me-3 fw-bold">Số lượng:</label>
+                    <input type="number" name="quantity" value="1" min="1" max="10" class="form-control" style="width: 80px;" />
+                </div>
+
+                <button type="submit" class="btn-buy-now">
+                    <i class="fas fa-shopping-cart"></i> Mua Ngay
+                </button>
+            }
         </div>
     </div>
 
-    <!-- --- NEW SECTIONS START HERE --- -->
-    <!-- Related Products -->
+    <!-- BOTTOM: TABS (Description & Specs) -->
     <div class="row mt-5">
         <div class="col-12">
-            <h3 class="section-title border-bottom pb-2 mb-4">Sản phẩm tương tự</h3>
-        </div>
-        @foreach (var item in Model.RelatedProducts)
-        {
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card h-100 product-card">
-                    <div class="product-card-image" style="height: 200px; display: flex; align-items: center; justify-content: center; padding: 10px;">
-                        <img src="@(string.IsNullOrEmpty(item.ThumbnailUrl) ? (string.IsNullOrEmpty(item.MainImageUrl) ? "https://placehold.co/200x200?text=No+Image" : Url.Content(item.MainImageUrl)) : Url.Content(item.ThumbnailUrl))"
-                             alt="@item.Name" style="max-height: 100%; max-width: 100%; object-fit: contain;">
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size: 1rem; height: 40px; overflow: hidden;">
-                            <a href="@Url.Action("Details", "Home", new { id = item.ProductId })" class="text-decoration-none text-dark">@item.Name</a>
-                        </h5>
-                        <p class="card-text text-danger fw-bold">@item.Price.ToString("C")</p>
-                        <a href="@Url.Action("Details", "Home", new { id = item.ProductId })" class="btn btn-primary mt-auto">Xem chi tiết</a>
-                    </div>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" id="desc-tab" data-bs-toggle="tab" data-bs-target="#desc" type="button">Mô tả sản phẩm</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button">Thông số kỹ thuật</button>
+                </li>
+            </ul>
+
+            <div class="tab-content p-4 border border-top-0 bg-white" id="myTabContent">
+                <!-- Tab 1: Description -->
+                <div class="tab-pane fade show active" id="desc">
+                    @if (!string.IsNullOrEmpty(Model.Product.Description))
+                    {
+                        @Html.Raw(Model.Product.Description)
+                    }
+                    else
+                    {
+                        <p class="text-muted">Đang cập nhật mô tả...</p>
+                    }
+                </div>
+
+                <!-- Tab 2: Specs (Using Description or Separate Field) -->
+                <div class="tab-pane fade" id="specs">
+                    @* TIP: In your Admin Panel, when you write the Description,
+                        you can paste an HTML Table to make it look like specs.
+                        Currently, we just show the description again, but you can
+                        add a specific column for 'Specifications' in DB later.
+                    *@
+                    @Html.Raw(Model.Product.Description)
                 </div>
             </div>
-        }
+        </div>
     </div>
 
-    <!-- Top Products -->
-    <div class="row mt-4 mb-5">
-        <div class="col-12">
-            <h3 class="section-title border-bottom pb-2 mb-4">Sản phẩm bán chạy</h3>
-        </div>
-        @foreach (var item in Model.TopProducts)
-        {
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card h-100 product-card">
-                    <div class="product-card-image" style="height: 200px; display: flex; align-items: center; justify-content: center; padding: 10px;">
-                        <img src="@(string.IsNullOrEmpty(item.ThumbnailUrl) ? (string.IsNullOrEmpty(item.MainImageUrl) ? "https://placehold.co/200x200?text=No+Image" : Url.Content(item.MainImageUrl)) : Url.Content(item.ThumbnailUrl))"
-                             alt="@item.Name" style="max-height: 100%; max-width: 100%; object-fit: contain;">
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size: 1rem; height: 40px; overflow: hidden;">
-                            <a href="@Url.Action("Details", "Home", new { id = item.ProductId })" class="text-decoration-none text-dark">@item.Name</a>
-                        </h5>
-                        <p class="card-text text-danger fw-bold">@item.Price.ToString("C")</p>
-                        <a href="@Url.Action("Details", "Home", new { id = item.ProductId })" class="btn btn-primary mt-auto">Xem chi tiết</a>
+    <!-- RELATED PRODUCTS -->
+    <div class="mt-5">
+        <h3 class="section-title border-bottom pb-2 mb-4">Sản phẩm liên quan</h3>
+        <div class="row">
+            @foreach (var item in Model.RelatedProducts)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card h-100 product-card">
+                        <a href="@Url.Action("Details", "Home", new { id = item.ProductId })">
+                            <img src="@Url.Content(item.MainImageUrl)" class="card-img-top p-3" alt="@item.Name" style="height: 200px; object-fit: contain;">
+                        </a>
+                        <div class="card-body">
+                            <h6 class="card-title">@item.Name</h6>
+                            <p class="text-danger fw-bold">@item.Price.ToString("N0", viCulture)Đ</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
-
 </div>
+
+<script>
+    // Simple script to switch main image when clicking thumbnails
+    function changeImage(src) {
+        document.getElementById('mainImage').src = src;
+    }
+</script>

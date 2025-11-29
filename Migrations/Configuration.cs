@@ -1,18 +1,16 @@
 ﻿namespace NhomProject.Migrations
 {
-    using System;
-    using System.Data.Entity;
+    using NhomProject.Models;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<NhomProject.Models.MyProjectDatabaseEntities>
+    internal sealed class Configuration : DbMigrationsConfiguration<MyProjectDatabaseEntities>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(NhomProject.Models.MyProjectDatabaseEntities context)
+        protected override void Seed(MyProjectDatabaseEntities context)
         {
             //  This method will be called after migrating to the latest version.
 

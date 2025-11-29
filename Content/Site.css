@@ -801,7 +801,8 @@ product-info-description ul {
 
 
     .header-top-bar {
-        display: none;
+        display: block; /* Forces it to show */
+        text-align: center; /* Optional: Looks better centered on phone */
     }
 }
 .cart-badge {

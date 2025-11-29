@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\phox11\Downloads\lap trinh web\NhomProject\Models\Shop.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\phox11\Downloads\lap trinh web\NhomProject\Models\Store.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.
