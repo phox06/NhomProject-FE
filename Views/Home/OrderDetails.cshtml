@@ -2,6 +2,9 @@
 @{
     ViewBag.Title = "OrderDetails";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var vnFormat = new System.Globalization.CultureInfo("vi-VN");
+    vnFormat.NumberFormat.NumberDecimalDigits = 0;
+    vnFormat.NumberFormat.NumberGroupSeparator = ".";
 }
 
 
@@ -45,15 +48,15 @@
                         <tr>
                             <td>@item.ProductName</td>
                             <td>@item.Quantity</td>
-                            <td>@item.Price.ToString("C")</td>
-                            <td>@((item.Quantity * item.Price).ToString("C"))</td>
+                            <td>@item.Price.ToString("N0", vnFormat) ₫</td>
+                            <td>@((item.Quantity * item.Price).ToString("N0", vnFormat)) ₫</td>
                         </tr>
                     }
                 </tbody>
             </table>
 
             <h4 class="text-end">
-                <strong>Tổng cộng:</strong> @Model.Total.ToString("C")
+                <strong>Tổng cộng:</strong> @Model.Total.ToString("N0", vnFormat) ₫
             </h4>
 
             <div class="text-start mt-4">

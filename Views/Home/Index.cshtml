@@ -1,6 +1,9 @@
 ﻿@model NhomProject.Models.HomeViewModel
 @{
     ViewData["Title"] = "Home Page";
+    var vnFormat = new System.Globalization.CultureInfo("vi-VN");
+    vnFormat.NumberFormat.NumberDecimalDigits = 0;
+    vnFormat.NumberFormat.NumberGroupSeparator = ".";
 }
 
 <div class="container">
@@ -35,13 +38,12 @@
                     <div class="product-card-price">
 
                         @* FIX 1: CHANGE THIS LINE *@
-                        @product.Price.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))Đ
-
+                        @product.Price.ToString("N0", vnFormat)Đ
                         @if (product.OldPrice.HasValue && product.OldPrice.Value > product.Price)
                         {
                             <span class="product-card-price-old">
                                 @* FIX 2: CHANGE THIS LINE *@
-                                @product.OldPrice.Value.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))Đ
+                                @product.OldPrice.Value.ToString("N0", vnFormat)Đ
                             </span>
                         }
                     </div>

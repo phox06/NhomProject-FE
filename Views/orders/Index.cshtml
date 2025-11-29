@@ -3,6 +3,10 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Lịch sử đơn hàng";
+    var vnFormat = new System.Globalization.CultureInfo("vi-VN");
+    vnFormat.NumberFormat.NumberDecimalDigits = 0;
+    vnFormat.NumberFormat.NumberGroupSeparator = ".";
+
 }
 
 <div class="center-page">
@@ -32,7 +36,7 @@
                         <td>@order.Id</td>
                         <td>@order.CustomerName</td>
                         <td>@order.Date.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td>@String.Format("{0:N0}₫", order.Total)</td>
+                        <td>@order.Total.ToString("N0", vnFormat) ₫</td>
                         <td>@order.Status</td>
                         <td>
                             <a href="/Orders/Detail/@order.Id" class="btn btn-primary btn-sm">

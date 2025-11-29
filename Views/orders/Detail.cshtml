@@ -1,4 +1,9 @@
 ﻿@model NhomProject.Models.Order
+@{ 
+    var vnFormat = new System.Globalization.CultureInfo("vi-VN");
+    vnFormat.NumberFormat.NumberDecimalDigits = 0;
+    vnFormat.NumberFormat.NumberGroupSeparator = ".";
+}
 
 <div class="center-content">
     <h2>📦 Chi tiết đơn hàng #@Model.Id</h2>
@@ -24,12 +29,12 @@
                 <tr>
                     <td>@item.ProductName</td>
                     <td>@item.Quantity</td>
-                    <td>@String.Format("{0:N0} ₫", item.Price)</td>
-                    <td>@String.Format("{0:N0} ₫", item.Price * item.Quantity)</td>
+                    <td>@item.Price.ToString("N0", vnFormat) ₫</td>
+                    <td>@((item.Price * item.Quantity).ToString("N0", vnFormat)) ₫</td>
                 </tr>
             }
         </tbody>
     </table>
 
-    <h5><strong>Tổng cộng:</strong> @String.Format("{0:N0} ₫", Model.Total)</h5>
+    <h5><strong>Tổng cộng:</strong> @Model.Total.ToString("N0", vnFormat) ₫</h5>
 </div>

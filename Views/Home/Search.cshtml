@@ -3,6 +3,9 @@
 @{
     ViewBag.Title = "Search";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var vnFormat = new System.Globalization.CultureInfo("vi-VN");
+    vnFormat.NumberFormat.NumberDecimalDigits = 0;
+    vnFormat.NumberFormat.NumberGroupSeparator = ".";
 }
 
 
@@ -33,12 +36,12 @@
                         <h3 class="product-card-title">@product.Name</h3>
 
                         <div class="product-card-price">
-                            @product.Price.ToString("C")
+                            @product.Price.ToString("N0", vnFormat) ₫
 
                             @if (product.OldPrice.HasValue && product.OldPrice.Value > product.Price)
                             {
                                 <span class="product-card-price-old">
-                                    @product.OldPrice.Value.ToString("C")
+                                    @product.OldPrice.Value.ToString("N0", vnFormat) ₫
                                 </span>
                             }
                         </div>

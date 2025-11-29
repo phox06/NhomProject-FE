@@ -4,6 +4,9 @@
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var cart = ViewBag.Cart as NhomProject.Models.Cart;
+    var vnFormat = new System.Globalization.CultureInfo("vi-VN");
+    vnFormat.NumberFormat.NumberDecimalDigits = 0;
+    vnFormat.NumberFormat.NumberGroupSeparator = ".";
 }
 <link href="~/Content/Site.css" rel="stylesheet" />
 <div class="container">
@@ -65,14 +68,14 @@
                     {
                         <li class="summary-item">
                             <span class="summary-item-name">@item.ProductName (x @item.Quantity)</span>
-                            <span class="summary-item-price">@((item.Quantity * item.Price).ToString("C"))</span>
+                            <span class="summary-item-price">@((item.Quantity * item.Price).ToString("N0", vnFormat)) ₫</span>
                         </li>
                     }
                 </ul>
 
                 <div class="summary-total">
                     <strong>Tổng Cộng: </strong>
-                    <strong>@cart.GetTotal().ToString("C")</strong>
+                    <strong>@cart.GetTotal().ToString("N0", vnFormat) ₫</strong>
                 </div>
             }
         </div>

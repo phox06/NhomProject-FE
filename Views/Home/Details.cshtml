@@ -5,8 +5,12 @@
     ViewBag.Title = Model.Product.Name;
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    // Helper to format money
+
+
     var viCulture = new CultureInfo("vi-VN");
+    viCulture.NumberFormat.NumberDecimalDigits = 0;
+    viCulture.NumberFormat.NumberGroupSeparator = ".";
+
 }
 
 <style>
@@ -89,18 +93,53 @@
     .specs-table tr:nth-child(even) {
         background-color: #f9f9f9;
     }
+    .btn-add-cart {
+        background: #fff;
+        color: #d0021b;
+        border: 2px solid #d0021b;
+        font-weight: bold;
+        width: 100%;
+        padding: 15px;
+        text-transform: uppercase;
+        border-radius: 5px;
+        transition: all 0.3s;
+    }
+
+        .btn-add-cart:hover {
+            background: #fceceb;
+            color: #d0021b;
+        }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px; /* Space between buttons */
+    }
 </style>
 
 <div class="container mt-4">
-    <!-- BREADCRUMB -->
+    <!-- BREADCRUMB NAVIGATION -->
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-            <li class="breadcrumb-item"><a href="@Url.Action("Category", "Home", new { id = Model.Product.Category?.Name })">@Model.Product.Category?.Name</a></li>
+
+            
+            <li class="breadcrumb-item">
+                @if (Model.Product.Category != null)
+                {
+                    <a href="@Url.Action("Category", "Home", new { id = Model.Product.Category.Name })">
+                        @Model.Product.Category.Name
+                    </a>
+                }
+                else
+                {
+                    <span>Chưa phân loại</span>
+                }
+            </li>
+
             <li class="breadcrumb-item active" aria-current="page">@Model.Product.Name</li>
         </ol>
     </nav>
-
+    </div>
     <div class="row">
         <!-- LEFT COLUMN: IMAGES (GALLERY) -->
         <div class="col-md-5">
@@ -161,21 +200,26 @@
                 <li><i class="fas fa-check text-success"></i> Hỗ trợ trả góp 0%</li>
             </ul>
 
-            <!-- BUY BUTTON FORM -->
-            @using (Html.BeginForm("AddToCart", "Cart", FormMethod.Post))
+            @using (Html.BeginForm("AddToCart", "Home", FormMethod.Post))
             {
                 <input type="hidden" name="productId" value="@Model.Product.ProductId" />
+
                 <div class="d-flex align-items-center mb-3">
                     <label class="me-3 fw-bold">Số lượng:</label>
                     <input type="number" name="quantity" value="1" min="1" max="10" class="form-control" style="width: 80px;" />
                 </div>
 
-                <button type="submit" class="btn-buy-now">
-                    <i class="fas fa-shopping-cart"></i> Mua Ngay
-                </button>
+                <div class="action-buttons">
+                    <button type="submit" name="redirectType" value="stay" class="btn-add-cart">
+                        <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                    </button>
+
+                    <button type="submit" name="redirectType" value="buynow" class="btn-buy-now">
+                        <i class="fas fa-check"></i> Mua Ngay
+                    </button>
+                </div>
             }
         </div>
-    </div>
 
     <!-- BOTTOM: TABS (Description & Specs) -->
     <div class="row mt-5">

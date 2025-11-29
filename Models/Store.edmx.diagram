@@ -4,15 +4,15 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="241f8649336144c29ae359bd73cb9f5e" Name="Diagram1">
-        <EntityTypeShape EntityType="MyProjectDatabaseModel.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
+      <Diagram DiagramId="241f8649336144c29ae359bd73cb9f5e" Name="Diagram1" ZoomLevel="105">
+        <EntityTypeShape EntityType="MyProjectDatabaseModel.C__MigrationHistory" Width="1.5" PointX="1.125" PointY="6.375" IsExpanded="true" />
         <EntityTypeShape EntityType="MyProjectDatabaseModel.CartItem" Width="1.5" PointX="5.25" PointY="2.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="MyProjectDatabaseModel.Category" Width="1.5" PointX="3.75" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MyProjectDatabaseModel.Category" Width="1.5" PointX="3.625" PointY="6.375" IsExpanded="true" />
         <EntityTypeShape EntityType="MyProjectDatabaseModel.OrderDetail" Width="1.5" PointX="8.25" PointY="2.875" IsExpanded="true" />
         <EntityTypeShape EntityType="MyProjectDatabaseModel.Order" Width="1.5" PointX="3" PointY="2.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="MyProjectDatabaseModel.ProductImage" Width="1.5" PointX="8.25" PointY="9.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="MyProjectDatabaseModel.Product" Width="1.5" PointX="6" PointY="8.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="MyProjectDatabaseModel.sysdiagram" Width="1.5" PointX="0.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MyProjectDatabaseModel.ProductImage" Width="1.5" PointX="8.75" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MyProjectDatabaseModel.Product" Width="1.5" PointX="6.375" PointY="5.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="MyProjectDatabaseModel.sysdiagram" Width="1.5" PointX="10.875" PointY="3.25" IsExpanded="true" />
         <EntityTypeShape EntityType="MyProjectDatabaseModel.User" Width="1.5" PointX="0.75" PointY="2.25" IsExpanded="true" />
         <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_CartItems_dbo_Orders_OrderId" ManuallyRouted="false" />
         <AssociationConnector Association="MyProjectDatabaseModel.FK_dbo_Products_dbo_Categories_CategoryId" ManuallyRouted="false" />

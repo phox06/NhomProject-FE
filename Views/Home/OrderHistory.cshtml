@@ -2,6 +2,9 @@
 @{
     ViewBag.Title = "OrderHistory";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var vnFormat = new System.Globalization.CultureInfo("vi-VN");
+    vnFormat.NumberFormat.NumberDecimalDigits = 0;
+    vnFormat.NumberFormat.NumberGroupSeparator = ".";
 }
 
 
@@ -56,7 +59,7 @@
                                     <tr>
                                         <td>#@order.Id</td>
                                         <td>@order.Date.ToString("dd/MM/yyyy")</td>
-                                        <td>@order.Total.ToString("C")</td>
+                                        <td>@order.Total.ToString("N0", vnFormat) ₫</td>
                                         <td><span class="badge bg-warning text-dark">@order.Status</span></td>
                                         <td>
                                             <a href="@Url.Action("OrderDetails", "Home", new { id = order.Id })" class="btn btn-sm btn-outline-primary">

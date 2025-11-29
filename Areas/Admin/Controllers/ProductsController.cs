@@ -161,6 +161,90 @@ namespace NhomProject.Areas.Admin.Controllers
             ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", product.CategoryId);
             return View(product);
         }
+        // 1. GET: Show the Image Management Page
+        public ActionResult ManageImages(int id)
+        {
+            var product = db.Products.Find(id);
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+            return View(product);
+        }
+
+        // 2. POST: Upload New Images
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UploadImages(int id, HttpPostedFileBase[] files)
+        {
+            var product = db.Products.Find(id);
+            if (product == null) return HttpNotFound();
+
+            if (files != null && files.Length > 0)
+            {
+                foreach (var file in files)
+                {
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        // Save file to server
+                        string fileName = System.IO.Path.GetFileName(file.FileName);
+                        string path = System.IO.Path.Combine(Server.MapPath("~/Content/images/"), fileName);
+                        file.SaveAs(path);
+
+                        // Save info to Database
+                        var img = new NhomProject.Models.ProductImage();
+                        img.ProductId = id;
+                        img.ImageUrl = "~/Content/images/" + fileName;
+
+                        db.ProductImages.Add(img);
+                    }
+                }
+                db.SaveChanges();
+            }
+
+            TempData["SuccessMessage"] = "Đã tải lên hình ảnh thành công!";
+            return RedirectToAction("ManageImages", new { id = id });
+        }
+        // POST: Add Image via URL (New Feature)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddImageUrl(int id, string imageUrl)
+        {
+            var product = db.Products.Find(id);
+            if (product == null) return HttpNotFound();
+
+            if (!string.IsNullOrEmpty(imageUrl))
+            {
+                var img = new NhomProject.Models.ProductImage();
+                img.ProductId = id;
+                img.ImageUrl = imageUrl; // Save the raw link (http...)
+
+                db.ProductImages.Add(img);
+                db.SaveChanges();
+
+                TempData["SuccessMessage"] = "Đã thêm link ảnh thành công!";
+            }
+
+            return RedirectToAction("ManageImages", new { id = id });
+        }
+
+        // 3. POST: Delete a specific image
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteImage(int id)
+        {
+            var img = db.ProductImages.Find(id);
+            if (img != null)
+            {
+                int productId = img.ProductId; // Remember the product ID to redirect back
+                db.ProductImages.Remove(img);
+                db.SaveChanges();
+
+                TempData["SuccessMessage"] = "Đã xóa ảnh thành công.";
+                return RedirectToAction("ManageImages", new { id = productId });
+            }
+            return RedirectToAction("Index");
+        }
         public ActionResult Delete(int? id)
         {
             if (id == null)

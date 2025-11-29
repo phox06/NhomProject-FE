@@ -101,12 +101,22 @@ a {
 
 .header-nav-bar {
     background-color: var(--dark-color);
+    display: block; /* Visible on desktop */
+    position: relative; /* Normal positioning */
+    width: 100%; /* Full width of the page */
+    height: auto;
+    transform: none; /* No sliding effect on desktop */
+    z-index: 99;
+    overflow: visible; /* Don't hide dropdowns if you add them later */
+    box-shadow: none;
 }
 
     .header-nav-bar .container {
         display: flex;
         justify-content: flex-start;
         gap: 1.5rem;
+        padding: 0 1rem;
+        flex-direction: row; /* Horizontal layout */
     }
 
     .header-nav-bar a {
@@ -114,12 +124,57 @@ a {
         padding: 1rem 0.5rem;
         font-weight: bold;
         font-size: 0.9rem;
+        border-bottom: none; /* No borders on desktop */
+        display: inline-block;
     }
 
         .header-nav-bar a:hover {
             background-color: var(--primary-color);
             color: var(--dark-color);
+            padding-left: 0.5rem; /* Default padding */
         }
+
+/* Hide Mobile-Specific Elements on Desktop */
+.mobile-menu-header, .menu-overlay {
+    display: none !important;
+}
+.mobile-menu-header {
+    display: flex; /* Visible only on mobile via this media query */
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #222;
+    color: white;
+    font-weight: bold;
+    border-bottom: 1px solid #444;
+}
+
+.btn-close-menu {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Overlay (Dark background behind menu) */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 999; /* Behind menu, above content */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+    .menu-overlay.is-active {
+        opacity: 1;
+        visibility: visible;
+    }
 
 /* --- Main Content & Footer --- */
 main {
@@ -762,7 +817,92 @@ product-info-description ul {
 .quantity-input {
     width: 100px;
 }
+@media (max-width: 768px) {
 
+    /* The Overlay (Dark background) */
+    .menu-overlay {
+        display: block !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s;
+    }
+
+        .menu-overlay.is-active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    /* The Drawer Menu */
+    .header-nav-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px; /* Fixed width (not full screen) */
+        max-width: 80%; /* Safety cap for very small phones */
+        height: 100vh;
+        background-color: var(--dark-color);
+        z-index: 1000;
+        /* Animation: Slide from left */
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        overflow-y: auto;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+    }
+
+        .header-nav-bar.is-active {
+            transform: translateX(0); /* Slide in */
+        }
+
+        /* Stack items vertically */
+        .header-nav-bar .container {
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            gap: 0;
+        }
+
+        /* Mobile Links */
+        .header-nav-bar a {
+            display: block;
+            padding: 15px 20px;
+            border-bottom: 1px solid #444;
+            width: 100%;
+            color: var(--light-color);
+        }
+
+            .header-nav-bar a:hover {
+                background-color: var(--primary-color);
+                color: var(--dark-color);
+                padding-left: 25px; /* Slide effect on hover */
+            }
+
+    /* Mobile Header (The part with the 'X') */
+    .mobile-menu-header {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        background-color: #222;
+        color: white;
+        font-weight: bold;
+        border-bottom: 1px solid #444;
+    }
+
+    .btn-close-menu {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+}
 @media (max-width: 480px) {
 
 

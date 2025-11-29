@@ -6,7 +6,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
+using System.Globalization;
 
 namespace NhomProject.Controllers
 {
@@ -35,6 +35,7 @@ namespace NhomProject.Controllers
             }
             return RedirectToAction("Cart");
         }
+
         public ActionResult Index()
         {
             var allProducts = _db.Products.Include(p => p.Category).ToList();
@@ -93,39 +94,27 @@ namespace NhomProject.Controllers
             }
             return View(products);
         }
-        public ActionResult Details(int? id)
+        public ActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
-            }
+            var product = _db.Products.Find(id);
+            if (product == null) return HttpNotFound();
 
-            var product = _db.Products.Include(p => p.Category).FirstOrDefault(p => p.ProductId == id);
-            if (product == null)
-            {
-                return HttpNotFound();
-            }
+            // Increase view count or similar logic if needed here
 
-            // 1. Get Related Products (Same Category, exclude current product)
-            var relatedProducts = _db.Products
-                .Where(p => p.CategoryId == product.CategoryId && p.ProductId != product.ProductId)
-                .Take(4) // Show 4 items
-                .ToList();
-
-            // 2. Get Top Products (Most sold based on OrderDetails count)
-            var topProducts = _db.Products
-                .OrderByDescending(p => p.OrderDetails.Count())
-                .Take(4) // Show 4 items
-                .ToList();
-
-            // 3. Prepare ViewModel
             var model = new ProductDetailVM
             {
                 Product = product,
-                RelatedProducts = relatedProducts,
-                TopProducts = topProducts,
                 Quantity = 1,
-                EstimatedValue = product.Price
+                // Load 4 related products from the same category
+                RelatedProducts = _db.Products
+                                     .Where(p => p.CategoryId == product.CategoryId && p.ProductId != id)
+                                     .Take(4)
+                                     .ToList(),
+                // Load top expensive/popular products as suggestion
+                TopProducts = _db.Products
+                                 .OrderByDescending(p => p.Price)
+                                 .Take(4)
+                                 .ToList()
             };
 
             return View(model);
@@ -143,27 +132,41 @@ namespace NhomProject.Controllers
 
 
         [HttpPost]
-        public ActionResult AddToCart(int id, int quantity)
+        public ActionResult AddToCart(int productId, int quantity, string redirectType)
         {
-            
-            var product = _db.Products.FirstOrDefault(p => p.ProductId == id);
+            var product = _db.Products.Find(productId);
             if (product != null)
             {
-                Cart cart = GetCart();
+                var cart = GetCart();
                 cart.AddItem(product, quantity);
+                Session["Cart"] = cart; // Save back to session
+
+                // Optional: Add a success message to display on the details page
+                TempData["SuccessMessage"] = "Đã thêm " + product.Name + " vào giỏ hàng!";
             }
-            return RedirectToAction("Cart");
+
+            // Check which button was clicked
+            if (redirectType == "buynow")
+            {
+                return RedirectToAction("Cart");
+            }
+            else
+            {
+                // Stay on the details page
+                return RedirectToAction("Details", new { id = productId });
+            }
         }
 
-        
+
         public ActionResult RemoveFromCart(int id)
         {
-            Cart cart = GetCart();
-            cart.RemoveItem(id); 
+            var cart = GetCart();
+            cart.RemoveItem(id);
+            Session["Cart"] = cart;
             return RedirectToAction("Cart");
         }
 
-       
+
         public ActionResult OrderHistory()
         {
             

@@ -1,12 +1,12 @@
 ﻿<!DOCTYPE html>
 @using NhomProject.Models
 @{
-    // Get cart from session
+    
     var cart = Session["Cart"] as Cart;
     int totalQuantity = 0;
     if (cart != null && cart.Items != null)
     {
-        // Sum the quantity of all items
+        
         totalQuantity = cart.Items.Sum(item => item.Quantity);
     }
 }
@@ -26,7 +26,8 @@
     <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <header>
+    <div class="menu-overlay" id="menuOverlay"></div> <header>
+    
         <div class="header-top-bar">
             <div class="container">
                 <a href="#" class="location-link"> <i class="fas fa-map-marker-alt"> </i>Thành Phố Hồ Chí Minh</a>
@@ -46,14 +47,14 @@
                         <a href="@Url.Action("Logout", "Auth")">Đăng xuất</a>
                     }
 
-                <a href="@Url.Action("Cart", "Home")" class="cart-link" style="position: relative;">
-                    <i class="fa fa-shopping-cart"></i> Giỏ Hàng
+                    <a href="@Url.Action("Cart", "Home")" class="cart-link" style="position: relative;">
+                        <i class="fa fa-shopping-cart"></i> Giỏ Hàng
 
-                    @if (totalQuantity > 0)
-                    {
-                        <span class="cart-badge">@totalQuantity</span>
-                    }
-                </a>
+                        @if (totalQuantity > 0)
+                        {
+                            <span class="cart-badge">@totalQuantity</span>
+                        }
+                    </a>
                 </div>
             </div>
         </div>
@@ -74,7 +75,12 @@
             </div>
         </div>
 
-        <nav class="header-nav-bar">
+        <nav class="header-nav-bar" id="mobileMenu">
+            <div class="mobile-menu-header d-md-none">
+                <span>Danh mục</span>
+                <button class="btn-close-menu" id="closeMenuBtn"><i class="fa fa-times"></i></button>
+            </div>
+
             <div class="container">
                 <a href="@Url.Action("Index", "Home")">Home</a>
                 <a href="@Url.Action("Category", "Home", new { id = "Laptops" })">Laptops</a>
