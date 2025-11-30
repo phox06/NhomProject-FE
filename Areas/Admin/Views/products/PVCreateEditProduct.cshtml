@@ -96,7 +96,18 @@
             @Html.ValidationMessageFor(model => model.ThumbnailUrl, "", new { @class = "text-danger" })
         </div>
     </div>
-
+    <div class="form-group">
+        @Html.LabelFor(model => model.IsActive, "Trạng thái", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <div class="checkbox">
+                <label>
+                    @Html.EditorFor(model => model.IsActive)
+                    Hiển thị ngay trên web
+                </label>
+                @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" value="Lưu" class="btn btn-primary" />

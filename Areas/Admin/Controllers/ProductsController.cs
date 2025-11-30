@@ -19,9 +19,11 @@ namespace NhomProject.Areas.Admin.Controllers
         public ActionResult Index(string searchTerm, decimal? minPrice, decimal? maxPrice, string sortOrder, int? page)
         {
             var model = new ProductSearchVM();
-            var products = db.Products.Include(p => p.Category).AsQueryable();
+            var products = db.Products.Include(p => p.Category)
+                              .Where(p => p.IsActive == true)
+                              .AsQueryable();
 
-            
+
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 products = products.Where(p =>
@@ -97,7 +99,12 @@ namespace NhomProject.Areas.Admin.Controllers
         public ActionResult Create()
         {
             ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name");
-            return View(new Product());
+
+            // Set IsActive = true by default so the checkbox starts checked
+            var newProduct = new Product();
+            newProduct.IsActive = true;
+
+            return View(newProduct);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -262,26 +269,37 @@ namespace NhomProject.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            // 1. Check if this product is in any Order Details
-            bool isOrdered = db.OrderDetails.Any(od => od.ProductId == id);
-
-            if (isOrdered)
-            {
-                // 2. If true, cancel delete to protect order history
-                TempData["ErrorMessage"] = "Không thể xóa sản phẩm này vì nó nằm trong đơn hàng cũ của khách.";
-                return RedirectToAction("Index");
-            }
-
-            // 3. If false, proceed with delete
+            // 1. Find the Product
             Product product = db.Products.Find(id);
 
-            // (Optional: Delete associated image file from folder here if needed)
+            // 2. CHECK CONSTRAINTS (Theo yêu cầu Pic 2)
+            // Kiểm tra xem sản phẩm này đã từng được bán (nằm trong OrderDetails) chưa
+            var orderDetails = db.OrderDetails.Where(od => od.ProductId == id).ToList();
 
-            db.Products.Remove(product);
-            db.SaveChanges();
+            // Logic: if (list is empty) { delete } else { error }
+            if (orderDetails.Count == 0)
+            {
+                // --- CÁC LỆNH DELETE ---
 
-            TempData["SuccessMessage"] = "Đã xóa sản phẩm thành công.";
-            return RedirectToAction("Index");
+                // Xóa ảnh liên quan (nếu có bảng ProductImages)
+                var images = db.ProductImages.Where(i => i.ProductId == id).ToList();
+                foreach (var img in images)
+                {
+                    db.ProductImages.Remove(img);
+                }
+
+                // Xóa sản phẩm
+                db.Products.Remove(product);
+                db.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                // --- RETURN CONTENT THÔNG BÁO LỖI ---
+                // Như trong hình yêu cầu: return Content("nội dung thông báo lỗi");
+                return Content("Không thể xóa sản phẩm này vì nó đang tồn tại trong các đơn hàng cũ (Ràng buộc dữ liệu)!");
+            }
         }
 
         protected override void Dispose(bool disposing)

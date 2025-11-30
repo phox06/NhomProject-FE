@@ -238,7 +238,7 @@ namespace NhomProject.Controllers
             return View(model); 
         }
 
-       
+
         [HttpPost]
         public ActionResult Checkout(Order model)
         {
@@ -266,15 +266,16 @@ namespace NhomProject.Controllers
                     CustomerName = model.CustomerName,
                     Address = model.Address,
                     Phone = model.Phone,
-                    PaymentMethod = model.PaymentMethod, 
+                    PaymentMethod = model.PaymentMethod,
                     Date = DateTime.Now,
-                    Status = "Pending", 
+                    Status = "Pending",
                     Total = cart.GetTotal(),
                     UserId = userId
                 };
 
                 foreach (var item in cart.Items)
                 {
+                    // 1. KEEP THIS: Saving to CartItems (since your user history uses this)
                     order.CartItems.Add(new CartItem
                     {
                         ProductId = item.ProductId,
@@ -282,6 +283,14 @@ namespace NhomProject.Controllers
                         ImageUrl = item.ImageUrl,
                         Price = item.Price,
                         Quantity = item.Quantity
+                    });
+
+                    // 2. ADD THIS: Saving to OrderDetails (so Admin panel works)
+                    order.OrderDetails.Add(new OrderDetail
+                    {
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        UnitPrice = item.Price
                     });
                 }
 

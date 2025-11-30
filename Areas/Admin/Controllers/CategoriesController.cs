@@ -109,23 +109,27 @@ namespace NhomProject.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            // 1. Check if any products exist in this category
-            bool hasProducts = db.Products.Any(p => p.CategoryId == id);
+            // 1. Find the Category
+            Category category = db.Categories.Find(id);
 
-            if (hasProducts)
+            // 2. CHECK CONSTRAINTS (Theo yêu cầu Pic 1)
+            // Kiểm tra xem danh mục này có chứa sản phẩm nào không
+            // x.y.ToList() check
+            var relatedProducts = category.Products.ToList();
+
+            if (relatedProducts.Count > 0)
             {
-                // 2. If true, cancel delete and show warning
-                TempData["ErrorMessage"] = "Không thể xóa Danh mục này vì đang có Sản phẩm thuộc danh mục.";
+                // Nếu có dữ liệu liên quan, TRẢ VỀ LỖI (Không xóa)
+                // Dùng Content() để thông báo lỗi đơn giản như yêu cầu
+                return Content("Không thể xóa danh mục này vì đang có " + relatedProducts.Count + " sản phẩm bên trong! Vui lòng xóa sản phẩm trước.");
+            }
+            else
+            {
+                // 3. Nếu không có ràng buộc -> Thực hiện lệnh Delete
+                db.Categories.Remove(category);
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
-            // 3. If false, proceed with delete
-            Category category = db.Categories.Find(id);
-            db.Categories.Remove(category);
-            db.SaveChanges();
-
-            TempData["SuccessMessage"] = "Đã xóa danh mục thành công.";
-            return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)
