@@ -325,9 +325,7 @@
     <Content Include="Areas\Admin\Views\products\PVListProduct.cshtml" />
     <Content Include="Areas\Admin\Views\Account\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\Create.cshtml" />
-    <Content Include="Areas\Admin\Views\Customer\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\Details.cshtml" />
-    <Content Include="Areas\Admin\Views\Customer\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\Details.cshtml" />
@@ -370,7 +368,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Category.cshtml" />
-    <Content Include="Views\Home\Details.cshtml" />
     <Content Include="Views\orders\Detail.cshtml" />
     <Content Include="Views\orders\Index.cshtml" />
     <Content Include="Views\Home\Cart.cshtml" />
@@ -383,11 +380,13 @@
     <Content Include="Views\Home\OrderDetails.cshtml" />
     <Content Include="Views\Home\Search.cshtml" />
     <Content Include="Views\Auth\RegisterAdmin.cshtml" />
+    <Content Include="Views\Home\Details.cshtml" />
+    <Content Include="Views\Shared\_PVSharedProductDetail.cshtml" />
+    <Content Include="Views\Shared\_PVOrderItems.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Admin\Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

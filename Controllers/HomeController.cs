@@ -2,7 +2,7 @@
 using NhomProject.Models.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity; 
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -13,45 +13,26 @@ namespace NhomProject.Controllers
     public class HomeController : Controller
     {
         private MyProjectDatabaseEntities _db = new MyProjectDatabaseEntities();
-        private Cart GetCart()
-        {
-            Cart cart = Session["Cart"] as Cart;
-            if (cart == null)
-            {
-                cart = new Cart();
-                Session["Cart"] = cart;
-            }
-            return cart;
-        }
-        [HttpPost]
-        public ActionResult UpdateCart(int productId, int quantity)
-        {
-            
-            Cart cart = Session["Cart"] as Cart;
-            if (cart != null)
-            {
-                cart.UpdateQuantity(productId, quantity);
-                Session["Cart"] = cart;
-            }
-            return RedirectToAction("Cart");
-        }
+
+        // --- 1. USE THE NEW CART SERVICE ---
+        private CartService _cartService = new CartService();
+
+        // (We removed the old "GetCart" method because the Service handles it now)
 
         public ActionResult Index()
         {
-            var allProducts = _db.Products.Include(p => p.Category).ToList();
+            // Only show ACTIVE products
+            var allProducts = _db.Products.Include(p => p.Category)
+                                 .Where(p => p.IsActive)
+                                 .ToList();
 
             var viewModel = new HomeViewModel
             {
-                
                 FlashSaleProducts = allProducts,
-
-                
                 PhoneProducts = allProducts
                                     .Where(p => p.Category != null &&
                                                 p.Category.Name.ToLower() == "điện thoại")
                                     .ToList(),
-
-                
                 LaptopProducts = allProducts
                                     .Where(p => p.Category != null &&
                                                 p.Category.Name.ToLower() == "laptops")
@@ -60,76 +41,16 @@ namespace NhomProject.Controllers
 
             return View(viewModel);
         }
-        public ActionResult Category(string id, string sortOrder)
-        {
-            if (string.IsNullOrEmpty(id))
-            {
-                return RedirectToAction("Index");
-            }
-            var category = _db.Categories
-                              .Include(c => c.Products)
-                              .FirstOrDefault(c => c.Name.ToLower() == id.ToLower());
-            if (category == null)
-            {
-                return HttpNotFound();
-            }
-            ViewData["CategoryName"] = category.Name;
-            ViewData["CategoryDescription"] = category.Description;
-            ViewData["CurrentSort"] = sortOrder;
-            var products = category.Products.ToList();
-            switch (sortOrder)
-            {
-                case "price_asc":
-                    products = products.OrderBy(p => p.Price).ToList();
-                    break;
-                case "price_desc":
-                    products = products.OrderByDescending(p => p.Price).ToList();
-                    break;
-                case "name_asc":
-                    products = products.OrderBy(p => p.Name).ToList();
-                    break;
-                default:
-                    products = products.OrderBy(p => p.Name).ToList();
-                    break;
-            }
-            return View(products);
-        }
-        public ActionResult Details(int id)
-        {
-            var product = _db.Products.Find(id);
-            if (product == null) return HttpNotFound();
 
-            // Increase view count or similar logic if needed here
-
-            var model = new ProductDetailVM
-            {
-                Product = product,
-                Quantity = 1,
-                // Load 4 related products from the same category
-                RelatedProducts = _db.Products
-                                     .Where(p => p.CategoryId == product.CategoryId && p.ProductId != id)
-                                     .Take(4)
-                                     .ToList(),
-                // Load top expensive/popular products as suggestion
-                TopProducts = _db.Products
-                                 .OrderByDescending(p => p.Price)
-                                 .Take(4)
-                                 .ToList()
-            };
-
-            return View(model);
-        }
+        // --- CART ACTIONS (UPDATED TO USE SERVICE) ---
 
         public ActionResult Cart()
         {
-            Cart cart = GetCart();
-
-            
+            // Load Cart from Service (DB or Session)
+            Cart cart = _cartService.GetCart();
             ViewBag.Error = TempData["Error"];
-
             return View(cart);
         }
-
 
         [HttpPost]
         public ActionResult AddToCart(int productId, int quantity, string redirectType)
@@ -137,172 +58,228 @@ namespace NhomProject.Controllers
             var product = _db.Products.Find(productId);
             if (product != null)
             {
-                var cart = GetCart();
-                cart.AddItem(product, quantity);
-                Session["Cart"] = cart; // Save back to session
+                // Use Service to Save (Handles both DB and Session)
+                _cartService.AddToCart(product, quantity);
 
-                // Optional: Add a success message to display on the details page
                 TempData["SuccessMessage"] = "Đã thêm " + product.Name + " vào giỏ hàng!";
             }
 
-            // Check which button was clicked
             if (redirectType == "buynow")
             {
                 return RedirectToAction("Cart");
             }
             else
             {
-                // Stay on the details page
                 return RedirectToAction("Details", new { id = productId });
             }
         }
 
-
-        public ActionResult RemoveFromCart(int id)
+        [HttpPost]
+        public ActionResult UpdateCart(int productId, int quantity)
         {
-            var cart = GetCart();
-            cart.RemoveItem(id);
-            Session["Cart"] = cart;
+            // Logic to update DB or Session based on login status
+            Cart cart = _cartService.GetCart();
+            cart.UpdateQuantity(productId, quantity);
+
+            if (Session["UserId"] != null)
+            {
+                int userId = (int)Session["UserId"];
+                var dbItem = _db.CartItems.FirstOrDefault(c => c.UserId == userId && c.ProductId == productId);
+                if (dbItem != null)
+                {
+                    dbItem.Quantity = quantity;
+                    _db.SaveChanges();
+                }
+            }
+            else
+            {
+                Session["Cart"] = cart;
+            }
+
             return RedirectToAction("Cart");
         }
 
-
-        public ActionResult OrderHistory()
+        public ActionResult RemoveFromCart(int id)
         {
-            
-            var userId = Session["UserId"] as int?;
-            if (userId == null)
-            {
-                
-                return RedirectToAction("Login", "Auth");
-            }
-
-            
-            var orders = _db.Orders
-                            .Where(o => o.UserId == userId)
-                            .OrderByDescending(o => o.Date)
-                            .ToList();
-
-            return View(orders);
+            // Use Service to Remove from DB/Session
+            _cartService.RemoveFromCart(id);
+            return RedirectToAction("Cart");
         }
 
-       
-        public ActionResult OrderDetails(int id)
-        {
-            var userId = Session["UserId"] as int?;
-            if (userId == null)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
+        // --- CHECKOUT & ORDER LOGIC ---
 
-            var order = _db.Orders
-                           .Include(o => o.CartItems)
-                           .FirstOrDefault(o => o.Id == id && o.UserId == userId);
-
-            if (order == null)
-            {
-                return HttpNotFound();
-            }
-
-            return View(order);
-        }
-
-        
         public ActionResult Checkout()
         {
-            
             if (Session["UserId"] == null)
             {
-               
                 return RedirectToAction("Login", "Auth", new { returnUrl = Url.Action("Checkout", "Home") });
             }
 
-            Cart cart = GetCart();
+            Cart cart = _cartService.GetCart();
             if (cart.Items.Count == 0)
             {
                 return RedirectToAction("Cart");
             }
 
-            
             var userId = (int)Session["UserId"];
             var user = _db.Users.Find(userId);
 
             var model = new Order
             {
-                CustomerName = user.FullName, 
+                CustomerName = user.FullName,
                 Address = user.Address,
                 Phone = user.Phone
             };
 
             ViewBag.Cart = cart;
-            return View(model); 
+            return View(model);
         }
-
 
         [HttpPost]
         public ActionResult Checkout(Order model)
         {
+            // 1. Check Login
             var userId = Session["UserId"] as int?;
             if (userId == null)
             {
                 return RedirectToAction("Login", "Auth");
             }
 
-            Cart cart = GetCart();
+            // 2. Get Cart
+            Cart cart = _cartService.GetCart();
             if (cart.Items.Count == 0)
             {
                 return RedirectToAction("Cart");
             }
 
+            // ====================================================
+            // CRITICAL FIX: CALCULATE TOTAL IMMEDIATELY
+            // ====================================================
+            // The 'model' comes from the form with Name/Address only.
+            // The 'Total' is 0 by default. We MUST set it here.
+            model.Total = cart.GetTotal();
+
+            // Set other system fields
+            model.Date = DateTime.Now;
+            model.Status = "Pending";
+            model.UserId = userId;
+
+            // 3. Fill the Products Lists (For both History and Admin)
+            // We initialize them to ensure they aren't null
+            if (model.CartItems == null) model.CartItems = new List<CartItem>();
+            if (model.OrderDetails == null) model.OrderDetails = new List<OrderDetail>();
+
+            foreach (var item in cart.Items)
+            {
+                // Add to User History list
+                model.CartItems.Add(new CartItem
+                {
+                    ProductId = item.ProductId,
+                    ProductName = item.ProductName,
+                    ImageUrl = item.ImageUrl,
+                    Price = item.Price,
+                    Quantity = item.Quantity
+                });
+
+                // Add to Admin OrderDetails list
+                model.OrderDetails.Add(new OrderDetail
+                {
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.Price
+                });
+            }
+
+            // 4. NOW Check Payment Method
             if (model.PaymentMethod == "PayPal")
             {
+                // Now when we save to Session, 'model.Total' is correct (not 0)
                 Session["OrderModel"] = model;
                 return RedirectToAction("CreatePayment", "Paypal");
             }
             else
             {
-                var order = new Order
-                {
-                    CustomerName = model.CustomerName,
-                    Address = model.Address,
-                    Phone = model.Phone,
-                    PaymentMethod = model.PaymentMethod,
-                    Date = DateTime.Now,
-                    Status = "Pending",
-                    Total = cart.GetTotal(),
-                    UserId = userId
-                };
-
-                foreach (var item in cart.Items)
-                {
-                    // 1. KEEP THIS: Saving to CartItems (since your user history uses this)
-                    order.CartItems.Add(new CartItem
-                    {
-                        ProductId = item.ProductId,
-                        ProductName = item.ProductName,
-                        ImageUrl = item.ImageUrl,
-                        Price = item.Price,
-                        Quantity = item.Quantity
-                    });
-
-                    // 2. ADD THIS: Saving to OrderDetails (so Admin panel works)
-                    order.OrderDetails.Add(new OrderDetail
-                    {
-                        ProductId = item.ProductId,
-                        Quantity = item.Quantity,
-                        UnitPrice = item.Price
-                    });
-                }
-
-                _db.Orders.Add(order);
+                // COD / Cash Payment
+                _db.Orders.Add(model);
                 _db.SaveChanges();
 
-                Session["Cart"] = null;
+                // Clear Cart
+                _cartService.ClearCart();
 
-                return RedirectToAction("OrderConfirmation", new { id = order.Id });
+                return RedirectToAction("OrderConfirmation", new { id = model.Id });
             }
         }
 
+        // --- OTHER PAGES (UNCHANGED BUT CLEANED UP) ---
+
+        public ActionResult Category(string id, string sortOrder)
+        {
+            if (string.IsNullOrEmpty(id)) return RedirectToAction("Index");
+
+            var category = _db.Categories.Include(c => c.Products)
+                              .FirstOrDefault(c => c.Name.ToLower() == id.ToLower());
+            if (category == null) return HttpNotFound();
+
+            ViewData["CategoryName"] = category.Name;
+            ViewData["CategoryDescription"] = category.Description;
+            ViewData["CurrentSort"] = sortOrder;
+
+            // Only show Active products
+            var products = category.Products.Where(p => p.IsActive).ToList();
+
+            switch (sortOrder)
+            {
+                case "price_asc": products = products.OrderBy(p => p.Price).ToList(); break;
+                case "price_desc": products = products.OrderByDescending(p => p.Price).ToList(); break;
+                case "name_asc": products = products.OrderBy(p => p.Name).ToList(); break;
+                default: products = products.OrderBy(p => p.Name).ToList(); break;
+            }
+            return View(products);
+        }
+
+        public ActionResult Details(int id)
+        {
+            var product = _db.Products.Find(id);
+            if (product == null) return HttpNotFound();
+
+            var model = new ProductDetailVM
+            {
+                Product = product,
+                Quantity = 1,
+                // Only suggest active products
+                RelatedProducts = _db.Products
+                                     .Where(p => p.CategoryId == product.CategoryId && p.ProductId != id && p.IsActive)
+                                     .Take(4).ToList(),
+                TopProducts = _db.Products
+                                 .Where(p => p.IsActive)
+                                 .OrderByDescending(p => p.Price)
+                                 .Take(4).ToList()
+            };
+
+            return View(model);
+        }
+
+        public ActionResult OrderHistory()
+        {
+            var userId = Session["UserId"] as int?;
+            if (userId == null) return RedirectToAction("Login", "Auth");
+
+            var orders = _db.Orders.Where(o => o.UserId == userId)
+                            .OrderByDescending(o => o.Date).ToList();
+            return View(orders);
+        }
+
+        public ActionResult OrderDetails(int id)
+        {
+            var userId = Session["UserId"] as int?;
+            if (userId == null) return RedirectToAction("Login", "Auth");
+
+            var order = _db.Orders.Include(o => o.CartItems)
+                           .FirstOrDefault(o => o.Id == id && o.UserId == userId);
+            if (order == null) return HttpNotFound();
+
+            return View(order);
+        }
 
         public ActionResult Search(string term)
         {
@@ -311,30 +288,26 @@ namespace NhomProject.Controllers
             if (!string.IsNullOrEmpty(term))
             {
                 string searchTerm = term.ToLower();
+                // Filter by Active status
                 products = _db.Products
-                               .Where(p => p.Name.ToLower().Contains(searchTerm) ||
-                                           p.Description.ToLower().Contains(searchTerm))
+                               .Where(p => p.IsActive &&
+                                          (p.Name.ToLower().Contains(searchTerm) ||
+                                           p.Description.ToLower().Contains(searchTerm)))
                                .ToList();
             }
             return View(products);
         }
 
-       
         public ActionResult OrderConfirmation(int id)
         {
             ViewBag.OrderId = id;
             return View();
         }
 
-       
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                _db.Dispose();
-            }
+            if (disposing) _db.Dispose();
             base.Dispose(disposing);
         }
     }
 }
-

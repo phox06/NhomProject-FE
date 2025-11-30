@@ -1,40 +1,16 @@
 ﻿@model NhomProject.Models.Order
-@{ 
-    var vnFormat = new System.Globalization.CultureInfo("vi-VN");
-    vnFormat.NumberFormat.NumberDecimalDigits = 0;
-    vnFormat.NumberFormat.NumberGroupSeparator = ".";
+
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="center-content">
-    <h2>📦 Chi tiết đơn hàng #@Model.Id</h2>
-    <p><strong>Khách hàng:</strong> @Model.CustomerName</p>
-    <p><strong>Địa chỉ:</strong> @Model.Address</p>
-    <p><strong>Số điện thoại:</strong> @Model.Phone</p>
-    <p><strong>Phương thức thanh toán:</strong> @Model.PaymentMethod</p>
-    <p><strong>Ngày đặt:</strong> @Model.Date.ToString("dd/MM/yyyy HH:mm")</p>
+<div class="container mt-5 mb-5">
+    @Html.Partial("~/Views/Shared/_PVOrderItems.cshtml", Model)
 
-    <h4>Danh sách sản phẩm:</h4>
-    <table class="table table-bordered mt-3">
-        <thead>
-            <tr>
-                <th>Sản phẩm</th>
-                <th>Số lượng</th>
-                <th>Giá</th>
-                <th>Thành tiền</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.CartItems)
-            {
-                <tr>
-                    <td>@item.ProductName</td>
-                    <td>@item.Quantity</td>
-                    <td>@item.Price.ToString("N0", vnFormat) ₫</td>
-                    <td>@((item.Price * item.Quantity).ToString("N0", vnFormat)) ₫</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <h5><strong>Tổng cộng:</strong> @Model.Total.ToString("N0", vnFormat) ₫</h5>
+    <div class="mt-4">
+        <a href="@Url.Action("OrderHistory", "Home")" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Quay lại lịch sử mua hàng
+        </a>
+    </div>
 </div>

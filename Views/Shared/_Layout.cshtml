@@ -1,12 +1,16 @@
 ﻿<!DOCTYPE html>
 @using NhomProject.Models
+@using NhomProject.Models.ViewModel
 @{
     
-    var cart = Session["Cart"] as Cart;
+    var cartService = new CartService();
+
+    
+    var cart = cartService.GetCart();
+
     int totalQuantity = 0;
     if (cart != null && cart.Items != null)
     {
-        
         totalQuantity = cart.Items.Sum(item => item.Quantity);
     }
 }
@@ -27,7 +31,7 @@
 </head>
 <body>
     <div class="menu-overlay" id="menuOverlay"></div> <header>
-    
+
         <div class="header-top-bar">
             <div class="container">
                 <a href="#" class="location-link"> <i class="fas fa-map-marker-alt"> </i>Thành Phố Hồ Chí Minh</a>

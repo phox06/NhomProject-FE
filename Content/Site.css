@@ -101,13 +101,13 @@ a {
 
 .header-nav-bar {
     background-color: var(--dark-color);
-    display: block; /* Visible on desktop */
-    position: relative; /* Normal positioning */
-    width: 100%; /* Full width of the page */
+    display: block;
+    position: relative; 
+    width: 100%; 
     height: auto;
-    transform: none; /* No sliding effect on desktop */
+    transform: none; 
     z-index: 99;
-    overflow: visible; /* Don't hide dropdowns if you add them later */
+    overflow: visible; 
     box-shadow: none;
 }
 
@@ -116,7 +116,7 @@ a {
         justify-content: flex-start;
         gap: 1.5rem;
         padding: 0 1rem;
-        flex-direction: row; /* Horizontal layout */
+        flex-direction: row;
     }
 
     .header-nav-bar a {
@@ -124,22 +124,21 @@ a {
         padding: 1rem 0.5rem;
         font-weight: bold;
         font-size: 0.9rem;
-        border-bottom: none; /* No borders on desktop */
+        border-bottom: none; 
         display: inline-block;
     }
 
         .header-nav-bar a:hover {
             background-color: var(--primary-color);
             color: var(--dark-color);
-            padding-left: 0.5rem; /* Default padding */
+            padding-left: 0.5rem; 
         }
 
-/* Hide Mobile-Specific Elements on Desktop */
 .mobile-menu-header, .menu-overlay {
     display: none !important;
 }
 .mobile-menu-header {
-    display: flex; /* Visible only on mobile via this media query */
+    display: flex; 
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
@@ -157,7 +156,6 @@ a {
     cursor: pointer;
 }
 
-/* Overlay (Dark background behind menu) */
 .menu-overlay {
     position: fixed;
     top: 0;
@@ -165,7 +163,7 @@ a {
     width: 100%;
     height: 100%;
     background: rgba(0,0,0,0.5);
-    z-index: 999; /* Behind menu, above content */
+    z-index: 999;
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s;
@@ -176,7 +174,6 @@ a {
         visibility: visible;
     }
 
-/* --- Main Content & Footer --- */
 main {
     padding: 1.5rem 0;
 }
@@ -189,7 +186,6 @@ main {
     margin-top: 2rem;
 }
 
-/* --- Homepage-Specific Styles --- */
 .promo-carousel {
     background-color: var(--grey-color);
     height: 400px;
@@ -213,10 +209,9 @@ main {
 
 .product-grid {
     display: grid;
-    /* SỬA LỖI: Đổi thành lưới 4 cột cố định trên màn hình lớn */
     grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem; /* Tăng khoảng cách một chút */
-    margin-bottom: 3rem; /* Thêm không gian giữa các phần */
+    gap: 1.5rem; 
+    margin-bottom: 3rem;
 }
 
 .product-card {
@@ -224,33 +219,31 @@ main {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     overflow: hidden;
-    /* SỬA LỖI: Thêm bóng mờ mặc định tinh tế và chuyển đổi 'transform' */
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     transition: all 0.3s ease;
 }
 
     .product-card:hover {
-        /* SỬA LỖI: Làm cho hiệu ứng di chuột rõ rệt hơn */
+      
         box-shadow: 0 6px 16px rgba(0,0,0,0.12);
         transform: translateY(-5px);
     }
 
 .product-card-image {
-    background-color: #fff; /* Changed from grey to white for cleaner look */
-    height: 200px; /* Fixed height for consistency */
+    background-color: #fff; 
+    height: 200px; 
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px; /* Add padding so image doesn't touch edges */
+    padding: 10px; 
     overflow: hidden;
 }
 
-    /* Add this rule to target images inside the card image container */
     .product-card-image img {
         max-width: 100%;
         max-height: 100%;
-        object-fit: contain; /* Crucial: prevents cropping */
-        width: auto; /* Overwrite width: 100% if set elsewhere */
+        object-fit: contain; 
+        width: auto; 
         height: auto;
     }
 
@@ -283,19 +276,19 @@ main {
 .product-card-rating {
     font-size: 0.9rem;
     color: #777;
-    /* SỬA LỖI: Căn chỉnh biểu tượng ngôi sao */
+    
     display: flex;
     align-items: center;
 }
 
-    /* SỬA LỖI: Thêm kiểu cho chính biểu tượng ngôi sao */
+    
     .product-card-rating .fa-star {
-        color: #f5c518; /* Màu vàng */
+        color: #f5c518; 
         font-size: 0.8rem;
         margin-right: 4px;
     }
 
-/* --- RESPONSIVE DESIGN --- */
+
 @media (max-width: 768px) {
     .header-main .container {
         flex-wrap: wrap;
@@ -377,7 +370,7 @@ main {
         }
     }
 }
-/* --- Shopping Cart Page Styles --- */
+
 
 .cart-table {
     width: 100%;
@@ -479,7 +472,6 @@ main {
         margin-right: 0;
     }
 }
-/* --- Checkout Page Styles --- */
 
 .checkout-container {
     display: grid;
@@ -676,15 +668,15 @@ product-info-description ul {
 }
 
 .product-details-container {
-    display: block; /* Tắt grid cũ */
+    display: block; 
 }
 
-/* Cột chính bên trái */
+
 .product-card-main-image img {
     width: 100%;
     height: auto;
-    max-height: 550px; /* Chiều cao tối đa mới cho hình ảnh chính */
-    object-fit: contain; /* 'contain' để hiển thị toàn bộ sản phẩm */
+    max-height: 550px; 
+    object-fit: contain;
     border-radius: 8px;
     border: 1px solid var(--border-color);
 }
@@ -778,7 +770,7 @@ product-info-description ul {
     }
 
     .product-promotions .fa-check-circle {
-        color: #28a745; /* Màu xanh lá */
+        color: #28a745; 
         margin-right: 5px;
     }
 
@@ -819,7 +811,7 @@ product-info-description ul {
 }
 @media (max-width: 768px) {
 
-    /* The Overlay (Dark background) */
+    
     .menu-overlay {
         display: block !important;
         position: fixed;
@@ -839,17 +831,16 @@ product-info-description ul {
             visibility: visible;
         }
 
-    /* The Drawer Menu */
+   
     .header-nav-bar {
         position: fixed;
         top: 0;
         left: 0;
-        width: 280px; /* Fixed width (not full screen) */
-        max-width: 80%; /* Safety cap for very small phones */
+        width: 280px; 
+        max-width: 80%; 
         height: 100vh;
         background-color: var(--dark-color);
         z-index: 1000;
-        /* Animation: Slide from left */
         transform: translateX(-100%);
         transition: transform 0.3s ease-in-out;
         overflow-y: auto;
@@ -857,10 +848,10 @@ product-info-description ul {
     }
 
         .header-nav-bar.is-active {
-            transform: translateX(0); /* Slide in */
+            transform: translateX(0); 
         }
 
-        /* Stack items vertically */
+       
         .header-nav-bar .container {
             display: flex;
             flex-direction: column;
@@ -868,7 +859,7 @@ product-info-description ul {
             gap: 0;
         }
 
-        /* Mobile Links */
+        
         .header-nav-bar a {
             display: block;
             padding: 15px 20px;
@@ -880,10 +871,9 @@ product-info-description ul {
             .header-nav-bar a:hover {
                 background-color: var(--primary-color);
                 color: var(--dark-color);
-                padding-left: 25px; /* Slide effect on hover */
+                padding-left: 25px; 
             }
 
-    /* Mobile Header (The part with the 'X') */
     .mobile-menu-header {
         display: flex !important;
         justify-content: space-between;
@@ -941,20 +931,20 @@ product-info-description ul {
 
 
     .header-top-bar {
-        display: block; /* Forces it to show */
-        text-align: center; /* Optional: Looks better centered on phone */
+        display: block; 
+        text-align: center; 
     }
 }
 .cart-badge {
-    background-color: #ff0000; /* Red background */
-    color: white; /* White text */
-    border-radius: 50%; /* Make it a circle */
-    padding: 2px 6px; /* Size of the badge */
-    font-size: 11px; /* Small text */
+    background-color: #ff0000; 
+    color: white; 
+    border-radius: 50%; 
+    padding: 2px 6px; 
+    font-size: 11px; 
     font-weight: bold;
-    position: absolute; /* Floating position */
-    top: -8px; /* Move up */
-    right: -10px; /* Move right */
+    position: absolute; 
+    top: -8px; 
+    right: -10px; 
     min-width: 18px;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);

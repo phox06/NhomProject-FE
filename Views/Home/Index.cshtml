@@ -37,12 +37,12 @@
                     <h3 class="product-card-title">@product.Name</h3>
                     <div class="product-card-price">
 
-                        @* FIX 1: CHANGE THIS LINE *@
+                       
                         @product.Price.ToString("N0", vnFormat)Đ
                         @if (product.OldPrice.HasValue && product.OldPrice.Value > product.Price)
                         {
                             <span class="product-card-price-old">
-                                @* FIX 2: CHANGE THIS LINE *@
+                                
                                 @product.OldPrice.Value.ToString("N0", vnFormat)Đ
                             </span>
                         }
@@ -55,7 +55,7 @@
         }
     </div>
 
-    @* --- SECTION 2: LAPTOPS --- *@
+  
     <h2 class="section-title">Laptops Bán Chạy</h2>
     <div class="product-grid">
         @foreach (var product in Model.LaptopProducts)
@@ -69,13 +69,13 @@
                     <h3 class="product-card-title">@product.Name</h3>
                     <div class="product-card-price">
 
-                        @* FIX 3: CHANGE THIS LINE *@
+                       
                         @product.Price.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))Đ
 
                         @if (product.OldPrice.HasValue && product.OldPrice.Value > product.Price)
                         {
                             <span class="product-card-price-old">
-                                @* FIX 4: CHANGE THIS LINE *@
+                               
                                 @product.OldPrice.Value.ToString("N0", new System.Globalization.CultureInfo("vi-VN"))Đ
                             </span>
                         }

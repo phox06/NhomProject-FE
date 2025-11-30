@@ -29,7 +29,6 @@ namespace NhomProject.Models
         public System.DateTime Date { get; set; }
         public decimal Total { get; set; }
         public Nullable<int> UserId { get; set; }
-        public decimal TotalAmount { get; set; }
         public string PaymentMethod { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

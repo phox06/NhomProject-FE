@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using NhomProject.Models;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using NhomProject.Models;
-using System.Globalization;
 namespace NhomProject.Areas.Admin.Controllers
 {
     public class CategoriesController : BaseController
@@ -25,12 +20,12 @@ namespace NhomProject.Areas.Admin.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest); 
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Category category = db.Categories.Find(id);
             if (category == null)
             {
-                return HttpNotFound(); 
+                return HttpNotFound();
             }
             return View(category);
         }
@@ -109,25 +104,25 @@ namespace NhomProject.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            // 1. Find the Category
+            // 1. Find Data
             Category category = db.Categories.Find(id);
 
-            // 2. CHECK CONSTRAINTS (Theo yêu cầu Pic 1)
-            // Kiểm tra xem danh mục này có chứa sản phẩm nào không
-            // x.y.ToList() check
+            // 2. CHECK CONSTRAINTS (Teacher's Logic)
             var relatedProducts = category.Products.ToList();
 
             if (relatedProducts.Count > 0)
             {
-                // Nếu có dữ liệu liên quan, TRẢ VỀ LỖI (Không xóa)
-                // Dùng Content() để thông báo lỗi đơn giản như yêu cầu
-                return Content("Không thể xóa danh mục này vì đang có " + relatedProducts.Count + " sản phẩm bên trong! Vui lòng xóa sản phẩm trước.");
+                // ERROR HANDLER: Use TempData instead of Content()
+                TempData["ErrorMessage"] = "Không thể xóa danh mục này vì đang có " + relatedProducts.Count + " sản phẩm bên trong! Vui lòng xóa sản phẩm trước.";
+                return RedirectToAction("Index");
             }
             else
             {
-                // 3. Nếu không có ràng buộc -> Thực hiện lệnh Delete
+                // 3. EXECUTE DELETE
                 db.Categories.Remove(category);
                 db.SaveChanges();
+
+                TempData["SuccessMessage"] = "Đã xóa danh mục thành công.";
                 return RedirectToAction("Index");
             }
         }

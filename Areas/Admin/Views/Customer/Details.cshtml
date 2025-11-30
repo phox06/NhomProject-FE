@@ -47,7 +47,7 @@
             <tr>
                 <td>@order.Id</td>
                 <td>@order.Date.ToShortDateString()</td>
-                <td>@string.Format("{0:N0}", order.TotalAmount) ₫</td>
+                <td>@string.Format("{0:N0}", order.Total) ₫</td>
                 <td>@order.Status</td>
                 <td>
                    
@@ -63,6 +63,5 @@ else
 }
 
 <p class="mt-3">
-    @Html.ActionLink("Sửa", "Edit", new { id = Model.UserId }, new { @class = "btn btn-primary" }) |
     @Html.ActionLink("Quay lại Danh sách", "Index", null, new { @class = "btn btn-secondary" })
 </p>

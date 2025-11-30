@@ -1,13 +1,11 @@
 ﻿using NhomProject.Models;
 using NhomProject.Models.ViewModel;
-using System;
-using System.Collections.Generic;
+using PagedList;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using PagedList;
 
 namespace NhomProject.Areas.Admin.Controllers
 {
@@ -61,11 +59,11 @@ namespace NhomProject.Areas.Admin.Controllers
                     break;
             }
 
-            
+
             int pageNumber = page ?? 1;
             int pageSize = 10;
 
-            
+
             var productList = products.ToList();
             model.Products = new StaticPagedList<Product>(
                 productList.Skip((pageNumber - 1) * pageSize).Take(pageSize),
@@ -87,12 +85,12 @@ namespace NhomProject.Areas.Admin.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest); 
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
             }
             Product product = db.Products.Find(id);
             if (product == null)
             {
-                return HttpNotFound(); 
+                return HttpNotFound();
             }
             return View(product);
         }
@@ -100,7 +98,7 @@ namespace NhomProject.Areas.Admin.Controllers
         {
             ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name");
 
-            // Set IsActive = true by default so the checkbox starts checked
+
             var newProduct = new Product();
             newProduct.IsActive = true;
 
@@ -112,19 +110,18 @@ namespace NhomProject.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                // 1. Check if user uploaded a file
+
                 if (UploadImage != null && UploadImage.ContentLength > 0)
                 {
-                    // Logic to save file
+
                     string filename = Path.GetFileName(UploadImage.FileName);
                     string path = Path.Combine(Server.MapPath("~/Content/images/"), filename);
                     UploadImage.SaveAs(path);
 
-                    // Set the image path to the uploaded file name
+
                     product.MainImageUrl = filename;
                 }
-                // 2. If NO file uploaded, the product.ProductImage will already contain the URL 
-                // string from the text input (MVC binding handles this automatically).
+
 
                 db.Products.Add(product);
                 db.SaveChanges();
@@ -168,7 +165,7 @@ namespace NhomProject.Areas.Admin.Controllers
             ViewBag.CategoryId = new SelectList(db.Categories, "CategoryId", "Name", product.CategoryId);
             return View(product);
         }
-        // 1. GET: Show the Image Management Page
+
         public ActionResult ManageImages(int id)
         {
             var product = db.Products.Find(id);
@@ -179,7 +176,7 @@ namespace NhomProject.Areas.Admin.Controllers
             return View(product);
         }
 
-        // 2. POST: Upload New Images
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult UploadImages(int id, HttpPostedFileBase[] files)
@@ -193,12 +190,12 @@ namespace NhomProject.Areas.Admin.Controllers
                 {
                     if (file != null && file.ContentLength > 0)
                     {
-                        // Save file to server
+
                         string fileName = System.IO.Path.GetFileName(file.FileName);
                         string path = System.IO.Path.Combine(Server.MapPath("~/Content/images/"), fileName);
                         file.SaveAs(path);
 
-                        // Save info to Database
+
                         var img = new NhomProject.Models.ProductImage();
                         img.ProductId = id;
                         img.ImageUrl = "~/Content/images/" + fileName;
@@ -212,7 +209,7 @@ namespace NhomProject.Areas.Admin.Controllers
             TempData["SuccessMessage"] = "Đã tải lên hình ảnh thành công!";
             return RedirectToAction("ManageImages", new { id = id });
         }
-        // POST: Add Image via URL (New Feature)
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AddImageUrl(int id, string imageUrl)
@@ -224,7 +221,7 @@ namespace NhomProject.Areas.Admin.Controllers
             {
                 var img = new NhomProject.Models.ProductImage();
                 img.ProductId = id;
-                img.ImageUrl = imageUrl; // Save the raw link (http...)
+                img.ImageUrl = imageUrl;
 
                 db.ProductImages.Add(img);
                 db.SaveChanges();
@@ -235,7 +232,7 @@ namespace NhomProject.Areas.Admin.Controllers
             return RedirectToAction("ManageImages", new { id = id });
         }
 
-        // 3. POST: Delete a specific image
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteImage(int id)
@@ -243,7 +240,7 @@ namespace NhomProject.Areas.Admin.Controllers
             var img = db.ProductImages.Find(id);
             if (img != null)
             {
-                int productId = img.ProductId; // Remember the product ID to redirect back
+                int productId = img.ProductId;
                 db.ProductImages.Remove(img);
                 db.SaveChanges();
 
@@ -269,36 +266,35 @@ namespace NhomProject.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            // 1. Find the Product
+            // 1. Find Data
             Product product = db.Products.Find(id);
 
-            // 2. CHECK CONSTRAINTS (Theo yêu cầu Pic 2)
-            // Kiểm tra xem sản phẩm này đã từng được bán (nằm trong OrderDetails) chưa
+            // 2. CHECK CONSTRAINTS (Teacher's Logic)
             var orderDetails = db.OrderDetails.Where(od => od.ProductId == id).ToList();
 
-            // Logic: if (list is empty) { delete } else { error }
             if (orderDetails.Count == 0)
             {
-                // --- CÁC LỆNH DELETE ---
+                // --- SAFE TO DELETE ---
 
-                // Xóa ảnh liên quan (nếu có bảng ProductImages)
+                // Remove related images first
                 var images = db.ProductImages.Where(i => i.ProductId == id).ToList();
                 foreach (var img in images)
                 {
                     db.ProductImages.Remove(img);
                 }
 
-                // Xóa sản phẩm
+                // Remove Product
                 db.Products.Remove(product);
                 db.SaveChanges();
 
+                TempData["SuccessMessage"] = "Đã xóa sản phẩm thành công.";
                 return RedirectToAction("Index");
             }
             else
             {
-                // --- RETURN CONTENT THÔNG BÁO LỖI ---
-                // Như trong hình yêu cầu: return Content("nội dung thông báo lỗi");
-                return Content("Không thể xóa sản phẩm này vì nó đang tồn tại trong các đơn hàng cũ (Ràng buộc dữ liệu)!");
+                // ERROR HANDLER: Use TempData instead of Content()
+                TempData["ErrorMessage"] = "Không thể xóa sản phẩm này vì nó đang tồn tại trong các đơn hàng cũ (Ràng buộc dữ liệu)!";
+                return RedirectToAction("Index");
             }
         }
 
@@ -311,5 +307,5 @@ namespace NhomProject.Areas.Admin.Controllers
             base.Dispose(disposing);
         }
     }
-    
+
 }

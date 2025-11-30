@@ -1,13 +1,9 @@
 ﻿using NhomProject.Models;
 using NhomProject.Models.ViewModel;
-using System;
-using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using System.Data.Entity;
-using System.Globalization;
 
 namespace NhomProject.Areas.Admin.Controllers
 {
@@ -15,24 +11,24 @@ namespace NhomProject.Areas.Admin.Controllers
     {
         private MyProjectDatabaseEntities db = new MyProjectDatabaseEntities();
 
-        
+
         public ActionResult Index()
         {
-            
+
             var stats = db.Categories
-                .Include(c => c.Products) 
+                .Include(c => c.Products)
                 .Select(c => new CategoryStatisticVM
                 {
                     CategoryName = c.Name,
                     ProductCount = c.Products.Count(),
 
-                   
+
                     HighestPrice = c.Products.Any() ? c.Products.Max(p => p.Price) : 0,
                     LowestPrice = c.Products.Any() ? c.Products.Min(p => p.Price) : 0,
                     AveragePrice = c.Products.Any() ? c.Products.Average(p => p.Price) : 0
                 }).ToList();
 
-       
+
             return View(stats);
         }
 
@@ -44,12 +40,12 @@ namespace NhomProject.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [AllowAnonymous] 
+        [AllowAnonymous]
         public ActionResult Login(NhomProject.Models.User model)
         {
             if (ModelState.IsValid)
             {
-                
+
                 var user = db.Users.SingleOrDefault(u => u.Username == model.Username
                                                       && u.Password == model.Password
                                                       && u.UserRole == "Admin");

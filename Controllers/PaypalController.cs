@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using NhomProject.Models;
+using NhomProject.Models.ViewModel; // Required for CartService
 using PayPal.Api;
 using NhomProject.App_Start;
 using System.Globalization;
@@ -14,30 +15,34 @@ namespace NhomProject.Controllers
     {
         private MyProjectDatabaseEntities _db = new MyProjectDatabaseEntities();
 
+        // 1. Initialize CartService
+        private CartService _cartService = new CartService();
+
         public ActionResult CreatePayment()
         {
-            var cart = Session["Cart"] as Cart;
+            // 2. Use Service to get the correct Cart (Database or Session)
+            var cart = _cartService.GetCart();
+
+            // Get other details from Session
             var shippingDetails = Session["OrderModel"] as NhomProject.Models.Order;
             var userId = Session["UserId"] as int?;
 
-            if (cart == null || shippingDetails == null || userId == null)
+            // Validation: Ensure cart has items
+            if (cart == null || cart.Items.Count == 0 || shippingDetails == null || userId == null)
             {
-                return RedirectToAction("Checkout", "Home");
+                TempData["Error"] = "Cart is empty or session expired.";
+                return RedirectToAction("Cart", "Home");
             }
 
             var apiContext = PaypalConfiguration.GetAPIContext();
-            string payerId = Request.Params["PayerID"];
 
             try
             {
-                // 1. Get the total in VND
+                // 3. Get Total (This will now be correct because we loaded from DB)
                 decimal totalVND = cart.GetTotal();
 
-                // 2. Set a conversion rate (e.g., 1 USD = 25,000 VND)
+                // Exchange rate
                 decimal exchangeRate = 25000m;
-
-                // 3. Convert total to USD
-                decimal totalUSD = totalVND / exchangeRate;
 
                 if (totalVND <= 0)
                 {
@@ -48,21 +53,18 @@ namespace NhomProject.Controllers
                 var itemList = new ItemList() { items = new List<Item>() };
                 foreach (var item in cart.Items)
                 {
-                    // Convert item price to USD
                     decimal itemPriceUSD = item.Price / exchangeRate;
 
                     itemList.items.Add(new Item()
                     {
                         name = item.ProductName,
-                        currency = "USD", // Send USD to PayPal
+                        currency = "USD",
                         price = itemPriceUSD.ToString("F2", CultureInfo.InvariantCulture),
                         quantity = item.Quantity.ToString(),
                         sku = item.ProductId.ToString()
                     });
                 }
 
-                // Recalculate the total based on the converted item prices to avoid rounding errors
-                // (PayPal is strict: sum of items must exactly match total)
                 decimal subtotalUSD = itemList.items.Sum(i => decimal.Parse(i.price, CultureInfo.InvariantCulture) * int.Parse(i.quantity));
 
                 var details = new Details()
@@ -72,7 +74,7 @@ namespace NhomProject.Controllers
 
                 var amount = new Amount()
                 {
-                    currency = "USD", // Send USD to PayPal
+                    currency = "USD",
                     total = subtotalUSD.ToString("F2", CultureInfo.InvariantCulture),
                     details = details
                 };
@@ -81,7 +83,7 @@ namespace NhomProject.Controllers
                 transactionList.Add(new Transaction()
                 {
                     description = "Order #" + Convert.ToString(new Random().Next(100000)),
-                    invoice_number = Guid.NewGuid().ToString(), // Use GUID for unique invoice ID
+                    invoice_number = Guid.NewGuid().ToString(),
                     amount = amount,
                     item_list = itemList
                 });
@@ -118,7 +120,6 @@ namespace NhomProject.Controllers
             }
         }
 
-
         public ActionResult PaymentSuccess()
         {
             var apiContext = PaypalConfiguration.GetAPIContext();
@@ -130,11 +131,10 @@ namespace NhomProject.Controllers
 
                 if (string.IsNullOrEmpty(payerId) || string.IsNullOrEmpty(paymentId))
                 {
-                    TempData["Error"] = "Payment information is missing. Session may have expired.";
+                    TempData["Error"] = "Payment information is missing.";
                     return RedirectToAction("PaymentCancel");
                 }
 
-                
                 var paymentExecution = new PaymentExecution() { payer_id = payerId };
                 var payment = new Payment() { id = paymentId };
 
@@ -142,7 +142,8 @@ namespace NhomProject.Controllers
 
                 if (executedPayment.state.Equals("approved", StringComparison.OrdinalIgnoreCase))
                 {
-                    var cart = Session["Cart"] as Cart;
+                    // 4. Use Service again to ensure we get the DB cart
+                    var cart = _cartService.GetCart();
                     var shippingDetails = Session["OrderModel"] as NhomProject.Models.Order;
                     var userId = (int)Session["UserId"];
 
@@ -158,8 +159,13 @@ namespace NhomProject.Controllers
                         UserId = userId
                     };
 
+                    // Initialize lists to avoid errors
+                    if (order.CartItems == null) order.CartItems = new List<CartItem>();
+                    if (order.OrderDetails == null) order.OrderDetails = new List<OrderDetail>();
+
                     foreach (var item in cart.Items)
                     {
+                        // Save for User History
                         order.CartItems.Add(new CartItem
                         {
                             ProductId = item.ProductId,
@@ -168,12 +174,22 @@ namespace NhomProject.Controllers
                             Price = item.Price,
                             Quantity = item.Quantity
                         });
+
+                        // 5. CRITICAL: Save for Admin Panel (OrderDetails)
+                        order.OrderDetails.Add(new OrderDetail
+                        {
+                            ProductId = item.ProductId,
+                            Quantity = item.Quantity,
+                            UnitPrice = item.Price
+                        });
                     }
 
                     _db.Orders.Add(order);
                     _db.SaveChanges();
 
-                    Session["Cart"] = null;
+                    // 6. Use Service to Clear Cart (clears DB too)
+                    _cartService.ClearCart();
+
                     Session["OrderModel"] = null;
                     Session["paypalPaymentId"] = null;
 
@@ -188,7 +204,7 @@ namespace NhomProject.Controllers
             catch (PayPal.PaymentsException ex)
             {
                 TempData["Error"] = ex.Response;
-                return RedirectToAction("PaymentCancel"); 
+                return RedirectToAction("PaymentCancel");
             }
             catch (Exception ex)
             {
@@ -199,10 +215,7 @@ namespace NhomProject.Controllers
 
         public ActionResult PaymentCancel()
         {
-            
             Session["paypalPaymentId"] = null;
-
-            
             if (TempData["Error"] != null)
             {
                 ViewBag.Error = TempData["Error"];
@@ -211,17 +224,12 @@ namespace NhomProject.Controllers
             {
                 ViewBag.Error = "Payment was canceled.";
             }
-
-            
             return RedirectToAction("Cart", "Home");
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                _db.Dispose();
-            }
+            if (disposing) _db.Dispose();
             base.Dispose(disposing);
         }
     }

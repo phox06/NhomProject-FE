@@ -77,7 +77,7 @@ namespace NhomProject.Models.ViewModel
                         Price = product.Price,
                         Quantity = quantity,
                         ImageUrl = product.MainImageUrl,
-                        OrderId = 1 
+                        OrderId = null // CHANGE THIS: Do not link to an Order yet!
                     };
                     _db.CartItems.Add(newItem);
                 }
