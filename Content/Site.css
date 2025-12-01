@@ -472,7 +472,26 @@ main {
         margin-right: 0;
     }
 }
+.btn-continue {
+    display: inline-block;
+    background-color: var(--primary-color); 
+    color: var(--dark-color);
+    padding: 15px 40px; 
+    font-size: 1.2rem; 
+    font-weight: bold;
+    border-radius: 8px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
 
+    .btn-continue:hover {
+        background-color: #e6c600; 
+        transform: translateY(-2px); 
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        color: var(--dark-color);
+    }
 .checkout-container {
     display: grid;
     grid-template-columns: 2fr 1fr;

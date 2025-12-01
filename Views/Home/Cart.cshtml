@@ -83,9 +83,14 @@
     }
     else
     {
-        <p>Giỏ Hàng Đang Trống.</p>
-        <a href="@Url.Action("Index", "Home")" class="btn">Tiếp Tục Mua Sắm</a>
-    }
+        <div style="text-align: center; margin: 50px 0;">
+            <h3><i class="fas fa-shopping-basket"></i> Giỏ Hàng Đang Trống</h3>
+            <p class="mb-4">Bạn chưa thêm sản phẩm nào. Quay lại cửa hàng để chọn sản phẩm.</p>
 
-</div>
+            <a href="@Url.Action("Index", "Home")" class="btn-continue">
+                <i class="fas fa-arrow-left"></i> Tiếp Tục Mua Sắm
+            </a>
+        </div>
+    }
+    </div>
 
