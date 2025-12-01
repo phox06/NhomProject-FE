@@ -7,24 +7,21 @@
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f4f6f9; /* Soft gray background */
+            background-color: #f4f6f9;
             overflow-x: hidden;
         }
 
-        /* WRAPPER: Holds Sidebar and Content */
         .wrapper {
             display: flex;
             width: 100%;
             align-items: stretch;
         }
 
-        /* --- SIDEBAR STYLING --- */
         #sidebar {
             min-width: 260px;
             max-width: 260px;
@@ -33,7 +30,6 @@
             transition: all 0.3s;
             min-height: 100vh;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            /* DEFAULT STATE (DESKTOP): Visible */
             margin-left: 0;
         }
             #sidebar.active {
@@ -76,12 +72,12 @@
         #sidebar ul li a:hover {
             color: #fff;
             background: #34495e;
-            transform: translateX(5px); /* Slide effect */
+            transform: translateX(5px); 
         }
 
         #sidebar ul li.active > a {
             color: #fff;
-            background: #3498db; /* Active Blue */
+            background: #3498db; 
             box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3);
         }
 
@@ -91,7 +87,6 @@
             text-align: center;
         }
 
-        /* --- CONTENT STYLING --- */
         #content {
             width: 100%;
             min-height: 100vh;
@@ -100,7 +95,6 @@
             flex-direction: column;
         }
 
-        /* TOP NAVBAR */
         .top-navbar {
             background: #fff;
             padding: 10px 20px;
@@ -121,13 +115,11 @@
             color: #555;
         }
 
-        /* MAIN BODY CONTENT */
         .main-body {
             padding: 30px;
             flex: 1;
         }
 
-        /* Make the white containers look like "Cards" */
         .card-box {
             background: #fff;
             padding: 25px;
@@ -239,7 +231,7 @@
 
             
             $('#sidebarCollapse').on('click', function (e) {
-                e.preventDefault(); // Prevents page jumping
+                e.preventDefault(); 
                 $('#sidebar').toggleClass('active');
             });
 

@@ -185,35 +185,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202510261112512_InitialCreate.cs" />
-    <Compile Include="Migrations\202510261112512_InitialCreate.Designer.cs">
-      <DependentUpon>202510261112512_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202510261127529_Add_CartItem_Model.cs" />
-    <Compile Include="Migrations\202510261127529_Add_CartItem_Model.Designer.cs">
-      <DependentUpon>202510261127529_Add_CartItem_Model.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202510261256294_AddRatingAndReviewCountToProducts.cs" />
-    <Compile Include="Migrations\202510261256294_AddRatingAndReviewCountToProducts.Designer.cs">
-      <DependentUpon>202510261256294_AddRatingAndReviewCountToProducts.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202510270617380_Test.cs" />
-    <Compile Include="Migrations\202510270617380_Test.Designer.cs">
-      <DependentUpon>202510270617380_Test.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202510270700086_AddUserTable.cs" />
-    <Compile Include="Migrations\202510270700086_AddUserTable.Designer.cs">
-      <DependentUpon>202510270700086_AddUserTable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202510270712545_UpdatedAllModelsForController.cs" />
-    <Compile Include="Migrations\202510270712545_UpdatedAllModelsForController.Designer.cs">
-      <DependentUpon>202510270712545_UpdatedAllModelsForController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202510271416403_AddSeparateProductImages.cs" />
-    <Compile Include="Migrations\202510271416403_AddSeparateProductImages.Designer.cs">
-      <DependentUpon>202510271416403_AddSeparateProductImages.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Cart.cs" />
     <Compile Include="Models\CartItem.cs">
       <DependentUpon>Store.tt</DependentUpon>
@@ -324,16 +295,12 @@
     <Content Include="Areas\Admin\Views\products\PVProductInfo.cshtml" />
     <Content Include="Areas\Admin\Views\products\PVListProduct.cshtml" />
     <Content Include="Areas\Admin\Views\Account\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Customer\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Orders\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Home\Login.cshtml" />
     <Content Include="Areas\Admin\Views\Account\Create.cshtml" />
-    <Content Include="Areas\Admin\Views\Account\Details.cshtml" />
-    <Content Include="Areas\Admin\Views\Account\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Account\Delete.cshtml" />
     <EntityDeploy Include="Models\Store.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
@@ -343,6 +310,7 @@
       <DependentUpon>Store.edmx</DependentUpon>
     </Content>
     <Content Include="Areas\Admin\Views\products\ManageImages.cshtml" />
+    <Content Include="Areas\Admin\Views\Orders\UpdateStatus.cshtml" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
@@ -386,7 +354,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admin\Data\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
@@ -417,29 +384,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\202510261112512_InitialCreate.resx">
-      <DependentUpon>202510261112512_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202510261127529_Add_CartItem_Model.resx">
-      <DependentUpon>202510261127529_Add_CartItem_Model.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202510261256294_AddRatingAndReviewCountToProducts.resx">
-      <DependentUpon>202510261256294_AddRatingAndReviewCountToProducts.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202510270617380_Test.resx">
-      <DependentUpon>202510270617380_Test.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202510270700086_AddUserTable.resx">
-      <DependentUpon>202510270700086_AddUserTable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202510270712545_UpdatedAllModelsForController.resx">
-      <DependentUpon>202510270712545_UpdatedAllModelsForController.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202510271416403_AddSeparateProductImages.resx">
-      <DependentUpon>202510271416403_AddSeparateProductImages.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

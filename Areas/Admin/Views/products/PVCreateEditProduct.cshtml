@@ -1,11 +1,9 @@
 ﻿@model NhomProject.Models.Product
 
 @{
-    // Check if the current image is a URL (for Edit mode)
-    // If it starts with 'http', we assume it's an online link.
+   
     bool isUrl = Model != null && !string.IsNullOrEmpty(Model.MainImageUrl) && (Model.MainImageUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase));
 
-    // Determine which radio button is checked and which section is visible
     string fileChecked = isUrl ? "" : "checked";
     string urlChecked = isUrl ? "checked" : "";
     string fileDisplay = isUrl ? "display:none;" : "display:block;";

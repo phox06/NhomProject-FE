@@ -1,83 +1,110 @@
-﻿
+﻿@model IEnumerable<NhomProject.Models.Order>
 @{
-    ViewBag.Title = "OrderHistory";
+    ViewBag.Title = "Đơn hàng của tôi";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var vnFormat = new System.Globalization.CultureInfo("vi-VN");
     vnFormat.NumberFormat.NumberDecimalDigits = 0;
     vnFormat.NumberFormat.NumberGroupSeparator = ".";
 }
 
+<div class="container mt-4 mb-5">
+    <h2>Đơn hàng của tôi</h2>
 
-@model IEnumerable<NhomProject.Models.Order>
-@{
-    ViewData["Title"] = "Lịch sử đơn hàng";
-}
+    <ul class="nav nav-tabs mt-3" id="orderTabs" role="tablist">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#all">Tất cả đơn</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#pending">Chờ thanh toán</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#processing">Đang xử lý</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#shipped">Đang vận chuyển</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#completed">Đã giao</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#cancelled">Đã hủy</a></li>
+    </ul>
 
-<div class="container">
-    <div class="row my-4">
-        <div class="col-md-3">
-           
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="fas fa-user"></i> Tài khoản</h5>
-                </div>
-                <div class="list-group list-group-flush">
-                    <a href="@Url.Action("Profile", "Auth")" class="list-group-item list-group-item-action">
-                        <i class="fas fa-user"></i> Thông tin cá nhân
-                    </a>
-                    <a href="@Url.Action("OrderHistory", "Home")" class="list-group-item list-group-item-action active">
-                        <i class="fas fa-history"></i> Lịch sử đơn hàng
-                    </a>
-                    <a href="@Url.Action("Logout", "Auth")" class="list-group-item list-group-item-action">
-                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                    </a>
-                </div>
+    <div class="mt-3 mb-3">
+        @using (Html.BeginForm("OrderHistory", "Home", FormMethod.Get))
+        {
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <input type="text" name="searchTerm" class="form-control" placeholder="Tìm đơn hàng theo Mã đơn hàng hoặc Tên sản phẩm" value="@ViewBag.SearchTerm">
+                <button class="btn btn-primary" type="submit">Tìm đơn hàng</button>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <h4>BẠN CHƯA CÓ ĐƠN HÀNG NÀO.</h4>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-warning mt-2">HÃY ĐẶT ĐƠN NGAY</a>
+        </div>
+    }
+    else
+    {
+        <div class="tab-content mt-3">
+            <div class="tab-pane fade show active" id="all">
+                @foreach (var order in Model)
+                {
+                    @RenderOrderCard(order, vnFormat)
+                }
+            </div>
+
+            <div class="tab-pane fade" id="pending">
+                @foreach (var order in Model.Where(o => o.Status == "Pending"))
+                {@RenderOrderCard(order, vnFormat)}
+            </div>
+            <div class="tab-pane fade" id="processing">
+                @foreach (var order in Model.Where(o => o.Status == "Processing"))
+                {@RenderOrderCard(order, vnFormat)}
+            </div>
+            <div class="tab-pane fade" id="shipped">
+                @foreach (var order in Model.Where(o => o.Status == "Shipped"))
+                {@RenderOrderCard(order, vnFormat)}
+            </div>
+            <div class="tab-pane fade" id="completed">
+                @foreach (var order in Model.Where(o => o.Status == "Paid" || o.Status == "Completed"))
+                {@RenderOrderCard(order, vnFormat)}
+            </div>
+            <div class="tab-pane fade" id="cancelled">
+                @foreach (var order in Model.Where(o => o.Status == "Cancelled"))
+                {@RenderOrderCard(order, vnFormat)}
             </div>
         </div>
+    }
+</div>
 
-        <div class="col-md-9">
-            <div class="card">
-                <div class="card-header">
-                    <h5><i class="fas fa-history"></i> Lịch sử đơn hàng</h5>
+@helper RenderOrderCard(NhomProject.Models.Order order, System.Globalization.CultureInfo fmt)
+{
+    <div class="card mb-3 shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between">
+            <span class="fw-bold">#@order.Id - @order.Date.ToString("dd/MM/yyyy HH:mm")</span>
+            <span class="text-uppercase text-warning fw-bold">@order.Status</span>
+        </div>
+        <div class="card-body">
+            @foreach (var item in order.CartItems.Take(2))
+            {
+                <div class="d-flex mb-2 border-bottom pb-2">
+                    <img src="@Url.Content(item.ImageUrl ?? "https://placehold.co/50")" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px;">
+                    <div class="flex-grow-1">
+                        <h6>@item.ProductName</h6>
+                        <small>x @item.Quantity</small>
+                    </div>
+                    <div class="text-end">
+                        <span class="text-danger fw-bold">@item.Price.ToString("N0", fmt) ₫</span>
+                    </div>
                 </div>
-                <div class="card-body">
-                    @if (Model.Any())
-                    {
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Mã ĐH</th>
-                                    <th>Ngày đặt</th>
-                                    <th>Tổng tiền</th>
-                                    <th>Trạng thái</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var order in Model)
-                                {
-                                    <tr>
-                                        <td>#@order.Id</td>
-                                        <td>@order.Date.ToString("dd/MM/yyyy")</td>
-                                        <td>@order.Total.ToString("N0", vnFormat) ₫</td>
-                                        <td><span class="badge bg-warning text-dark">@order.Status</span></td>
-                                        <td>
-                                            <a href="@Url.Action("OrderDetails", "Home", new { id = order.Id })" class="btn btn-sm btn-outline-primary">
-                                                Xem
-                                            </a>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
-                    else
-                    {
-                        <div class="alert alert-info">Bạn chưa có đơn hàng nào.</div>
-                    }
+            }
+
+            @if (order.CartItems.Count > 2)
+            {
+                <div class="text-center text-muted mb-2">Xem thêm @(order.CartItems.Count - 2) sản phẩm...</div>
+            }
+
+            <div class="text-end border-top pt-2">
+                <h5>Tổng tiền: <span class="text-danger">@order.Total.ToString("N0", fmt) ₫</span></h5>
+                <div class="mt-2">
+                    <a href="@Url.Action("BuyAgain", "Home", new { orderId = order.Id })" class="btn btn-outline-primary">Mua lại</a>
+                    <a href="@Url.Action("OrderDetails", "Home", new { id = order.Id })" class="btn btn-outline-secondary">Xem chi tiết</a>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
+}

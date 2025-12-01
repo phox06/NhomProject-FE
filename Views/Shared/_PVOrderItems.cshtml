@@ -6,123 +6,74 @@
     vnFormat.NumberFormat.NumberDecimalDigits = 0;
     vnFormat.NumberFormat.NumberGroupSeparator = ".";
 
-    // LOGIC: Check which list has data (OrderDetails for Admin, CartItems for User History)
-    // We create a unified list to loop through easily.
     var displayList = new List<dynamic>();
 
     if (Model.OrderDetails != null && Model.OrderDetails.Count > 0)
     {
         foreach (var item in Model.OrderDetails)
         {
-            // Check if Product is null (prevent crash)
-            string pName = item.Product != null ? item.Product.Name : "Sản phẩm đã xóa";
-            displayList.Add(new { Name = pName, Qty = item.Quantity, Price = item.UnitPrice });
+            displayList.Add(new
+            {
+                Name = item.Product != null ? item.Product.Name : "Sản phẩm đã xóa",
+                Img = item.Product != null ? item.Product.MainImageUrl : "",
+                Qty = item.Quantity,
+                Price = item.UnitPrice,
+                Id = item.ProductId 
+            });
         }
     }
     else if (Model.CartItems != null && Model.CartItems.Count > 0)
     {
         foreach (var item in Model.CartItems)
         {
-            displayList.Add(new { Name = item.ProductName, Qty = item.Quantity, Price = item.Price });
+            displayList.Add(new
+            {
+                Name = item.ProductName,
+                Img = item.ImageUrl,
+                Qty = item.Quantity,
+                Price = item.Price,
+                Id = item.ProductId
+            });
         }
     }
 }
 
-<style>
-    /* CSS for Invoice Look */
-    .invoice-box {
-        max-width: 800px;
-        margin: auto;
-        padding: 30px;
-        border: 1px solid #eee;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-        background-color: white;
-        font-size: 16px;
-        line-height: 24px;
-        font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-        color: #555;
-    }
-
-    .invoice-title {
-        font-size: 24px;
-        font-weight: bold;
-        color: #333;
-        border-bottom: 2px solid #ddd;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-    }
-
-    .invoice-table {
-        width: 100%;
-        line-height: inherit;
-        text-align: left;
-        border-collapse: collapse;
-    }
-
-        .invoice-table td {
-            padding: 5px;
-            vertical-align: top;
-        }
-
-        .invoice-table tr.heading td {
-            background: #eee;
-            border-bottom: 1px solid #ddd;
-            font-weight: bold;
-        }
-
-        .invoice-table tr.item td {
-            border-bottom: 1px solid #eee;
-        }
-
-        .invoice-table tr.total td {
-            border-top: 2px solid #eee;
-            font-weight: bold;
-        }
-</style>
-
-<div class="invoice-box">
-    <div class="invoice-title">
-        📦 CHI TIẾT HÓA ĐƠN #@Model.Id
-    </div>
-
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <strong>Người nhận:</strong><br>
-            @Model.CustomerName<br>
-            @Model.Phone<br>
-            @Model.Address
-        </div>
-        <div class="col-md-6 text-end" style="text-align: right;">
-            <strong>Thông tin đơn:</strong><br>
-            Ngày đặt: @Model.Date.ToString("dd/MM/yyyy")<br>
-            Thanh toán: @Model.PaymentMethod<br>
-            Trạng thái: <span class="badge bg-warning text-dark">@Model.Status</span>
-        </div>
-    </div>
-
-    <table class="invoice-table">
-        <tr class="heading">
-            <td>Sản phẩm</td>
-            <td style="text-align: center;">SL</td>
-            <td style="text-align: right;">Đơn giá</td>
-            <td style="text-align: right;">Thành tiền</td>
-        </tr>
-
-        @foreach (var item in displayList)
-        {
-            <tr class="item">
-                <td>@item.Name</td>
-                <td style="text-align: center;">@item.Qty</td>
-                <td style="text-align: right;">@item.Price.ToString("N0", vnFormat) ₫</td>
-                <td style="text-align: right;">@((item.Price * item.Qty).ToString("N0", vnFormat)) ₫</td>
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead class="bg-light">
+            <tr>
+                <th>Sản phẩm</th>
+                <th class="text-center">Số lượng</th>
+                <th class="text-end">Đơn giá</th>
+                <th class="text-end">Thành tiền</th>
             </tr>
-        }
-
-        <tr class="total">
-            <td colspan="3" style="text-align: right;">TỔNG CỘNG:</td>
-            <td style="text-align: right; color: #d0021b; font-size: 1.2em;">
-                @Model.Total.ToString("N0", vnFormat) ₫
-            </td>
-        </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in displayList)
+            {
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="@Url.Content(item.Img ?? "https://placehold.co/50")"
+                                 style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border: 1px solid #ddd;" />
+                            <div>
+                                <a href="@Url.Action("Details", "Home", new { id = item.Id, area = "" })" style="text-decoration: none; color: #333; font-weight: bold;">
+                                    @item.Name
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center align-middle">@item.Qty</td>
+                    <td class="text-end align-middle">@item.Price.ToString("N0", vnFormat) ₫</td>
+                    <td class="text-end align-middle">@((item.Price * item.Qty).ToString("N0", vnFormat)) ₫</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="bg-light">
+                <td colspan="3" class="text-end fw-bold">TỔNG CỘNG:</td>
+                <td class="text-end fw-bold text-danger">@Model.Total.ToString("N0", vnFormat) ₫</td>
+            </tr>
+        </tfoot>
     </table>
 </div>

@@ -266,24 +266,19 @@ namespace NhomProject.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            // 1. Find Data
             Product product = db.Products.Find(id);
 
-            // 2. CHECK CONSTRAINTS (Teacher's Logic)
             var orderDetails = db.OrderDetails.Where(od => od.ProductId == id).ToList();
 
             if (orderDetails.Count == 0)
             {
-                // --- SAFE TO DELETE ---
 
-                // Remove related images first
                 var images = db.ProductImages.Where(i => i.ProductId == id).ToList();
                 foreach (var img in images)
                 {
                     db.ProductImages.Remove(img);
                 }
 
-                // Remove Product
                 db.Products.Remove(product);
                 db.SaveChanges();
 
@@ -292,8 +287,7 @@ namespace NhomProject.Areas.Admin.Controllers
             }
             else
             {
-                // ERROR HANDLER: Use TempData instead of Content()
-                TempData["ErrorMessage"] = "Không thể xóa sản phẩm này vì nó đang tồn tại trong các đơn hàng cũ (Ràng buộc dữ liệu)!";
+                TempData["ErrorMessage"] = "Không thể xóa sản phẩm này vì nó đang tồn tại trong các đơn hàng cũ.";
                 return RedirectToAction("Index");
             }
         }

@@ -1,0 +1,44 @@
+﻿@model NhomProject.Models.Order
+
+@{
+    ViewBag.Title = "Cập nhật trạng thái";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="bg-primary text-white p-2">CẬP NHẬT TRẠNG THÁI ĐƠN HÀNG #@Model.Id</h2>
+
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <strong>Thông tin hiện tại:</strong>
+            <span class="badge bg-warning text-dark">@Model.Status</span>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.Id)
+
+                <div class="form-group mb-3">
+                    <label class="fw-bold mb-2">Chọn trạng thái mới:</label>
+
+                    <select class="form-control" name="status" style="max-width: 300px;">
+                        <option value="Paid" @(Model.Status == "Paid" ? "selected" : "")>Đã Thanh Toán (Paid)</option>
+                        <option value="Pending" @(Model.Status == "Pending" ? "selected" : "")>Chờ thanh toán (Pending)</option>
+                        <option value="Processing" @(Model.Status == "Processing" ? "selected" : "")>Đang xử lý (Processing)</option>
+                        <option value="Shipped" @(Model.Status == "Shipped" ? "selected" : "")>Đang vận chuyển (Shipped)</option>
+                        <option value="Completed" @(Model.Status == "Completed" ? "selected" : "")>Đã giao (Completed)</option>
+                        <option value="Cancelled" @(Model.Status == "Cancelled" ? "selected" : "")>Đã hủy (Cancelled)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Lưu trạng thái
+                </button>
+                <a href="@Url.Action("Details", new { id = Model.Id })" class="btn btn-secondary">
+                    Quay lại
+                </a>
+            }
+        </div>
+    </div>
+</div>

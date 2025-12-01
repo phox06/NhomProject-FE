@@ -38,6 +38,9 @@
                                     @Html.LabelFor(m => m.Password, new { @class = "form-label" })
                                     @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Nhập mật khẩu", required = "required" })
                                     @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                    <small class="text-muted" style="font-size: 0.85em;">
+                                        * Mật khẩu phải có ít nhất 8 ký tự, bao gồm: 1 chữ Hoa, 1 Số và 1 Ký tự đặc biệt (!%#...).
+                                    </small>
                                 </div>
                             </div>
                         </div>

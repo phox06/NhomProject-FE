@@ -2,17 +2,14 @@
 @using System.Globalization
 
 @{
-    // 1. Setup Currency Format
     var viCulture = new CultureInfo("vi-VN");
     viCulture.NumberFormat.NumberDecimalDigits = 0;
     viCulture.NumberFormat.NumberGroupSeparator = ".";
 
-    // 2. Check if we should show Buy Buttons (Passed from Parent View)
     bool showBuyButtons = ViewData["ShowBuyButtons"] != null && (bool)ViewData["ShowBuyButtons"];
 }
 
 <style>
-    /* Copied CSS from your Details Home so Admin page looks good too */
     .product-gallery-thumbs {
         display: flex;
         gap: 10px;

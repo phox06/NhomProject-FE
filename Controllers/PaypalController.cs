@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using NhomProject.Models;
-using NhomProject.Models.ViewModel; // Required for CartService
+using NhomProject.Models.ViewModel; 
 using PayPal.Api;
 using NhomProject.App_Start;
 using System.Globalization;
@@ -15,19 +15,15 @@ namespace NhomProject.Controllers
     {
         private MyProjectDatabaseEntities _db = new MyProjectDatabaseEntities();
 
-        // 1. Initialize CartService
         private CartService _cartService = new CartService();
 
         public ActionResult CreatePayment()
         {
-            // 2. Use Service to get the correct Cart (Database or Session)
             var cart = _cartService.GetCart();
 
-            // Get other details from Session
             var shippingDetails = Session["OrderModel"] as NhomProject.Models.Order;
             var userId = Session["UserId"] as int?;
 
-            // Validation: Ensure cart has items
             if (cart == null || cart.Items.Count == 0 || shippingDetails == null || userId == null)
             {
                 TempData["Error"] = "Cart is empty or session expired.";
@@ -38,10 +34,8 @@ namespace NhomProject.Controllers
 
             try
             {
-                // 3. Get Total (This will now be correct because we loaded from DB)
                 decimal totalVND = cart.GetTotal();
 
-                // Exchange rate
                 decimal exchangeRate = 25000m;
 
                 if (totalVND <= 0)
@@ -142,7 +136,6 @@ namespace NhomProject.Controllers
 
                 if (executedPayment.state.Equals("approved", StringComparison.OrdinalIgnoreCase))
                 {
-                    // 4. Use Service again to ensure we get the DB cart
                     var cart = _cartService.GetCart();
                     var shippingDetails = Session["OrderModel"] as NhomProject.Models.Order;
                     var userId = (int)Session["UserId"];
@@ -159,13 +152,11 @@ namespace NhomProject.Controllers
                         UserId = userId
                     };
 
-                    // Initialize lists to avoid errors
                     if (order.CartItems == null) order.CartItems = new List<CartItem>();
                     if (order.OrderDetails == null) order.OrderDetails = new List<OrderDetail>();
 
                     foreach (var item in cart.Items)
                     {
-                        // Save for User History
                         order.CartItems.Add(new CartItem
                         {
                             ProductId = item.ProductId,
@@ -175,7 +166,6 @@ namespace NhomProject.Controllers
                             Quantity = item.Quantity
                         });
 
-                        // 5. CRITICAL: Save for Admin Panel (OrderDetails)
                         order.OrderDetails.Add(new OrderDetail
                         {
                             ProductId = item.ProductId,
@@ -187,7 +177,6 @@ namespace NhomProject.Controllers
                     _db.Orders.Add(order);
                     _db.SaveChanges();
 
-                    // 6. Use Service to Clear Cart (clears DB too)
                     _cartService.ClearCart();
 
                     Session["OrderModel"] = null;

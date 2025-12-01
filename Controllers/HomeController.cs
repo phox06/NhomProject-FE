@@ -4,9 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Globalization;
 
 namespace NhomProject.Controllers
 {
@@ -14,14 +12,9 @@ namespace NhomProject.Controllers
     {
         private MyProjectDatabaseEntities _db = new MyProjectDatabaseEntities();
 
-        // --- 1. USE THE NEW CART SERVICE ---
         private CartService _cartService = new CartService();
-
-        // (We removed the old "GetCart" method because the Service handles it now)
-
         public ActionResult Index()
         {
-            // Only show ACTIVE products
             var allProducts = _db.Products.Include(p => p.Category)
                                  .Where(p => p.IsActive)
                                  .ToList();
@@ -41,12 +34,8 @@ namespace NhomProject.Controllers
 
             return View(viewModel);
         }
-
-        // --- CART ACTIONS (UPDATED TO USE SERVICE) ---
-
         public ActionResult Cart()
         {
-            // Load Cart from Service (DB or Session)
             Cart cart = _cartService.GetCart();
             ViewBag.Error = TempData["Error"];
             return View(cart);
@@ -58,7 +47,6 @@ namespace NhomProject.Controllers
             var product = _db.Products.Find(productId);
             if (product != null)
             {
-                // Use Service to Save (Handles both DB and Session)
                 _cartService.AddToCart(product, quantity);
 
                 TempData["SuccessMessage"] = "Đã thêm " + product.Name + " vào giỏ hàng!";
@@ -77,7 +65,6 @@ namespace NhomProject.Controllers
         [HttpPost]
         public ActionResult UpdateCart(int productId, int quantity)
         {
-            // Logic to update DB or Session based on login status
             Cart cart = _cartService.GetCart();
             cart.UpdateQuantity(productId, quantity);
 
@@ -101,13 +88,9 @@ namespace NhomProject.Controllers
 
         public ActionResult RemoveFromCart(int id)
         {
-            // Use Service to Remove from DB/Session
             _cartService.RemoveFromCart(id);
             return RedirectToAction("Cart");
         }
-
-        // --- CHECKOUT & ORDER LOGIC ---
-
         public ActionResult Checkout()
         {
             if (Session["UserId"] == null)
@@ -138,40 +121,27 @@ namespace NhomProject.Controllers
         [HttpPost]
         public ActionResult Checkout(Order model)
         {
-            // 1. Check Login
             var userId = Session["UserId"] as int?;
             if (userId == null)
             {
                 return RedirectToAction("Login", "Auth");
             }
 
-            // 2. Get Cart
             Cart cart = _cartService.GetCart();
             if (cart.Items.Count == 0)
             {
                 return RedirectToAction("Cart");
             }
-
-            // ====================================================
-            // CRITICAL FIX: CALCULATE TOTAL IMMEDIATELY
-            // ====================================================
-            // The 'model' comes from the form with Name/Address only.
-            // The 'Total' is 0 by default. We MUST set it here.
             model.Total = cart.GetTotal();
-
-            // Set other system fields
             model.Date = DateTime.Now;
             model.Status = "Pending";
             model.UserId = userId;
 
-            // 3. Fill the Products Lists (For both History and Admin)
-            // We initialize them to ensure they aren't null
             if (model.CartItems == null) model.CartItems = new List<CartItem>();
             if (model.OrderDetails == null) model.OrderDetails = new List<OrderDetail>();
 
             foreach (var item in cart.Items)
             {
-                // Add to User History list
                 model.CartItems.Add(new CartItem
                 {
                     ProductId = item.ProductId,
@@ -181,7 +151,6 @@ namespace NhomProject.Controllers
                     Quantity = item.Quantity
                 });
 
-                // Add to Admin OrderDetails list
                 model.OrderDetails.Add(new OrderDetail
                 {
                     ProductId = item.ProductId,
@@ -190,28 +159,23 @@ namespace NhomProject.Controllers
                 });
             }
 
-            // 4. NOW Check Payment Method
             if (model.PaymentMethod == "PayPal")
             {
-                // Now when we save to Session, 'model.Total' is correct (not 0)
+
                 Session["OrderModel"] = model;
                 return RedirectToAction("CreatePayment", "Paypal");
             }
             else
             {
-                // COD / Cash Payment
+
                 _db.Orders.Add(model);
                 _db.SaveChanges();
 
-                // Clear Cart
                 _cartService.ClearCart();
 
                 return RedirectToAction("OrderConfirmation", new { id = model.Id });
             }
         }
-
-        // --- OTHER PAGES (UNCHANGED BUT CLEANED UP) ---
-
         public ActionResult Category(string id, string sortOrder)
         {
             if (string.IsNullOrEmpty(id)) return RedirectToAction("Index");
@@ -224,7 +188,6 @@ namespace NhomProject.Controllers
             ViewData["CategoryDescription"] = category.Description;
             ViewData["CurrentSort"] = sortOrder;
 
-            // Only show Active products
             var products = category.Products.Where(p => p.IsActive).ToList();
 
             switch (sortOrder)
@@ -246,7 +209,6 @@ namespace NhomProject.Controllers
             {
                 Product = product,
                 Quantity = 1,
-                // Only suggest active products
                 RelatedProducts = _db.Products
                                      .Where(p => p.CategoryId == product.CategoryId && p.ProductId != id && p.IsActive)
                                      .Take(4).ToList(),
@@ -259,14 +221,49 @@ namespace NhomProject.Controllers
             return View(model);
         }
 
-        public ActionResult OrderHistory()
+        public ActionResult OrderHistory(string searchTerm)
         {
             var userId = Session["UserId"] as int?;
             if (userId == null) return RedirectToAction("Login", "Auth");
 
-            var orders = _db.Orders.Where(o => o.UserId == userId)
-                            .OrderByDescending(o => o.Date).ToList();
-            return View(orders);
+            var orders = _db.Orders.Include(o => o.CartItems) 
+                                   .Where(o => o.UserId == userId);
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                if (int.TryParse(searchTerm, out int orderId))
+                {
+                    orders = orders.Where(o => o.Id == orderId);
+                }
+                else
+                {
+                    orders = orders.Where(o => o.CartItems.Any(i => i.ProductName.Contains(searchTerm)));
+                }
+            }
+
+            var orderList = orders.OrderByDescending(o => o.Date).ToList();
+            ViewBag.SearchTerm = searchTerm;
+
+            return View(orderList);
+        }
+
+        public ActionResult BuyAgain(int orderId)
+        {
+            var userId = Session["UserId"] as int?;
+            if (userId == null) return RedirectToAction("Login", "Auth");
+
+            var orderItems = _db.CartItems.Where(c => c.OrderId == orderId).ToList();
+
+            foreach (var item in orderItems)
+            {
+                var product = _db.Products.Find(item.ProductId);
+                if (product != null)
+                {
+                    _cartService.AddToCart(product, 1);
+                }
+            }
+
+            return RedirectToAction("Cart");
         }
 
         public ActionResult OrderDetails(int id)
@@ -288,7 +285,6 @@ namespace NhomProject.Controllers
             if (!string.IsNullOrEmpty(term))
             {
                 string searchTerm = term.ToLower();
-                // Filter by Active status
                 products = _db.Products
                                .Where(p => p.IsActive &&
                                           (p.Name.ToLower().Contains(searchTerm) ||
@@ -303,7 +299,6 @@ namespace NhomProject.Controllers
             ViewBag.OrderId = id;
             return View();
         }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing) _db.Dispose();

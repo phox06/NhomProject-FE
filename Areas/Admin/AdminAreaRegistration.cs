@@ -18,7 +18,7 @@ namespace NhomProject.Areas.Admin
                 "Admin_default",
                 "Admin/{controller}/{action}/{id}",
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional },
-                namespaces: new[] { "NhomProject.Areas.Admin.Controllers" } // Make sure this line exists
+                namespaces: new[] { "NhomProject.Areas.Admin.Controllers" } 
             );
         }
     }

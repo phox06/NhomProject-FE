@@ -47,22 +47,12 @@ namespace NhomProject.Areas.Admin.Controllers
                 
                 if (db.Users.Any(u => u.Username == user.Username))
                 {
-                    ModelState.AddModelError("Username", "This username is already taken.");
+                    ModelState.AddModelError("Username", "Đã có tên người dùng này.");
                     return View(user);
                 }
-
-               
-
-                
                 user.UserRole = "Admin";
-
-                
                 user.CreatedDate = System.DateTime.Now;
-
-               
-                user.IsActive = true;
-
-                
+                user.IsActive = true;            
                 user.FullName = user.Username;
                 user.Email = user.Username + "@admin.com"; 
                                                            

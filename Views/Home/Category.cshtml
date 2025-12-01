@@ -37,7 +37,6 @@
                 <a href="@Url.Action("Details", "Home", new { id = product.ProductId })" class="product-card">
 
                     <div class="product-card-image" style="height: 200px; padding: 10px; background-color: #fff; display: flex; align-items: center; justify-content: center;">
-                        <!-- UPDATED IMAGE LOGIC -->
                         <img src="@(string.IsNullOrEmpty(product.ThumbnailUrl) ?
                                     (string.IsNullOrEmpty(product.MainImageUrl) ? "https://placehold.co/200x200?text=No+Image" : Url.Content(product.MainImageUrl))
                                     : Url.Content(product.ThumbnailUrl))"

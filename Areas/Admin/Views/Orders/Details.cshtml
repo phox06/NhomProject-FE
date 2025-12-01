@@ -11,7 +11,12 @@
     @Html.Partial("~/Views/Shared/_PVOrderItems.cshtml", Model)
 
     <div class="text-center mt-4">
-        @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-secondary" })
-        @Html.ActionLink("In hóa đơn", "Print", new { id = Model.Id }, new { @class = "btn btn-success", onclick = "window.print(); return false;" })
+        <a href="@Url.Action("UpdateStatus", "Orders", new { id = Model.Id })" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Cập nhật trạng thái
+        </a>
+
+        <a href="@Url.Action("Index", "Orders")" class="btn btn-secondary">
+            Quay lại danh sách
+        </a>
     </div>
 </div>

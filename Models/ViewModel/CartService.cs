@@ -17,16 +17,13 @@ namespace NhomProject.Models.ViewModel
 
             if (HttpContext.Current.Session["UserId"] != null)
             {
-                // User is logged in: Load from DATABASE
                 int userId = (int)HttpContext.Current.Session["UserId"];
 
-                // Use NhomProject.Models.CartItem explicitly to avoid confusion
                 List<NhomProject.Models.CartItem> dbCartItems = _db.CartItems.Where(c => c.UserId == userId).ToList();
 
                 cart = new Cart();
                 foreach (var item in dbCartItems)
                 {
-                    // Here we map Database Item -> ViewModel Item
                     cart.Items.Add(new CartItem
                     {
                         ProductId = item.ProductId,
@@ -39,7 +36,6 @@ namespace NhomProject.Models.ViewModel
             }
             else
             {
-                // User is guest: Load from SESSION
                 cart = HttpContext.Current.Session["Cart"] as Cart;
             }
 
@@ -55,20 +51,17 @@ namespace NhomProject.Models.ViewModel
         public void AddToCart(Product product, int quantity)
         {
             Cart cart = GetCart();
-            cart.AddItem(product, quantity); // Updates the session/viewmodel cart
+            cart.AddItem(product, quantity); 
 
-            // If logged in, ALSO update the database
             if (HttpContext.Current.Session["UserId"] != null)
             {
                 int userId = (int)HttpContext.Current.Session["UserId"];
 
-                // Check DB for existing item
                 var dbItem = _db.CartItems.FirstOrDefault(c => c.UserId == userId && c.ProductId == product.ProductId);
 
                 if (dbItem == null)
                 {
-                    // FIX: Use 'NhomProject.Models.CartItem' (The Database Entity)
-                    // FIX: Use 'new CartItem' (Singular), not 'CartItems'
+                   
                     var newItem = new NhomProject.Models.CartItem
                     {
                         UserId = userId,
@@ -77,7 +70,7 @@ namespace NhomProject.Models.ViewModel
                         Price = product.Price,
                         Quantity = quantity,
                         ImageUrl = product.MainImageUrl,
-                        OrderId = null // CHANGE THIS: Do not link to an Order yet!
+                        OrderId = null 
                     };
                     _db.CartItems.Add(newItem);
                 }
