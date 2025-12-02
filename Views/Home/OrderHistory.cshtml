@@ -103,6 +103,17 @@
                 <div class="mt-2">
                     <a href="@Url.Action("BuyAgain", "Home", new { orderId = order.Id })" class="btn btn-outline-primary">Mua lại</a>
                     <a href="@Url.Action("OrderDetails", "Home", new { id = order.Id })" class="btn btn-outline-secondary">Xem chi tiết</a>
+
+                    @if (order.Status == "Pending")
+                    {
+                        using (Html.BeginForm("CancelOrder", "Home", FormMethod.Post, new { style = "display:inline;" }))
+                        {
+                            @Html.Hidden("orderId", order.Id)
+                            <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này?');">
+                                Hủy đơn
+                            </button>
+                        }
+                    }
                 </div>
             </div>
         </div>

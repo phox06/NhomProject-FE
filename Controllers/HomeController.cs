@@ -265,7 +265,27 @@ namespace NhomProject.Controllers
 
             return RedirectToAction("Cart");
         }
+        [HttpPost]
+        public ActionResult CancelOrder(int orderId)
+        {
+            var userId = Session["UserId"] as int?;
+            if (userId == null) return RedirectToAction("Login", "Auth");
 
+            var order = _db.Orders.FirstOrDefault(o => o.Id == orderId && o.UserId == userId);
+
+            if (order != null && order.Status == "Pending")
+            {
+                order.Status = "Cancelled";
+                _db.SaveChanges();
+                TempData["SuccessMessage"] = "Đã hủy đơn hàng #" + orderId + " thành công.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Không thể hủy đơn hàng này (Đã xử lý hoặc không tồn tại).";
+            }
+
+            return RedirectToAction("OrderHistory");
+        }
         public ActionResult OrderDetails(int id)
         {
             var userId = Session["UserId"] as int?;
