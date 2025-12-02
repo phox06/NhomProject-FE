@@ -8,6 +8,7 @@
 
     var displayList = new List<dynamic>();
 
+    
     if (Model.OrderDetails != null && Model.OrderDetails.Count > 0)
     {
         foreach (var item in Model.OrderDetails)
@@ -18,7 +19,7 @@
                 Img = item.Product != null ? item.Product.MainImageUrl : "",
                 Qty = item.Quantity,
                 Price = item.UnitPrice,
-                Id = item.ProductId 
+                Id = item.ProductId
             });
         }
     }
@@ -38,42 +39,73 @@
     }
 }
 
-<div class="table-responsive">
-    <table class="table table-bordered">
-        <thead class="bg-light">
-            <tr>
-                <th>Sản phẩm</th>
-                <th class="text-center">Số lượng</th>
-                <th class="text-end">Đơn giá</th>
-                <th class="text-end">Thành tiền</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in displayList)
-            {
-                <tr>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <img src="@Url.Content(item.Img ?? "https://placehold.co/50")"
-                                 style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border: 1px solid #ddd;" />
-                            <div>
-                                <a href="@Url.Action("Details", "Home", new { id = item.Id, area = "" })" style="text-decoration: none; color: #333; font-weight: bold;">
-                                    @item.Name
-                                </a>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="text-center align-middle">@item.Qty</td>
-                    <td class="text-end align-middle">@item.Price.ToString("N0", vnFormat) ₫</td>
-                    <td class="text-end align-middle">@((item.Price * item.Qty).ToString("N0", vnFormat)) ₫</td>
-                </tr>
-            }
-        </tbody>
-        <tfoot>
-            <tr class="bg-light">
-                <td colspan="3" class="text-end fw-bold">TỔNG CỘNG:</td>
-                <td class="text-end fw-bold text-danger">@Model.Total.ToString("N0", vnFormat) ₫</td>
-            </tr>
-        </tfoot>
-    </table>
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white border-bottom">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 text-primary">
+                📦 CHI TIẾT ĐƠN HÀNG #@Model.Id
+            </h4>
+            <span class="badge bg-warning text-dark" style="font-size: 1rem;">@Model.Status</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6 border-end">
+                <h5 class="text-muted mb-3">Thông tin khách hàng</h5>
+                <p class="mb-1"><strong>Người nhận:</strong> @Model.CustomerName</p>
+                <p class="mb-1"><strong>Số điện thoại:</strong> @Model.Phone</p>
+                <p class="mb-1"><strong>Địa chỉ:</strong> @Model.Address</p>
+            </div>
+            <div class="col-md-6 ps-md-4">
+                <h5 class="text-muted mb-3">Thông tin đơn hàng</h5>
+                <p class="mb-1"><strong>Ngày đặt:</strong> @Model.Date.ToString("dd/MM/yyyy HH:mm")</p>
+                <p class="mb-1"><strong>Thanh toán:</strong> @Model.PaymentMethod</p>
+                <p class="mb-1">
+                    <strong>Tổng tiền:</strong>
+                    <span class="text-danger fw-bold">@Model.Total.ToString("N0", vnFormat) ₫</span>
+                </p>
+            </div>
+        </div>
+
+        <h5 class="text-muted mb-3">Danh sách sản phẩm</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle">
+                <thead class="bg-light">
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th class="text-center" style="width: 100px;">Số lượng</th>
+                        <th class="text-end" style="width: 150px;">Đơn giá</th>
+                        <th class="text-end" style="width: 150px;">Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in displayList)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="@Url.Content(item.Img ?? "https://placehold.co/50")"
+                                         style="width: 50px; height: 50px; object-fit: cover; margin-right: 15px; border: 1px solid #ddd; border-radius: 4px;" />
+                                    <div>
+                                        <a href="@Url.Action("Details", "Home", new { id = item.Id, area = "" })" class="text-dark fw-bold text-decoration-none">
+                                            @item.Name
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center">@item.Qty</td>
+                            <td class="text-end">@item.Price.ToString("N0", vnFormat) ₫</td>
+                            <td class="text-end fw-bold">@((item.Price * item.Qty).ToString("N0", vnFormat)) ₫</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="bg-light">
+                        <td colspan="3" class="text-end fw-bold">TỔNG CỘNG:</td>
+                        <td class="text-end fw-bold text-danger fs-5">@Model.Total.ToString("N0", vnFormat) ₫</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
 </div>

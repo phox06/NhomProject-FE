@@ -104,21 +104,18 @@ namespace NhomProject.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            // 1. Find Data
+            
             Category category = db.Categories.Find(id);
 
-            // 2. CHECK CONSTRAINTS (Teacher's Logic)
             var relatedProducts = category.Products.ToList();
 
             if (relatedProducts.Count > 0)
             {
-                // ERROR HANDLER: Use TempData instead of Content()
                 TempData["ErrorMessage"] = "Không thể xóa danh mục này vì đang có " + relatedProducts.Count + " sản phẩm bên trong! Vui lòng xóa sản phẩm trước.";
                 return RedirectToAction("Index");
             }
             else
             {
-                // 3. EXECUTE DELETE
                 db.Categories.Remove(category);
                 db.SaveChanges();
 

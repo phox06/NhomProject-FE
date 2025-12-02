@@ -337,7 +337,6 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Category.cshtml" />
     <Content Include="Views\orders\Detail.cshtml" />
-    <Content Include="Views\orders\Index.cshtml" />
     <Content Include="Views\Home\Cart.cshtml" />
     <Content Include="Views\Home\Checkout.cshtml" />
     <Content Include="Views\Home\OrderConfirmation.cshtml" />
